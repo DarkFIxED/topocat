@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { AgmCoreModule } from '@agm/core';
 import { RouterModule, Routes } from '@angular/router';
 import { GoogleMapComponent } from './components/google-map/google-map.component';
+import { environment } from '../../environments/environment';
 
 const appRoutes: Routes = [
     {path: 'google', component: GoogleMapComponent},
@@ -13,7 +14,7 @@ const appRoutes: Routes = [
     imports: [
         CommonModule,
         AgmCoreModule.forRoot({
-            apiKey: 'AIzaSyAebw5TL31hJwRaHbV-mmJR94EKReGVTS8'
+            apiKey: environment.googleMapsApiKey
         }),
         RouterModule.forChild(appRoutes)
     ],
