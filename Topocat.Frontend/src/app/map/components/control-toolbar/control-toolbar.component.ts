@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MapStore } from '../../stores/map.store';
 import { Place } from '../../../domain/map/place';
 import { Coords } from '../../../domain/map/coords';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
     selector: 'tc-control-toolbar',
@@ -28,6 +28,9 @@ export class ControlToolbarComponent implements OnInit {
         this.mapStore.entity.zoomChanged.subscribe(zoomChangedEventArgs => {
             this.zoomForm.setValue({zoom: zoomChangedEventArgs.zoom});
         });
+
+        this.centerForm.setValue(this.mapStore.entity.center);
+        this.zoomForm.setValue({zoom: this.mapStore.entity.zoom});
     }
 
     ngOnInit() {
