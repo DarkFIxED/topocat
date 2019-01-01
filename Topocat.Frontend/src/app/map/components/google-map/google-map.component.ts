@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { GoogleMapProvider } from '../../map-providers/google-map-provider';
+import { GoogleMapProvider } from '../../map-providers/google/google-map-provider';
 import { LatLngLiteral, MapTypeId } from '@agm/core/services/google-maps-types';
 import { GoogleMapConfigurationStore } from '../../stores/google-map-configuration.store';
 import { GoogleMapConfigurationModel } from '../../models/google-map-configuration.model';

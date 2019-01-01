@@ -3,5 +3,17 @@
         <button mat-button (click)="createMarker()">Marker</button>
         <button mat-button (click)="createPolygon()">Polygon</button>
         <button mat-button (click)="cancel()">Cancel</button>
+
+        <mat-divider></mat-divider>
+
+        <div class="example-container">
+            <mat-form-field>
+                <input #lat matInput placeholder="Latitude">
+            </mat-form-field>
+            <mat-form-field>
+                <input #lng matInput placeholder="Longitude">
+            </mat-form-field>
+            <button mat-button (click)="changeCenter()">Move</button>
+        </div>
     </mat-card>
 </div>

@@ -1,14 +1,16 @@
 import { Injectable } from '@angular/core';
-import { MapsEventListener } from '@agm/core/services/google-maps-types';
-import { MessageBusService } from '../../infrastructure/message-bus/message-bus.service';
-import { Place } from '../../domain/map/place';
-import { Message } from '../../infrastructure/message-bus/message';
 import { Observable } from 'rxjs';
+import { MapsEventListener } from '@agm/core/services/google-maps-types';
+import { MessageBusService } from '../../../infrastructure/message-bus/message-bus.service';
+import { Place } from '../../../domain/map/place';
+import { Message } from '../../../infrastructure/message-bus/message';
+import { Coords } from '../../../domain/map/coords';
+import { MessageNames } from '../../../infrastructure/message-bus/message-names';
 
 @Injectable()
 export class GoogleMapProvider {
+    private centerChangedDebounce;
 
-    private map: google.maps.Map;
     private drawingManager: google.maps.drawing.DrawingManager;
     private onPolygonCompleteListener: MapsEventListener;
     private onMarkerCompleteListener: MapsEventListener;
@@ -16,12 +18,17 @@ export class GoogleMapProvider {
     private isDrawingNow = false;
     private drawnObjects = {};
 
-    constructor(private messageBus: MessageBusService) {
+    constructor(public messageBus: MessageBusService) {
+    }
 
+    protected _map: google.maps.Map;
+
+    public get map(): google.maps.Map {
+        return this._map;
     }
 
     setup(map: any): void {
-        this.map = map;
+        this._map = map;
 
         this.drawingManager = new google.maps.drawing.DrawingManager({
             drawingMode: google.maps.drawing.OverlayType.MARKER,
@@ -34,13 +41,37 @@ export class GoogleMapProvider {
             }
         });
 
-        this.messageBus.listen(['MAP_PLACE_ADDED'],
+        let onCenterChanged = function(provider: GoogleMapProvider) {
+            return function() {
+
+                let handler = function () {
+                    let center = provider.map.getCenter();
+
+                    let coords = new Coords(center.lat(), center.lng());
+                    let message = new Message(MessageNames.MapCenterChanged, coords, provider);
+                    provider.messageBus.publish(message);
+                };
+
+                clearTimeout(provider.centerChangedDebounce);
+                provider.centerChangedDebounce=setTimeout(handler,300);
+            }
+        };
+
+        this._map.addListener('center_changed', onCenterChanged(this));
+
+        this.messageBus.listen([MessageNames.DomainPlaceAdded],
             (observable: Observable<Message<Place>>) => {
                 return observable.subscribe(message => this.drawPlace(message.payload));
             });
 
-        this.map.addListener()
+        this.messageBus.listen([MessageNames.DomainCenterChanged],
+            (observable: Observable<Message<Coords>>) => {
+                return observable.subscribe(message => {
+                    this.assertMapReady();
 
+                    this.map.setCenter({lat: message.payload.lat, lng: message.payload.lng});
+                });
+            });
     }
 
     public drawPlace(place: Place): void {
@@ -48,13 +79,13 @@ export class GoogleMapProvider {
 
         let marker = new google.maps.Marker();
         marker.setPosition({lat: place.coords.lat, lng: place.coords.lng});
-        marker.setMap(this.map);
+        marker.setMap(this._map);
 
         this.drawnObjects[place.uuid] = marker;
     }
 
     private assertMapReady() {
-        if (!this.map) {
+        if (!this._map) {
             throw new Error('Map is not ready');
         }
     }

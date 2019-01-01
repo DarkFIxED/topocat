@@ -5,7 +5,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { GoogleMapComponent } from './components/google-map/google-map.component';
 import { environment } from '../../environments/environment';
 import { ControlToolbarComponent } from './components/control-toolbar/control-toolbar.component';
-import { MatButtonModule, MatCardModule } from '@angular/material';
+import { MatButtonModule, MatCardModule, MatDividerModule, MatFormFieldModule, MatInputModule } from '@angular/material';
 import { DomainModule } from '../domain/domain.module';
 import { MapStore } from './stores/map.store';
 
@@ -25,6 +25,9 @@ const appRoutes: Routes = [
         RouterModule.forChild(appRoutes),
         MatButtonModule,
         MatCardModule,
+        MatDividerModule,
+        MatFormFieldModule,
+        MatInputModule
     ],
     declarations: [GoogleMapComponent, ControlToolbarComponent],
     exports: [RouterModule],
