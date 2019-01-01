@@ -39,6 +39,8 @@ export class GoogleMapProvider {
                 return observable.subscribe(message => this.drawPlace(message.payload));
             });
 
+        this.map.addListener()
+
     }
 
     public drawPlace(place: Place): void {
