@@ -3,13 +3,17 @@ import { Observable } from 'rxjs/internal/Observable';
 import { Listener } from './listener';
 import { Message } from './message';
 import { Subscription } from 'rxjs/internal/Subscription';
+import { SimpleMessage } from './simple-message';
+import { MessagePriority } from './message-priority';
 
 @Injectable()
 export class MessageBusService {
 
     private listeners: Listener[] = [];
 
-    public listen(eventTypes: string[], subscriptionFunc: (observable: Observable<Message>) => Subscription, priority: number = 3): string {
+    public listen(eventTypes: string[],
+                  subscriptionFunc: (observable: Observable<Message<any> | SimpleMessage >) => Subscription,
+                  priority: MessagePriority = MessagePriority.Normal): string {
         let listener = new Listener(eventTypes, subscriptionFunc, priority);
         this.listeners.push(listener);
 
@@ -27,7 +31,7 @@ export class MessageBusService {
         }
     }
 
-    public publish(message: Message) {
+    public publish(message: Message<any> | SimpleMessage) {
         let relevantListeners = this.listeners.filter(x => x.eventTypes.some(x => x === message.name));
         relevantListeners = relevantListeners.sort((listenerA, listenerB) => listenerA.priority - listenerB.priority);
 

@@ -1,6 +1,6 @@
-export class Message {
+export class Message<T> {
     public constructor(public name: string,
-                       public payload: any) {
+                       public payload: T) {
     }
 
     private _isRejected = false;
@@ -11,12 +11,5 @@ export class Message {
 
     public reject() {
         this._isRejected = true;
-    }
-}
-
-export class TypedMessage<T> extends Message {
-    public constructor(name: string,
-                       payload: T){
-        super(name, payload);
     }
 }

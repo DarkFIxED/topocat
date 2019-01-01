@@ -1,22 +1,18 @@
-import { Observable, Subject } from 'rxjs';
+import { AggregationRoot } from './aggregation-root';
+import { Subject } from 'rxjs';
 
-export abstract class Store<T> {
+export abstract class Store<T extends AggregationRoot> {
+    protected entitySet: Subject<T> = new Subject<T>();
 
-    protected constructor() {
+    protected _entity: T;
+
+    public get entity(): T {
+        return this._entity;
     }
 
-    private _modelChanged: Subject<T> = new Subject<T>();
-    public get modelChanged$(): Observable<T> {
-        return this._modelChanged.asObservable();
-    }
+    public set entity(entity: T) {
+        this._entity = entity;
 
-    private _model: T;
-    public get model(): T {
-        return this._model;
-    }
-
-    public update(newModel: T): void {
-        this._model = newModel;
-        this._modelChanged.next(this.model);
+        this.entitySet.next(this._entity);
     }
 }

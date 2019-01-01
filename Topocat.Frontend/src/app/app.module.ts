@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 import { RouterModule, Routes } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { InfrastructureModule } from './infrastructure/common.module';
+import { InfrastructureModule } from './infrastructure/infrastructure.module';
 
 const routes: Routes = [
     {

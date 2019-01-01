@@ -1,18 +1,19 @@
 <div class="h-100 w-100">
     <agm-map class="d-block h-100"
-             (mapReady)="onMapReady($event)"
-             (centerChange)="onCenterChange($event)"
-             (zoomChange)="onZoomChange($event)"
-             (mapTypeIdChange)="onMapTypeIdChanged($event)"
-             [mapTypeControl]="configuration.mapTypeControl"
-             [scaleControl]="configuration.scaleControl"
-             [zoomControlOptions]="configuration.zoomControlOptions"
-             [latitude]="configuration.coord.latitude"
-             [longitude]="configuration.coord.longitude"
-             [zoom]="configuration.zoomLevel"
-             [maxZoom]="configuration.maxZoom"
-             [minZoom]="configuration.minZoom"
-             [mapTypeId]="configuration.mapTypeId"
-    >
+             (mapReady)="onMapReady($event)">
+             <!--(centerChange)="onCenterChange($event)"-->
+             <!--(zoomChange)="onZoomChange($event)"-->
+             <!--(mapTypeIdChange)="onMapTypeIdChanged($event)"-->
+             <!--[mapTypeControl]="configuration.mapTypeControl"-->
+             <!--[scaleControl]="configuration.scaleControl"-->
+             <!--[zoomControlOptions]="configuration.zoomControlOptions"-->
+             <!--[latitude]="configuration.coord.latitude"-->
+             <!--[longitude]="configuration.coord.longitude"-->
+             <!--[zoom]="configuration.zoomLevel"-->
+             <!--[maxZoom]="configuration.maxZoom"-->
+             <!--[minZoom]="configuration.minZoom"-->
+             <!--[mapTypeId]="configuration.mapTypeId"-->
+
     </agm-map>
+    <tc-control-toolbar></tc-control-toolbar>
 </div>

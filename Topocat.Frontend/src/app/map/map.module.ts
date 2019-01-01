@@ -4,6 +4,10 @@ import { AgmCoreModule } from '@agm/core';
 import { RouterModule, Routes } from '@angular/router';
 import { GoogleMapComponent } from './components/google-map/google-map.component';
 import { environment } from '../../environments/environment';
+import { ControlToolbarComponent } from './components/control-toolbar/control-toolbar.component';
+import { MatButtonModule, MatCardModule } from '@angular/material';
+import { DomainModule } from '../domain/domain.module';
+import { MapStore } from './stores/map.store';
 
 const appRoutes: Routes = [
     {path: 'google', component: GoogleMapComponent},
@@ -13,14 +17,18 @@ const appRoutes: Routes = [
 @NgModule({
     imports: [
         CommonModule,
+        DomainModule,
         AgmCoreModule.forRoot({
-            apiKey: environment.googleMapsApiKey
+            apiKey: environment.googleMapsApiKey,
+            libraries: ['drawing']
         }),
-        RouterModule.forChild(appRoutes)
+        RouterModule.forChild(appRoutes),
+        MatButtonModule,
+        MatCardModule,
     ],
-    declarations: [GoogleMapComponent],
+    declarations: [GoogleMapComponent, ControlToolbarComponent],
     exports: [RouterModule],
-    providers: []
+    providers: [MapStore]
 })
 export class MapModule {
 }

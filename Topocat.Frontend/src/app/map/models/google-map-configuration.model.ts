@@ -1,6 +1,6 @@
 import { MapConfigurationModel } from './map-configuration.model';
 import { ControlPosition, MapTypeId, ZoomControlStyle } from '@agm/core/services/google-maps-types';
-import { Coord } from '../../domain/map/coord';
+
 
 export class GoogleMapConfigurationModel extends MapConfigurationModel {
 
@@ -12,7 +12,7 @@ export class GoogleMapConfigurationModel extends MapConfigurationModel {
     };
     public mapTypeId: MapTypeId;
 
-    public constructor(coord = new Coord(56, 84),
+    public constructor(//coord = new Coord(56, 84),
                        zoomLevel = 10,
                        maxZoom = 25,
                        minZoom = 2,
@@ -23,7 +23,7 @@ export class GoogleMapConfigurationModel extends MapConfigurationModel {
                            style: ZoomControlStyle.SMALL,
                            position: ControlPosition.BOTTOM_RIGHT
                        }) {
-        super(coord, zoomLevel, maxZoom, minZoom);
+        super(zoomLevel, maxZoom, minZoom);
         this.mapTypeControl = mapTypeControl;
         this.scaleControl = scaleControl;
         this.zoomControlOptions = zoomControlOptions;

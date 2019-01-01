@@ -2,9 +2,9 @@ import { MapObject } from './map-object';
 import { JsonObject, JsonProperty } from 'json2typescript';
 import { Coords } from './coords';
 
-@JsonObject('area')
-export class Area extends MapObject {
+@JsonObject('place')
+export class Place extends MapObject {
 
-    @JsonProperty('path', [Coords])
-    public path: Coords[];
+    @JsonProperty('coords')
+    public coords: Coords;
 }
