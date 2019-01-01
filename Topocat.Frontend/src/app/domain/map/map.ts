@@ -20,6 +20,10 @@ export class Map extends AggregationRoot {
     @JsonProperty('mapObjects')
     protected _mapObjects: Array<MapObject> = [];
 
+    public get mapObjects(): Array<MapObject> {
+        return this._mapObjects;
+    }
+
     @JsonProperty('center')
     protected _center: Coords = new Coords();
 

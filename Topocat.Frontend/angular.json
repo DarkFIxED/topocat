@@ -71,7 +71,6 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "src/tsconfig.spec.json",
             "scripts": [
-              "src/http:/maps.googleapis.com/maps/api/js"
             ],
             "styles": [
               "src/styles.css"
