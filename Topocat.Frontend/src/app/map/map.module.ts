@@ -8,6 +8,7 @@ import { ControlToolbarComponent } from './components/control-toolbar/control-to
 import { MatButtonModule, MatCardModule, MatDividerModule, MatFormFieldModule, MatInputModule } from '@angular/material';
 import { DomainModule } from '../domain/domain.module';
 import { MapStore } from './stores/map.store';
+import { ReactiveFormsModule } from '@angular/forms';
 
 const appRoutes: Routes = [
     {path: 'google', component: GoogleMapComponent},
@@ -17,6 +18,7 @@ const appRoutes: Routes = [
 @NgModule({
     imports: [
         CommonModule,
+        ReactiveFormsModule,
         DomainModule,
         AgmCoreModule.forRoot({
             apiKey: environment.googleMapsApiKey,

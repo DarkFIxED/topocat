@@ -6,14 +6,39 @@
 
         <mat-divider></mat-divider>
 
-        <div class="example-container">
-            <mat-form-field>
-                <input #lat matInput placeholder="Latitude">
-            </mat-form-field>
-            <mat-form-field>
-                <input #lng matInput placeholder="Longitude">
-            </mat-form-field>
-            <button mat-button (click)="changeCenter()">Move</button>
+        <div>
+            <form [formGroup]="centerForm">
+                <mat-form-field>
+                    <input matInput
+                           formControlName="lat"
+                           placeholder="Latitude">
+                </mat-form-field>
+                <mat-form-field>
+                    <input matInput
+                           formControlName="lng"
+                           placeholder="Longitude">
+                </mat-form-field>
+                <button mat-button
+                        [class.mat-button-toggle-disabled]="centerForm.invalid"
+                        [disabled]="centerForm.invalid"
+                        (click)="changeCenter()">Move</button>
+            </form>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <div>
+            <form [formGroup]="zoomForm">
+                <mat-form-field>
+                    <input matInput
+                           formControlName="zoom"
+                           placeholder="Zoom">
+                </mat-form-field>
+                <button mat-button
+                        [class.mat-button-toggle-disabled]="zoomForm.invalid"
+                        [disabled]="zoomForm.invalid"
+                        (click)="changeZoom()">Zoom</button>
+            </form>
         </div>
     </mat-card>
 </div>

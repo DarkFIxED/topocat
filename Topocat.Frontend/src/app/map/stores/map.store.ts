@@ -36,18 +36,29 @@ export class MapStore extends Store<Map> {
             this.messageBus.publish(message);
         });
 
-        entity.centerChanged.subscribe(center => {
-            let message = new Message(MessageNames.DomainCenterChanged, center, sender);
+        entity.centerChanged.subscribe(centerChangedEventArgs => {
+            let message = new Message(MessageNames.DomainCenterChanged, centerChangedEventArgs, sender);
             this.messageBus.publish(message);
+        });
+
+        entity.zoomChanged.subscribe(zoomChangedEventArgs => {
+           let message = new Message(MessageNames.DomainZoomChanged, zoomChangedEventArgs, sender);
+           this.messageBus.publish(message);
         });
     }
 
     private setupListeners(entity: Map): void {
-
         this.messageBus.listen([MessageNames.MapCenterChanged],
             (observable: Observable<Message<Coords>>) => {
                 return observable.subscribe(message => {
-                    entity.setCenter(message.payload, false);
+                    entity.updateCenterFromMap(message.payload);
+                });
+            });
+
+        this.messageBus.listen([MessageNames.MapZoomChanged],
+            (observable: Observable<Message<number>>) => {
+                return observable.subscribe(message => {
+                    entity.updateZoomFromMap(message.payload);
                 });
             });
     }

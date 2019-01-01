@@ -1,7 +1,8 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MapStore } from '../../stores/map.store';
 import { Place } from '../../../domain/map/place';
 import { Coords } from '../../../domain/map/coords';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
     selector: 'tc-control-toolbar',
@@ -10,13 +11,23 @@ import { Coords } from '../../../domain/map/coords';
 })
 export class ControlToolbarComponent implements OnInit {
 
-    @ViewChild('lat')
-    public lat: ElementRef;
+    public centerForm: FormGroup = new FormGroup({
+        lat: new FormControl('', [Validators.required]),
+        lng: new FormControl('', [Validators.required])
+    });
 
-    @ViewChild('lng')
-    public lng: ElementRef;
+    public zoomForm: FormGroup = new FormGroup({
+        zoom: new FormControl('', [Validators.required])
+    });
 
     constructor(private mapStore: MapStore) {
+        this.mapStore.entity.centerChanged.subscribe(centerChangedEventArgs => {
+            this.centerForm.setValue(centerChangedEventArgs.center);
+        });
+
+        this.mapStore.entity.zoomChanged.subscribe(zoomChangedEventArgs => {
+            this.zoomForm.setValue({zoom: zoomChangedEventArgs.zoom});
+        });
     }
 
     ngOnInit() {
@@ -40,8 +51,10 @@ export class ControlToolbarComponent implements OnInit {
     }
 
     changeCenter() {
-        let lat = +this.lat.nativeElement.value;
-        let lng = +this.lng.nativeElement.value;
-        this.mapStore.entity.setCenter(new Coords(lat, lng));
+        this.mapStore.entity.setCenter(new Coords(+this.centerForm.value.lat, +this.centerForm.value.lng));
+    }
+
+    changeZoom() {
+        this.mapStore.entity.setZoom(+this.zoomForm.value.zoom);
     }
 }

@@ -5,6 +5,8 @@ import { Place } from './place';
 import { Subject } from 'rxjs';
 import { Area } from './area';
 import { Coords } from './coords';
+import { CenterChangedEventArgs } from './event-args/center-changed.event-args';
+import { ZoomChangedEventArgs } from './event-args/zoom-changed.event-args';
 
 @JsonObject('map')
 export class Map extends AggregationRoot {
@@ -12,7 +14,8 @@ export class Map extends AggregationRoot {
     public placeAdded: Subject<Place> = new Subject<Place>();
     public areaAdded: Subject<Area> = new Subject<Area>();
 
-    public centerChanged: Subject<Coords> = new Subject<Coords>();
+    public centerChanged: Subject<CenterChangedEventArgs> = new Subject<CenterChangedEventArgs>();
+    public zoomChanged: Subject<ZoomChangedEventArgs> = new Subject<ZoomChangedEventArgs>();
 
     @JsonProperty('mapObjects')
     protected _mapObjects: Array<MapObject> = [];
@@ -24,12 +27,35 @@ export class Map extends AggregationRoot {
         return this._center;
     }
 
-    public setCenter(center: Coords, emitChanges = true): void {
+    @JsonProperty('zoom')
+    protected _zoom: number = 10;
+
+    public get zoom(): number {
+        return this._zoom;
+    }
+
+    public setZoom(zoom: number): void {
+        this._zoom = zoom;
+
+        this.zoomChanged.next(new ZoomChangedEventArgs(this._zoom, false));
+    }
+
+    public updateZoomFromMap(zoom: number): void {
+        this._zoom = zoom;
+
+        this.zoomChanged.next(new ZoomChangedEventArgs(this._zoom, true));
+    }
+
+    public setCenter(center: Coords): void {
         this._center = center;
 
-        if (emitChanges) {
-            this.centerChanged.next(this._center);
-        }
+        this.centerChanged.next(new CenterChangedEventArgs(this._center, false));
+    }
+
+    public updateCenterFromMap(center: Coords): void {
+        this._center = center;
+
+        this.centerChanged.next(new CenterChangedEventArgs(this._center, true));
     }
 
     public addPlace(place: Place): void {

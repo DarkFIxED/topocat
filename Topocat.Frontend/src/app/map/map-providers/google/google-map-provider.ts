@@ -1,22 +1,21 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
+import { filter } from 'rxjs/operators';
 import { Observable } from 'rxjs';
-import { MapsEventListener } from '@agm/core/services/google-maps-types';
+
 import { MessageBusService } from '../../../infrastructure/message-bus/message-bus.service';
 import { Place } from '../../../domain/map/place';
 import { Message } from '../../../infrastructure/message-bus/message';
 import { Coords } from '../../../domain/map/coords';
 import { MessageNames } from '../../../infrastructure/message-bus/message-names';
+import { CenterChangedEventArgs } from '../../../domain/map/event-args/center-changed.event-args';
+import { ZoomChangedEventArgs } from '../../../domain/map/event-args/zoom-changed.event-args';
 
 @Injectable()
-export class GoogleMapProvider {
-    private centerChangedDebounce;
-
+export class GoogleMapProvider implements OnDestroy {
     private drawingManager: google.maps.drawing.DrawingManager;
-    private onPolygonCompleteListener: MapsEventListener;
-    private onMarkerCompleteListener: MapsEventListener;
-    private cancelDrawingShape = false;
-    private isDrawingNow = false;
     private drawnObjects = {};
+
+    private listeners = [];
 
     constructor(public messageBus: MessageBusService) {
     }
@@ -30,48 +29,10 @@ export class GoogleMapProvider {
     setup(map: any): void {
         this._map = map;
 
-        this.drawingManager = new google.maps.drawing.DrawingManager({
-            drawingMode: google.maps.drawing.OverlayType.MARKER,
-            drawingControl: false,
-            drawingControlOptions: {
-                drawingModes: [
-                    google.maps.drawing.OverlayType.MARKER,
-                    google.maps.drawing.OverlayType.POLYGON
-                ]
-            }
-        });
+        this.initDrawingManager();
+        this.initMapHandlers();
+        this.initListeners();
 
-        let onCenterChanged = function(provider: GoogleMapProvider) {
-            return function() {
-
-                let handler = function () {
-                    let center = provider.map.getCenter();
-
-                    let coords = new Coords(center.lat(), center.lng());
-                    let message = new Message(MessageNames.MapCenterChanged, coords, provider);
-                    provider.messageBus.publish(message);
-                };
-
-                clearTimeout(provider.centerChangedDebounce);
-                provider.centerChangedDebounce=setTimeout(handler,300);
-            }
-        };
-
-        this._map.addListener('center_changed', onCenterChanged(this));
-
-        this.messageBus.listen([MessageNames.DomainPlaceAdded],
-            (observable: Observable<Message<Place>>) => {
-                return observable.subscribe(message => this.drawPlace(message.payload));
-            });
-
-        this.messageBus.listen([MessageNames.DomainCenterChanged],
-            (observable: Observable<Message<Coords>>) => {
-                return observable.subscribe(message => {
-                    this.assertMapReady();
-
-                    this.map.setCenter({lat: message.payload.lat, lng: message.payload.lng});
-                });
-            });
     }
 
     public drawPlace(place: Place): void {
@@ -84,10 +45,9 @@ export class GoogleMapProvider {
         this.drawnObjects[place.uuid] = marker;
     }
 
-    private assertMapReady() {
-        if (!this._map) {
-            throw new Error('Map is not ready');
-        }
+    ngOnDestroy(): void {
+        this.messageBus.stopListen(this.listeners);
+        this.listeners.splice(0, this.listeners.length);
     }
 
 
@@ -181,4 +141,92 @@ export class GoogleMapProvider {
     //     this.drawingManager.setDrawingMode(null);
     // }
 
+    private assertMapReady() {
+        if (!this._map) {
+            throw new Error('Map is not ready');
+        }
+    }
+
+    private initDrawingManager() {
+        this.drawingManager = new google.maps.drawing.DrawingManager({
+            drawingMode: google.maps.drawing.OverlayType.MARKER,
+            drawingControl: false,
+            drawingControlOptions: {
+                drawingModes: [
+                    google.maps.drawing.OverlayType.MARKER,
+                    google.maps.drawing.OverlayType.POLYGON
+                ]
+            }
+        });
+    }
+
+    private initMapHandlers() {
+        this.initCenterChangedHandler();
+        this.initZoomChangedHandler();
+    }
+
+    private initListeners() {
+        this.listeners.push(
+            this.messageBus.listen([MessageNames.DomainPlaceAdded],
+                (observable: Observable<Message<Place>>) => {
+                    return observable.subscribe(message => this.drawPlace(message.payload));
+                })
+        );
+
+        this.listeners.push(
+            this.messageBus.listen([MessageNames.DomainCenterChanged],
+                (observable: Observable<Message<CenterChangedEventArgs>>) => {
+                    return observable
+                        .pipe(
+                            filter(x => !x.payload.setFromMap)
+                        )
+                        .subscribe(message => {
+                            this.assertMapReady();
+                            this.map.setCenter({lat: message.payload.center.lat, lng: message.payload.center.lng});
+                        });
+                })
+        );
+
+        this.listeners.push(
+            this.messageBus.listen([MessageNames.DomainZoomChanged],
+                (observable: Observable<Message<ZoomChangedEventArgs>>) => {
+                    return observable
+                        .pipe(
+                            filter(x => !x.payload.setFromMap)
+                        )
+                        .subscribe(message => {
+                            this.assertMapReady();
+                            this.map.setZoom(message.payload.zoom);
+                        });
+                })
+        );
+    }
+
+    private initCenterChangedHandler() {
+        let onCenterChanged = function (provider: GoogleMapProvider) {
+            return function () {
+
+                let center = provider.map.getCenter();
+                let coords = new Coords(center.lat(), center.lng());
+
+                let message = new Message(MessageNames.MapCenterChanged, coords, provider);
+                provider.messageBus.publish(message);
+            }
+        };
+
+        this._map.addListener('center_changed', onCenterChanged(this));
+    }
+
+    private initZoomChangedHandler() {
+        let onZoomChanged = function (provider: GoogleMapProvider) {
+            return function () {
+                let zoom = provider.map.getZoom();
+
+                let message = new Message(MessageNames.MapZoomChanged, zoom, provider);
+                provider.messageBus.publish(message);
+            }
+        };
+
+        this._map.addListener('zoom_changed', onZoomChanged(this));
+    }
 }
