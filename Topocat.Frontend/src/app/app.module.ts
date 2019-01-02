@@ -1,4 +1,5 @@
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule, HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
+import { GestureConfig } from '@angular/material';
 import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 import { RouterModule, Routes } from '@angular/router';
@@ -23,7 +24,9 @@ const routes: Routes = [
 
         InfrastructureModule,
     ],
-    providers: [],
+    providers: [
+        { provide: HAMMER_GESTURE_CONFIG, useClass: GestureConfig }
+    ],
     bootstrap: [AppComponent]
 })
 export class AppModule {

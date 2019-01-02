@@ -3,3 +3,21 @@
     top: 60px;
     left: 10px;
 }
+
+.coords-form:before {
+    content: "";
+    display: inline-block;
+    vertical-align: middle;
+    height: 100%;
+}
+
+.zoom-form:before {
+    content: "";
+    display: inline-block;
+    vertical-align: middle;
+    height: 100%;
+}
+
+.slider {
+    width: calc(100% - 24px)
+}

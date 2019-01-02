@@ -9,21 +9,33 @@ import { Coords } from '../../../domain/map/coords';
 import { MessageNames } from '../../../infrastructure/message-bus/message-names';
 import { CenterChangedEventArgs } from '../../../domain/map/event-args/center-changed.event-args';
 import { ZoomChangedEventArgs } from '../../../domain/map/event-args/zoom-changed.event-args';
+import { MapProvider } from '../map-provider';
+import { MapService } from '../../services/map.service';
+import { SimpleMessage } from '../../../infrastructure/message-bus/simple-message';
 
 @Injectable()
-export class GoogleMapProvider implements OnDestroy {
+export class GoogleMapProvider implements OnDestroy, MapProvider {
+
+    private readonly MaxGoogleZoom = 23;
+
     private drawingManager: google.maps.drawing.DrawingManager;
     private drawnObjects = {};
 
     private listeners = [];
 
-    constructor(public messageBus: MessageBusService) {
+    constructor(public messageBus: MessageBusService,
+                public mapService: MapService) {
+        this.register();
     }
 
     protected _map: google.maps.Map;
 
     public get map(): google.maps.Map {
         return this._map;
+    }
+
+    public get maxZoom(): number {
+        return this.MaxGoogleZoom;
     }
 
     setup(map: any): void {
@@ -33,9 +45,10 @@ export class GoogleMapProvider implements OnDestroy {
         this.initMapHandlers();
         this.initListeners();
 
+        this.notifyThatMapReady();
     }
 
-    public drawPlace(place: Place): void {
+    drawPlace(place: Place): void {
         this.assertMapReady();
 
         let marker = new google.maps.Marker();
@@ -48,6 +61,7 @@ export class GoogleMapProvider implements OnDestroy {
     ngOnDestroy(): void {
         this.messageBus.stopListen(this.listeners);
         this.listeners.splice(0, this.listeners.length);
+        this.unregister();
     }
 
 
@@ -141,6 +155,15 @@ export class GoogleMapProvider implements OnDestroy {
     //     this.drawingManager.setDrawingMode(null);
     // }
 
+    register() {
+        this.mapService.register(this);
+    }
+
+    unregister() {
+        this.mapService.unregister(this);
+    }
+
+
     private assertMapReady() {
         if (!this._map) {
             throw new Error('Map is not ready');
@@ -228,5 +251,10 @@ export class GoogleMapProvider implements OnDestroy {
         };
 
         this._map.addListener('zoom_changed', onZoomChanged(this));
+    }
+
+    private notifyThatMapReady() {
+        let message = new SimpleMessage(MessageNames.MapReady);
+        this.messageBus.publish(message);
     }
 }

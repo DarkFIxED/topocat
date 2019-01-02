@@ -24,6 +24,7 @@
               "src/styles.css"
             ],
             "scripts": [
+                "./node_modules/hammerjs/hammer.js"
             ]
           },
           "configurations": {
@@ -71,6 +72,7 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "src/tsconfig.spec.json",
             "scripts": [
+                "./node_modules/hammerjs/hammer.js"
             ],
             "styles": [
               "src/styles.css"

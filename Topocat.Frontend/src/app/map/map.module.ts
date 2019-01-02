@@ -5,10 +5,19 @@ import { RouterModule, Routes } from '@angular/router';
 import { GoogleMapComponent } from './components/google-map/google-map.component';
 import { environment } from '../../environments/environment';
 import { ControlToolbarComponent } from './components/control-toolbar/control-toolbar.component';
-import { MatButtonModule, MatCardModule, MatDividerModule, MatFormFieldModule, MatInputModule } from '@angular/material';
+import {
+    MatButtonModule,
+    MatCardModule,
+    MatDividerModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    MatSliderModule
+} from '@angular/material';
 import { DomainModule } from '../domain/domain.module';
 import { MapStore } from './stores/map.store';
 import { ReactiveFormsModule } from '@angular/forms';
+import { MapService } from './services/map.service';
 
 const appRoutes: Routes = [
     {path: 'google', component: GoogleMapComponent},
@@ -29,11 +38,13 @@ const appRoutes: Routes = [
         MatCardModule,
         MatDividerModule,
         MatFormFieldModule,
-        MatInputModule
+        MatInputModule,
+        MatSliderModule,
+        MatIconModule
     ],
     declarations: [GoogleMapComponent, ControlToolbarComponent],
     exports: [RouterModule],
-    providers: [MapStore]
+    providers: [MapStore, MapService]
 })
 export class MapModule {
 }
