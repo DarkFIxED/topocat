@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MessageBusService } from './message-bus/message-bus.service';
 import { JsonDeserializer } from './json-deserializer';
+import { MessageBusService } from 'litebus';
 
 @NgModule({
     declarations: [],

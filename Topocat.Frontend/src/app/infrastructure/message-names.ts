@@ -6,4 +6,5 @@ export class MessageNames {
     public static MapCenterChanged = 'MAP_CENTER_CHANGED';
     public static MapZoomChanged = 'MAP_ZOOM_CHANGED';
     public static MapReady = 'MAP_READY';
+    public static MapIdle = 'MAP_IDLE';
 }

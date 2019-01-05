@@ -1,13 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatSliderChange } from '@angular/material';
+import { Observable } from 'rxjs';
+import { MessageBusService, SimpleMessage } from 'litebus';
 import { MapStore } from '../../stores/map.store';
 import { Coords } from '../../../domain/map/coords';
-import { MatSliderChange } from '@angular/material';
 import { MapService } from '../../services/map.service';
-import { MessageBusService } from '../../../infrastructure/message-bus/message-bus.service';
-import { MessageNames } from '../../../infrastructure/message-bus/message-names';
-import { Observable } from 'rxjs';
-import { SimpleMessage } from '../../../infrastructure/message-bus/simple-message';
+import { MessageNames } from '../../../infrastructure/message-names';
 
 @Component({
     selector: 'tc-control-toolbar',

@@ -1,17 +1,15 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { filter } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+import { Message, MessageBusService, SimpleMessage } from 'litebus';
 
-import { MessageBusService } from '../../../infrastructure/message-bus/message-bus.service';
 import { Place } from '../../../domain/map/place';
-import { Message } from '../../../infrastructure/message-bus/message';
 import { Coords } from '../../../domain/map/coords';
-import { MessageNames } from '../../../infrastructure/message-bus/message-names';
+import { MessageNames } from '../../../infrastructure/message-names';
 import { CenterChangedEventArgs } from '../../../domain/map/event-args/center-changed.event-args';
 import { ZoomChangedEventArgs } from '../../../domain/map/event-args/zoom-changed.event-args';
 import { MapProvider } from '../map-provider';
 import { MapService } from '../../services/map.service';
-import { SimpleMessage } from '../../../infrastructure/message-bus/simple-message';
 
 @Injectable()
 export class GoogleMapProvider implements OnDestroy, MapProvider {
@@ -38,8 +36,10 @@ export class GoogleMapProvider implements OnDestroy, MapProvider {
         return this.MaxGoogleZoom;
     }
 
-    setup(map: any): void {
+    setup(map: any, initialState: { zoom: number, center: Coords }): void {
         this._map = map;
+        this._map.setZoom(initialState.zoom);
+        this._map.setCenter(initialState.center);
 
         this.initDrawingManager();
         this.initMapHandlers();
@@ -186,6 +186,7 @@ export class GoogleMapProvider implements OnDestroy, MapProvider {
     private initMapHandlers() {
         this.initCenterChangedHandler();
         this.initZoomChangedHandler();
+        this.initIdleListener();
     }
 
     private initListeners() {
@@ -256,5 +257,21 @@ export class GoogleMapProvider implements OnDestroy, MapProvider {
     private notifyThatMapReady() {
         let message = new SimpleMessage(MessageNames.MapReady);
         this.messageBus.publish(message);
+    }
+
+    private initIdleListener() {
+        let onIdle = function (provider: GoogleMapProvider) {
+            return function () {
+                let zoom = provider.map.getZoom();
+
+                let mapCenter = provider.map.getCenter();
+                let center = new Coords(mapCenter.lat(), mapCenter.lng());
+
+                let message = new Message(MessageNames.MapIdle, {zoom: zoom, center: center}, provider);
+                provider.messageBus.publish(message);
+            }
+        };
+
+        this._map.addListener('idle', onIdle(this));
     }
 }

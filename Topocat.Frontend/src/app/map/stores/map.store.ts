@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Store } from '../../infrastructure/store';
 import { Map } from '../../domain/map/map'
-import { MessageBusService } from '../../infrastructure/message-bus/message-bus.service';
-import { Message } from '../../infrastructure/message-bus/message';
 import { Observable } from 'rxjs';
 import { Coords } from '../../domain/map/coords';
-import { MessageNames } from '../../infrastructure/message-bus/message-names';
+import { MessageNames } from '../../infrastructure/message-names';
+import { Message, MessageBusService } from 'litebus';
 
 @Injectable()
 export class MapStore extends Store<Map> {

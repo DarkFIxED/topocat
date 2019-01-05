@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AgmCoreModule } from '@agm/core';
 import { RouterModule, Routes } from '@angular/router';
-import { GoogleMapComponent } from './components/google-map/google-map.component';
+import { MapComponent } from './components/map/map.component';
 import { environment } from '../../environments/environment';
 import { ControlToolbarComponent } from './components/control-toolbar/control-toolbar.component';
 import {
@@ -20,8 +20,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MapService } from './services/map.service';
 
 const appRoutes: Routes = [
-    {path: 'google', component: GoogleMapComponent},
-    {path: '', redirectTo: 'google', pathMatch: 'full'}
+    {path: '', component: MapComponent},
 ];
 
 @NgModule({
@@ -42,7 +41,7 @@ const appRoutes: Routes = [
         MatSliderModule,
         MatIconModule
     ],
-    declarations: [GoogleMapComponent, ControlToolbarComponent],
+    declarations: [MapComponent, ControlToolbarComponent],
     exports: [RouterModule],
     providers: [MapStore, MapService]
 })
