@@ -8,6 +8,7 @@ import { Coords } from '../../../domain/map/coords';
 import { MessageNames } from '../../../infrastructure/message-names';
 import { Observable, Subscription } from 'rxjs';
 import { Message, MessageBusService } from 'litebus';
+import { RouterHelper } from '../../../infrastructure/router-helper';
 
 @Component({
     selector: 'tc-map',
@@ -62,10 +63,11 @@ export class MapComponent implements OnInit, OnDestroy {
     private handleMapType(mapType: string) {
         if (!mapType) {
             // TODO: implement default map type.
-            this.router.navigate(['.'], {
+            this.router.navigate([''], {
                 queryParams: {'mapType': MapType[MapType.Google].toLowerCase()},
                 queryParamsHandling: 'merge',
-                skipLocationChange: false
+                skipLocationChange: false,
+                relativeTo: this.route
             });
         } else {
             if (mapType === 'google') {
@@ -96,14 +98,18 @@ export class MapComponent implements OnInit, OnDestroy {
             (observer: Observable<Message<{ zoom: number, center: Coords }>>) => {
                 return observer.subscribe(message => {
                     this.zone.run(() => {
+                        let exactRoute = RouterHelper.getDeepestActivatedRoute(this.route);
+
                         this.router.navigate(['.'], {
                             queryParams: {
                                 zoom: message.payload.zoom.toString(),
                                 lat: message.payload.center.lat.toString(),
                                 lng: message.payload.center.lng.toString()
                             },
+                            relativeTo: exactRoute,
                             queryParamsHandling: 'merge',
-                            replaceUrl: true
+                            replaceUrl: true,
+                            skipLocationChange: false,
                         });
                     });
                 });

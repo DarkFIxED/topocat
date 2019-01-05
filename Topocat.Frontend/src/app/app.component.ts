@@ -8,8 +8,8 @@ import { ListenerPriority, MessageBusService } from 'litebus';
 })
 export class AppComponent {
     constructor(private messageBus: MessageBusService) {
-        this.messageBus.listenAll((observable) => {
-            return observable.subscribe(message => console.log(message));
-        }, ListenerPriority.High);
+        // this.messageBus.listenAll((observable) => {
+        //     return observable.subscribe(message => console.log(message));
+        // }, ListenerPriority.High);
     }
 }

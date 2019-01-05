@@ -2,9 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AgmCoreModule } from '@agm/core';
 import { RouterModule, Routes } from '@angular/router';
-import { MapComponent } from './components/map/map.component';
-import { environment } from '../../environments/environment';
-import { ControlToolbarComponent } from './components/control-toolbar/control-toolbar.component';
 import {
     MatButtonModule,
     MatCardModule,
@@ -16,11 +13,24 @@ import {
 } from '@angular/material';
 import { DomainModule } from '../domain/domain.module';
 import { MapStore } from './stores/map.store';
+import { MapComponent } from './components/map/map.component';
+import { environment } from '../../environments/environment';
+import { ControlToolbarComponent } from './components/control-toolbar/control-toolbar.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MapService } from './services/map.service';
+import { EditPlaceComponent } from './components/edit-place/edit-place.component';
 
 const appRoutes: Routes = [
-    {path: '', component: MapComponent},
+    {
+        path: '',
+        component: MapComponent,
+        children: [
+            {
+                path: 'places/new',
+                component: EditPlaceComponent
+            }
+        ]
+    },
 ];
 
 @NgModule({
@@ -41,7 +51,11 @@ const appRoutes: Routes = [
         MatSliderModule,
         MatIconModule
     ],
-    declarations: [MapComponent, ControlToolbarComponent],
+    declarations: [
+        MapComponent,
+        ControlToolbarComponent,
+        EditPlaceComponent
+    ],
     exports: [RouterModule],
     providers: [MapStore, MapService]
 })

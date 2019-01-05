@@ -163,7 +163,6 @@ export class GoogleMapProvider implements OnDestroy, MapProvider {
         this.mapService.unregister(this);
     }
 
-
     private assertMapReady() {
         if (!this._map) {
             throw new Error('Map is not ready');
@@ -190,40 +189,9 @@ export class GoogleMapProvider implements OnDestroy, MapProvider {
     }
 
     private initListeners() {
-        this.listeners.push(
-            this.messageBus.listen([MessageNames.DomainPlaceAdded],
-                (observable: Observable<Message<Place>>) => {
-                    return observable.subscribe(message => this.drawPlace(message.payload));
-                })
-        );
-
-        this.listeners.push(
-            this.messageBus.listen([MessageNames.DomainCenterChanged],
-                (observable: Observable<Message<CenterChangedEventArgs>>) => {
-                    return observable
-                        .pipe(
-                            filter(x => !x.payload.setFromMap)
-                        )
-                        .subscribe(message => {
-                            this.assertMapReady();
-                            this.map.setCenter({lat: message.payload.center.lat, lng: message.payload.center.lng});
-                        });
-                })
-        );
-
-        this.listeners.push(
-            this.messageBus.listen([MessageNames.DomainZoomChanged],
-                (observable: Observable<Message<ZoomChangedEventArgs>>) => {
-                    return observable
-                        .pipe(
-                            filter(x => !x.payload.setFromMap)
-                        )
-                        .subscribe(message => {
-                            this.assertMapReady();
-                            this.map.setZoom(message.payload.zoom);
-                        });
-                })
-        );
+        this.initPlaceAddedListener();
+        this.initCenterChangedListener();
+        this.initZoomChangedListener();
     }
 
     private initCenterChangedHandler() {
@@ -273,5 +241,44 @@ export class GoogleMapProvider implements OnDestroy, MapProvider {
         };
 
         this._map.addListener('idle', onIdle(this));
+    }
+
+    private initPlaceAddedListener() {
+        let listenerId = this.messageBus.listen([MessageNames.DomainPlaceAdded],
+            (observable: Observable<Message<Place>>) => {
+                return observable.subscribe(message => this.drawPlace(message.payload));
+            });
+
+        this.listeners.push(listenerId);
+    }
+
+    private initCenterChangedListener() {
+        let listenerId = this.messageBus.listen([MessageNames.DomainCenterChanged],
+            (observable: Observable<Message<CenterChangedEventArgs>>) => {
+                return observable
+                    .pipe(
+                        filter(x => !x.payload.setFromMap)
+                    )
+                    .subscribe(message => {
+                        this.assertMapReady();
+                        this.map.panTo(message.payload.center);
+                    });
+            });
+        this.listeners.push(listenerId);
+    }
+
+    private initZoomChangedListener() {
+        let listenerId = this.messageBus.listen([MessageNames.DomainZoomChanged],
+            (observable: Observable<Message<ZoomChangedEventArgs>>) => {
+                return observable
+                    .pipe(
+                        filter(x => !x.payload.setFromMap)
+                    )
+                    .subscribe(message => {
+                        this.assertMapReady();
+                        this.map.setZoom(message.payload.zoom);
+                    });
+            });
+        this.listeners.push(listenerId);
     }
 }
