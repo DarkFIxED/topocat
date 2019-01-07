@@ -7,4 +7,5 @@ export class MessageNames {
     public static MapZoomChanged = 'MAP_ZOOM_CHANGED';
     public static MapReady = 'MAP_READY';
     public static MapIdle = 'MAP_IDLE';
+    public static MapPhantomCoordsChanged = 'MAP_PHANTOM_COORDS_CHANGED';
 }

@@ -2,6 +2,7 @@
     position: absolute;
     top: 10px;
     left: 10px;
+    width: 425px;
 }
 
 .coords-form:before {

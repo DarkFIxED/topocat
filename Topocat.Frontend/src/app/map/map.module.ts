@@ -27,7 +27,8 @@ const appRoutes: Routes = [
         children: [
             {
                 path: 'places/new',
-                component: EditPlaceComponent
+                component: EditPlaceComponent,
+                data: {newPlace: true}
             }
         ]
     },

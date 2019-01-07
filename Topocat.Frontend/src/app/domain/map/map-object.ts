@@ -5,4 +5,8 @@ import { JsonProperty } from 'json2typescript';
 export abstract class MapObject extends DomainEntity {
     @JsonProperty('uuid')
     public uuid: string = UUID.UUID();
+
+    public constructor() {
+        super();
+    }
 }

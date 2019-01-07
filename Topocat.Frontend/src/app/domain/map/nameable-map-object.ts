@@ -6,6 +6,13 @@ export abstract class NameableMapObject extends MapObject {
 
     public changed: Subject<NameableMapObject> = new Subject<NameableMapObject>();
 
+    protected constructor(title?: string, description?: string) {
+        super();
+
+        this._title = title;
+        this._description = description;
+    }
+
     @JsonProperty('title')
     protected _title: string;
 

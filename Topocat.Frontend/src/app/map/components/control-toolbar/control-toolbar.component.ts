@@ -7,6 +7,7 @@ import { MapStore } from '../../stores/map.store';
 import { Coords } from '../../../domain/map/coords';
 import { MapService } from '../../services/map.service';
 import { MessageNames } from '../../../infrastructure/message-names';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'tc-control-toolbar',
@@ -28,7 +29,8 @@ export class ControlToolbarComponent implements OnInit {
 
     constructor(private mapStore: MapStore,
                 private mapService: MapService,
-                private messageBus: MessageBusService) {
+                private messageBus: MessageBusService,
+                private router: Router) {
         this.mapStore.entity.centerChanged.subscribe(centerChangedEventArgs => {
             this.centerForm.setValue(centerChangedEventArgs.center, {emitEvent: false});
         });
@@ -67,7 +69,15 @@ export class ControlToolbarComponent implements OnInit {
         this.zoomForm.setValue({zoom: event.value});
     }
 
+    addPlace() {
+        this.router.navigate(['/map', 'places', 'new'], {
+            queryParamsHandling: 'merge'
+        });
+    }
+
     private updateMapOptions() {
         this.maxAllowedZoom = this.mapService.provider.maxZoom;
     }
+
+
 }
