@@ -7,7 +7,8 @@ import { MapStore } from '../../stores/map.store';
 import { Coords } from '../../../domain/map/coords';
 import { MessageNames } from '../../../infrastructure/message-names';
 import { Observable, Subscription } from 'rxjs';
-import { Message, MessageBusService } from 'litebus';
+import { Message, MessageBusService, SimpleMessage } from 'litebus';
+import { RouterHelper } from '../../../infrastructure/router-helper';
 
 @Component({
     selector: 'tc-map',
@@ -62,10 +63,11 @@ export class MapComponent implements OnInit, OnDestroy {
     private handleMapType(mapType: string) {
         if (!mapType) {
             // TODO: implement default map type.
-            this.router.navigate(['.'], {
+            this.router.navigate([''], {
                 queryParams: {'mapType': MapType[MapType.Google].toLowerCase()},
                 queryParamsHandling: 'merge',
-                skipLocationChange: false
+                skipLocationChange: false,
+                relativeTo: this.route
             });
         } else {
             if (mapType === 'google') {
@@ -89,6 +91,8 @@ export class MapComponent implements OnInit, OnDestroy {
 
     private setupListeners() {
         this.setupIdleListener();
+        this.setupActivatePopupListener();
+        this.setupDeactivatePopupListener();
     }
 
     private setupIdleListener() {
@@ -96,15 +100,48 @@ export class MapComponent implements OnInit, OnDestroy {
             (observer: Observable<Message<{ zoom: number, center: Coords }>>) => {
                 return observer.subscribe(message => {
                     this.zone.run(() => {
+                        let exactRoute = RouterHelper.getDeepestActivatedRoute(this.route);
+
                         this.router.navigate(['.'], {
                             queryParams: {
                                 zoom: message.payload.zoom.toString(),
                                 lat: message.payload.center.lat.toString(),
                                 lng: message.payload.center.lng.toString()
                             },
+                            relativeTo: exactRoute,
                             queryParamsHandling: 'merge',
-                            replaceUrl: true
+                            replaceUrl: true,
+                            skipLocationChange: false,
                         });
+                    });
+                });
+            });
+
+        this.listeners.push(listenerId);
+    }
+
+
+    private setupActivatePopupListener() {
+        let listenerId = this.messageBus.listen([MessageNames.MapActivatePopup],
+            (observable: Observable<Message<string[]>>) => {
+                return observable.subscribe(message => {
+                    this.router.navigate([{outlets: {popups: message.payload}}], {
+                        queryParamsHandling: 'merge',
+                        relativeTo: this.route
+                    });
+                });
+            });
+
+        this.listeners.push(listenerId);
+    }
+
+    private setupDeactivatePopupListener() {
+        let listenerId = this.messageBus.listen([MessageNames.MapDeactivatePopup],
+            (observable: Observable<SimpleMessage>) => {
+                return observable.subscribe(() => {
+                    this.router.navigate([{outlets: {popups: null}}], {
+                        queryParamsHandling: 'merge',
+                        relativeTo: this.route
                     });
                 });
             });

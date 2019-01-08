@@ -1,0 +1,60 @@
+<div class="position-absolute component-container">
+    <mat-card>
+        <mat-card-title>Add Place</mat-card-title>
+        <mat-card-content>
+            <form [formGroup]="placeForm">
+                <input type="hidden"
+                       formControlName="uuid">
+
+                <mat-form-field class="w-100">
+                    <input matInput
+                           formControlName="title"
+                           placeholder="Title">
+                </mat-form-field>
+                <br>
+                <mat-divider></mat-divider>
+
+                <mat-form-field class="w-100">
+                    <textarea matInput
+                              formControlName="description"
+                              placeholder="Description">
+                    </textarea>
+                </mat-form-field>
+
+                <mat-divider></mat-divider>
+
+                <div formGroupName="coords">
+                    <mat-form-field>
+                        <input matInput
+                               formControlName="lat"
+                               type="number"
+                               placeholder="Latitude">
+                    </mat-form-field>
+
+                    <mat-form-field>
+                        <input matInput
+                               formControlName="lng"
+                               type="number"
+                               placeholder="Longitude">
+                    </mat-form-field>
+                </div>
+            </form>
+        </mat-card-content>
+        <mat-card-actions align="right">
+            <div>
+                <button *ngIf="!isNewPlace"
+                        mat-button
+                        color="warn"
+                        (click)="delete()">Delete
+                </button>
+                <button mat-button
+                        (click)="dismiss()">Cancel
+                </button>
+                <button mat-button
+                        color="primary"
+                        (click)="submit()">Ok
+                </button>
+            </div>
+        </mat-card-actions>
+    </mat-card>
+</div>

@@ -1,0 +1,12 @@
+.list-item {
+    border-bottom: rgba(0,0,0,.12) 1px solid;
+}
+
+.mat-list {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.mat-list-item {
+    height: inherit !important;
+}

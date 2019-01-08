@@ -1,26 +1,58 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AgmCoreModule } from '@agm/core';
+import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
-import { MapComponent } from './components/map/map.component';
-import { environment } from '../../environments/environment';
-import { ControlToolbarComponent } from './components/control-toolbar/control-toolbar.component';
 import {
     MatButtonModule,
-    MatCardModule,
+    MatCardModule, MatDialogModule,
     MatDividerModule,
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
-    MatSliderModule
+    MatListModule,
+    MatSliderModule,
+    MatTabsModule
 } from '@angular/material';
 import { DomainModule } from '../domain/domain.module';
 import { MapStore } from './stores/map.store';
-import { ReactiveFormsModule } from '@angular/forms';
+import { MapComponent } from './components/map/map.component';
+import { environment } from '../../environments/environment';
+import { ControlToolbarComponent } from './components/control-toolbar/control-toolbar.component';
 import { MapService } from './services/map.service';
+import { EditPlaceComponent } from './components/edit-place/edit-place.component';
+import { MapObjectsListComponent } from './components/map-objects-list/map-objects-list.component';
+import { MainCardComponent } from './components/main-card/main-card.component';
+import { InfrastructureModule } from '../infrastructure/infrastructure.module';
 
 const appRoutes: Routes = [
-    {path: '', component: MapComponent},
+    {
+        path: 'main',
+        component: MapComponent,
+        children: [
+            {
+                path: 'items',
+                component: MapObjectsListComponent,
+            },
+            {
+                path: 'new-place',
+                outlet: 'popups',
+                data: {newPlace: true},
+                component: EditPlaceComponent
+            },
+            {
+                path: 'edit-place/:id',
+                outlet: 'popups',
+                data: {newPlace: false},
+                component: EditPlaceComponent
+            }
+        ]
+    },
+    {
+        path: '',
+        pathMatch: 'full',
+        redirectTo: 'main'
+    }
 ];
 
 @NgModule({
@@ -28,6 +60,7 @@ const appRoutes: Routes = [
         CommonModule,
         ReactiveFormsModule,
         DomainModule,
+        InfrastructureModule,
         AgmCoreModule.forRoot({
             apiKey: environment.googleMapsApiKey,
             libraries: ['drawing']
@@ -39,9 +72,18 @@ const appRoutes: Routes = [
         MatFormFieldModule,
         MatInputModule,
         MatSliderModule,
-        MatIconModule
+        MatIconModule,
+        MatListModule,
+        MatTabsModule,
+        MatDialogModule
     ],
-    declarations: [MapComponent, ControlToolbarComponent],
+    declarations: [
+        MapComponent,
+        ControlToolbarComponent,
+        EditPlaceComponent,
+        MapObjectsListComponent,
+        MainCardComponent
+    ],
     exports: [RouterModule],
     providers: [MapStore, MapService]
 })

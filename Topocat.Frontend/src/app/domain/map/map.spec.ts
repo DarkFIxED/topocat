@@ -62,7 +62,7 @@ describe('Map', () => {
         expect(map.center).toBe(newValue);
     });
 
-    it('addPlace() adds place value and emit placeAdded subject', () => {
+    it('addOrUpdatePlace() adds place value and emit placeAdded subject', () => {
         const place = new Place();
         place.coords = new Coords(32,23);
 
@@ -70,7 +70,7 @@ describe('Map', () => {
             expect(addedPlace).toBe(place);
         });
 
-        map.addPlace(place);
+        map.addOrUpdatePlace(place);
 
         expect(map.mapObjects).toContain(place);
     });

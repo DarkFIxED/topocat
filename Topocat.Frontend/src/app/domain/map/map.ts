@@ -17,6 +17,8 @@ export class Map extends AggregationRoot {
     public centerChanged: Subject<CenterChangedEventArgs> = new Subject<CenterChangedEventArgs>();
     public zoomChanged: Subject<ZoomChangedEventArgs> = new Subject<ZoomChangedEventArgs>();
 
+    public objectDeleted: Subject<MapObject> = new Subject<MapObject>();
+
     @JsonProperty('mapObjects')
     protected _mapObjects: Array<MapObject> = [];
 
@@ -62,10 +64,14 @@ export class Map extends AggregationRoot {
         this.centerChanged.next(new CenterChangedEventArgs(this._center, true));
     }
 
-    public addPlace(place: Place): void {
-        this._mapObjects.push(place);
-
-        this.placeAdded.next(place);
+    public addOrUpdatePlace(place: Place): void {
+        let existingPlace = <Place>this.getObject(place.uuid);
+        if (!existingPlace) {
+            this._mapObjects.push(place);
+            this.placeAdded.next(place);
+        } else {
+            existingPlace.copyFrom(place);
+        }
     }
 
     public addPlaces(places: Place[]): void {
@@ -87,6 +93,20 @@ export class Map extends AggregationRoot {
 
         for (let area of areas) {
             this.areaAdded.next(area);
+        }
+    }
+
+    public getObject(uuid: string): MapObject {
+        return this.mapObjects.find(x => x.uuid === uuid);
+    }
+
+    public deleteObject(uuid: string): void {
+        let index = this.mapObjects.findIndex(x=>x.uuid === uuid);
+        if (index >= 0) {
+            let object = this.mapObjects[index];
+
+            this._mapObjects.splice(index, 1);
+            this.objectDeleted.next(object);
         }
     }
 }

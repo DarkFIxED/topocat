@@ -20,7 +20,7 @@ const routes: Routes = [
     imports: [
         BrowserModule,
         BrowserAnimationsModule,
-        RouterModule.forRoot(routes),
+        RouterModule.forRoot(routes, {enableTracing: true}),
 
         InfrastructureModule,
     ],

@@ -1,0 +1,38 @@
+<div class="component-container">
+    <div style="border-bottom: rgba(0,0,0,.12) 1px solid">
+        <button mat-button (click)="openNewPlacePopup()">New place</button>
+    </div>
+    <mat-list class="pt-0">
+        <mat-list-item *ngFor="let object of entities"
+                       [ngSwitch]="getType(object)"
+                        class="list-item">
+            <div *ngSwitchCase="'Place'"
+                 class="d-flex w-100">
+                <mat-icon class="cursor-default"
+                          title="Place"
+                          matListIcon>place
+                </mat-icon>
+                <div class="mr-auto">
+                    <span matLine><b>{{object.title}}</b></span>
+                    <span matLine>{{object.description}} </span>
+                </div>
+                <div>
+                    <button mat-icon-button
+                            title="Center map"
+                            (click)="centerToObject(object)">
+                        <mat-icon matListIcon>my_location</mat-icon>
+                    </button>
+                    <button mat-icon-button
+                            title="Edit place"
+                            (click)="openEditPlacePopup(object)">
+                        <mat-icon matListIcon>edit</mat-icon>
+                    </button>
+                </div>
+            </div>
+        </mat-list-item>
+        <mat-list-item *ngIf="!entities.length">
+            <mat-icon matListIcon>sentiment_dissatisfied</mat-icon>
+            <span>No items...</span>
+        </mat-list-item>
+    </mat-list>
+</div>

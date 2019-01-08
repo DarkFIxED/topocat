@@ -10,6 +10,10 @@ import { CenterChangedEventArgs } from '../../../domain/map/event-args/center-ch
 import { ZoomChangedEventArgs } from '../../../domain/map/event-args/zoom-changed.event-args';
 import { MapProvider } from '../map-provider';
 import { MapService } from '../../services/map.service';
+import { MapObject } from '../../../domain/map/map-object';
+import { Area } from '../../../domain/map/area';
+import { GoogleMapDrawnObject } from './google-map-drawn-object';
+import { MapObjectCoordsChangedEventArgs } from '../../models/map-object-coords-changed-event-args';
 
 @Injectable()
 export class GoogleMapProvider implements OnDestroy, MapProvider {
@@ -17,7 +21,8 @@ export class GoogleMapProvider implements OnDestroy, MapProvider {
     private readonly MaxGoogleZoom = 23;
 
     private drawingManager: google.maps.drawing.DrawingManager;
-    private drawnObjects = {};
+    private drawnObjects: Array<GoogleMapDrawnObject> = [];
+    private phantoms: Array<GoogleMapDrawnObject> = [];
 
     private listeners = [];
 
@@ -28,8 +33,15 @@ export class GoogleMapProvider implements OnDestroy, MapProvider {
 
     protected _map: google.maps.Map;
 
+
     public get map(): google.maps.Map {
         return this._map;
+    }
+
+    protected _mapReady: boolean = false;
+
+    public get mapReady(): boolean {
+        return this._mapReady;
     }
 
     public get maxZoom(): number {
@@ -45,17 +57,16 @@ export class GoogleMapProvider implements OnDestroy, MapProvider {
         this.initMapHandlers();
         this.initListeners();
 
+        this._mapReady = true;
+
         this.notifyThatMapReady();
     }
 
     drawPlace(place: Place): void {
         this.assertMapReady();
 
-        let marker = new google.maps.Marker();
-        marker.setPosition({lat: place.coords.lat, lng: place.coords.lng});
-        marker.setMap(this._map);
-
-        this.drawnObjects[place.uuid] = marker;
+        let drawnObject = this.placeToGoogleMapDrawnObjectMapping(place);
+        this.drawnObjects.push(drawnObject);
     }
 
     ngOnDestroy(): void {
@@ -63,97 +74,6 @@ export class GoogleMapProvider implements OnDestroy, MapProvider {
         this.listeners.splice(0, this.listeners.length);
         this.unregister();
     }
-
-
-    // public drawMarker(point: Point, args: any): Promise<Point> {
-    //     if (this.isDrawingNow) {
-    //         this.cancel();
-    //     } else {
-    //         this.isDrawingNow = true;
-    //     }
-    //
-    //     return new Promise<any>((resolve, reject) => {
-    //         this.drawingManager.setMap(this.map);
-    //         this.drawingManager.setOptions({markerOptions: args});
-    //         this.drawingManager.setDrawingMode(google.maps.drawing.OverlayType.MARKER);
-    //
-    //         let onMarkerCompleteHandler = function (service: GoogleMapProvider) {
-    //             return function (marker: google.maps.Marker) {
-    //                 service.isDrawingNow = false;
-    //
-    //                 if (service.cancelDrawingShape) {
-    //                     service.cancelDrawingShape = false;
-    //                     marker.setMap(null);
-    //
-    //                     reject();
-    //                 } else {
-    //                     point.coord = new Coord(marker.getPosition().lat(), marker.getPosition().lng());
-    //                     service.drawnObjects[point.id] = marker;
-    //                     resolve(marker);
-    //                 }
-    //
-    //                 service.drawingManager.setDrawingMode(null);
-    //                 service.onMarkerCompleteListener.remove();
-    //             }
-    //         };
-    //
-    //         this.onMarkerCompleteListener = google.maps.event.addListener(this.drawingManager, 'markercomplete', onMarkerCompleteHandler(this));
-    //     });
-    //
-    // }
-    //
-    // drawPolygon(area: Area, args: any): Promise<Area> {
-    //     if (this.isDrawingNow) {
-    //         this.cancel();
-    //     } else {
-    //         this.isDrawingNow = true;
-    //     }
-    //
-    //     return new Promise<any>((resolve, reject) => {
-    //         this.drawingManager.setMap(this.map);
-    //         this.drawingManager.setOptions({polygonOptions: args});
-    //         this.drawingManager.setDrawingMode(google.maps.drawing.OverlayType.POLYGON);
-    //
-    //         let onPolygonCompleteHandler = function (service: GoogleMapProvider) {
-    //             return function (polygon: google.maps.Polygon) {
-    //                 service.isDrawingNow = false;
-    //
-    //                 if (service.cancelDrawingShape) {
-    //                     service.cancelDrawingShape = false;
-    //                     polygon.setMap(null);
-    //
-    //                     reject();
-    //                 } else {
-    //                     //area.coords = polygon.getPath().getArray().map(latLng => new Coord(latLng.lat(), latLng.lng()));
-    //                     // service.drawnObjects[area.id] = polygon;
-    //                     resolve(polygon);
-    //                 }
-    //
-    //                 service.drawingManager.setDrawingMode(null);
-    //                 service.onPolygonCompleteListener.remove();
-    //             }
-    //         };
-    //
-    //         this.onPolygonCompleteListener = google.maps.event.addListener(this.drawingManager, 'polygoncomplete', onPolygonCompleteHandler(this));
-    //     });
-    // }
-    //
-    // updateMarker(marker: any): Promise<any> {
-    //     return undefined;
-    // }
-    //
-    // updatePolygon(polygon: any): Promise<any> {
-    //     return undefined;
-    // }
-
-    //
-
-
-    //
-    // public cancel() {
-    //     this.cancelDrawingShape = true;
-    //     this.drawingManager.setDrawingMode(null);
-    // }
 
     register() {
         this.mapService.register(this);
@@ -163,6 +83,69 @@ export class GoogleMapProvider implements OnDestroy, MapProvider {
         this.mapService.unregister(this);
     }
 
+    setDrawnObjectsVisibility(visible: boolean) {
+        this.assertMapReady();
+
+        let setMapArg = visible ? this.map : null;
+
+        for (let key in this.drawnObjects) {
+            let mapObject = this.drawnObjects[key].object;
+
+            if (mapObject instanceof google.maps.Marker) {
+                (<google.maps.Marker>mapObject).setMap(setMapArg);
+            }
+
+            if (mapObject instanceof google.maps.Polygon) {
+                (<google.maps.Polygon>mapObject).setMap(setMapArg);
+            }
+
+            if (!visible && this.drawnObjects[key].infoWindow) {
+                this.drawnObjects[key].infoWindow.close();
+            }
+        }
+    }
+
+    addOrUpdatePhantom(mapObject: MapObject) {
+        this.assertMapReady();
+
+        if (mapObject instanceof Place) {
+            let place = <Place>mapObject;
+            if (this.phantoms.find(x => x.uuid === place.uuid)) {
+                this.updatePhantomPlace(place)
+            } else {
+                this.phantoms.push(this.addPhantomPlace(place));
+            }
+        }
+
+        if (mapObject instanceof Area) {
+            this.phantoms.push(this.addPhantomArea(<Area>mapObject));
+        }
+    }
+
+    removePhantom(mapObject: MapObject) {
+        this.assertMapReady();
+
+        let phantom = this.phantoms.find(x => x.uuid === mapObject.uuid);
+
+        if (!phantom) {
+            throw new Error('Phantom not found');
+        }
+
+        if (phantom.object instanceof google.maps.Marker) {
+            (<google.maps.Marker>phantom.object).setMap(null);
+        }
+
+        if (phantom.object instanceof google.maps.Polygon) {
+            (<google.maps.Polygon>phantom.object).setMap(null);
+        }
+    }
+
+    centerTo(object: MapObject): void {
+        if (object instanceof Place) {
+            let center = (<Place>object).coords;
+            this.map.panTo(center);
+        }
+    }
 
     private assertMapReady() {
         if (!this._map) {
@@ -190,40 +173,10 @@ export class GoogleMapProvider implements OnDestroy, MapProvider {
     }
 
     private initListeners() {
-        this.listeners.push(
-            this.messageBus.listen([MessageNames.DomainPlaceAdded],
-                (observable: Observable<Message<Place>>) => {
-                    return observable.subscribe(message => this.drawPlace(message.payload));
-                })
-        );
-
-        this.listeners.push(
-            this.messageBus.listen([MessageNames.DomainCenterChanged],
-                (observable: Observable<Message<CenterChangedEventArgs>>) => {
-                    return observable
-                        .pipe(
-                            filter(x => !x.payload.setFromMap)
-                        )
-                        .subscribe(message => {
-                            this.assertMapReady();
-                            this.map.setCenter({lat: message.payload.center.lat, lng: message.payload.center.lng});
-                        });
-                })
-        );
-
-        this.listeners.push(
-            this.messageBus.listen([MessageNames.DomainZoomChanged],
-                (observable: Observable<Message<ZoomChangedEventArgs>>) => {
-                    return observable
-                        .pipe(
-                            filter(x => !x.payload.setFromMap)
-                        )
-                        .subscribe(message => {
-                            this.assertMapReady();
-                            this.map.setZoom(message.payload.zoom);
-                        });
-                })
-        );
+        this.initPlaceAddedListener();
+        this.initCenterChangedListener();
+        this.initZoomChangedListener();
+        this.initObjectDeletedListener();
     }
 
     private initCenterChangedHandler() {
@@ -274,4 +227,134 @@ export class GoogleMapProvider implements OnDestroy, MapProvider {
 
         this._map.addListener('idle', onIdle(this));
     }
+
+    private initPlaceAddedListener() {
+        let listenerId = this.messageBus.listen([MessageNames.DomainPlaceAdded],
+            (observable: Observable<Message<Place>>) => {
+                return observable.subscribe(message => this.drawPlace(message.payload));
+            });
+
+        this.listeners.push(listenerId);
+    }
+
+    private initCenterChangedListener() {
+        let listenerId = this.messageBus.listen([MessageNames.DomainCenterChanged],
+            (observable: Observable<Message<CenterChangedEventArgs>>) => {
+                return observable
+                    .pipe(
+                        filter(x => !x.payload.setFromMap)
+                    )
+                    .subscribe(message => {
+                        this.assertMapReady();
+                        this.map.panTo(message.payload.center);
+                    });
+            });
+        this.listeners.push(listenerId);
+    }
+
+    private initZoomChangedListener() {
+        let listenerId = this.messageBus.listen([MessageNames.DomainZoomChanged],
+            (observable: Observable<Message<ZoomChangedEventArgs>>) => {
+                return observable
+                    .pipe(
+                        filter(x => !x.payload.setFromMap)
+                    )
+                    .subscribe(message => {
+                        this.assertMapReady();
+                        this.map.setZoom(message.payload.zoom);
+                    });
+            });
+        this.listeners.push(listenerId);
+    }
+
+    private initObjectDeletedListener() {
+        let listenerId = this.messageBus.listen([MessageNames.DomainObjectDeleted],
+            (observable: Observable<Message<MapObject>>) => {
+                return observable
+                    .subscribe(message => {
+                        this.assertMapReady();
+                        let index = this.drawnObjects.findIndex(x => x.uuid === message.payload.uuid);
+
+                        if (index == -1) {
+                            throw new Error('Object not found');
+                        }
+
+                        if (this.drawnObjects[index].object instanceof google.maps.Marker) {
+                            (<google.maps.Marker>this.drawnObjects[index].object).setMap(null);
+                        }
+
+                        if (this.drawnObjects[index].object instanceof google.maps.Polygon) {
+                            (<google.maps.Polygon>this.drawnObjects[index].object).setMap(null);
+                        }
+
+                        this.drawnObjects.splice(index, 1);
+                    });
+            });
+        this.listeners.push(listenerId);
+    }
+
+    private addPhantomPlace(place: Place): GoogleMapDrawnObject {
+        this.assertMapReady();
+
+        if (this.phantoms.some(x => x.uuid === place.uuid)) {
+            throw new Error('There is a phantom with same uuid.')
+        }
+
+        let drawnObject = this.placeToGoogleMapDrawnObjectMapping(place, true);
+        let onMarkerDrag = function (provider: GoogleMapProvider, drawnObject: GoogleMapDrawnObject) {
+            return function (event: any) {
+                let payload = new MapObjectCoordsChangedEventArgs(drawnObject.uuid, event.latLng.lat(), event.latLng.lng());
+                let message = new Message(MessageNames.MapPhantomCoordsChanged, payload, provider);
+                provider.messageBus.publish(message);
+            };
+        };
+        (<google.maps.Marker>drawnObject.object).addListener('drag', onMarkerDrag(this, drawnObject));
+
+        return drawnObject;
+    }
+
+    private updatePhantomPlace(place: Place) {
+        let drawnPhantom: GoogleMapDrawnObject = this.phantoms.find(x => x.uuid === place.uuid);
+
+        if (!drawnPhantom) {
+            throw new Error('Phantom not found');
+        }
+
+        if (drawnPhantom.infoWindow) {
+            drawnPhantom.infoWindow.setContent(place.description);
+        }
+
+        (<google.maps.Marker>drawnPhantom.object).setOptions({
+            label: place.title,
+            opacity: 0.4,
+            position: place.coords,
+            draggable: true,
+            map: this.map
+        });
+
+    }
+
+    private addPhantomArea(area: Area): GoogleMapDrawnObject {
+        throw new Error('Not implemented yet.');
+    }
+
+    private placeToGoogleMapDrawnObjectMapping = (place: Place, isPhantom = false): GoogleMapDrawnObject => {
+        let infoWindow = new google.maps.InfoWindow({
+            content: place.description
+        });
+
+        let marker = new google.maps.Marker({
+            label: place.title,
+            opacity: isPhantom ? 0.4 : 1,
+            position: place.coords,
+            draggable: isPhantom,
+            map: this.map
+        });
+
+        marker.addListener('click', function () {
+            infoWindow.open(marker.getMap(), marker);
+        });
+
+        return new GoogleMapDrawnObject(place.uuid, marker, infoWindow);
+    };
 }
