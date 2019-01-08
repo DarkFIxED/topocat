@@ -75,97 +75,6 @@ export class GoogleMapProvider implements OnDestroy, MapProvider {
         this.unregister();
     }
 
-
-    // public drawMarker(point: Point, args: any): Promise<Point> {
-    //     if (this.isDrawingNow) {
-    //         this.cancel();
-    //     } else {
-    //         this.isDrawingNow = true;
-    //     }
-    //
-    //     return new Promise<any>((resolve, reject) => {
-    //         this.drawingManager.setMap(this.map);
-    //         this.drawingManager.setOptions({markerOptions: args});
-    //         this.drawingManager.setDrawingMode(google.maps.drawing.OverlayType.MARKER);
-    //
-    //         let onMarkerCompleteHandler = function (service: GoogleMapProvider) {
-    //             return function (marker: google.maps.Marker) {
-    //                 service.isDrawingNow = false;
-    //
-    //                 if (service.cancelDrawingShape) {
-    //                     service.cancelDrawingShape = false;
-    //                     marker.setMap(null);
-    //
-    //                     reject();
-    //                 } else {
-    //                     point.coord = new Coord(marker.getPosition().lat(), marker.getPosition().lng());
-    //                     service.drawnObjects[point.id] = marker;
-    //                     resolve(marker);
-    //                 }
-    //
-    //                 service.drawingManager.setDrawingMode(null);
-    //                 service.onMarkerCompleteListener.remove();
-    //             }
-    //         };
-    //
-    //         this.onMarkerCompleteListener = google.maps.event.addListener(this.drawingManager, 'markercomplete', onMarkerCompleteHandler(this));
-    //     });
-    //
-    // }
-    //
-    // drawPolygon(area: Area, args: any): Promise<Area> {
-    //     if (this.isDrawingNow) {
-    //         this.cancel();
-    //     } else {
-    //         this.isDrawingNow = true;
-    //     }
-    //
-    //     return new Promise<any>((resolve, reject) => {
-    //         this.drawingManager.setMap(this.map);
-    //         this.drawingManager.setOptions({polygonOptions: args});
-    //         this.drawingManager.setDrawingMode(google.maps.drawing.OverlayType.POLYGON);
-    //
-    //         let onPolygonCompleteHandler = function (service: GoogleMapProvider) {
-    //             return function (polygon: google.maps.Polygon) {
-    //                 service.isDrawingNow = false;
-    //
-    //                 if (service.cancelDrawingShape) {
-    //                     service.cancelDrawingShape = false;
-    //                     polygon.setMap(null);
-    //
-    //                     reject();
-    //                 } else {
-    //                     //area.coords = polygon.getPath().getArray().map(latLng => new Coord(latLng.lat(), latLng.lng()));
-    //                     // service.drawnObjects[area.id] = polygon;
-    //                     resolve(polygon);
-    //                 }
-    //
-    //                 service.drawingManager.setDrawingMode(null);
-    //                 service.onPolygonCompleteListener.remove();
-    //             }
-    //         };
-    //
-    //         this.onPolygonCompleteListener = google.maps.event.addListener(this.drawingManager, 'polygoncomplete', onPolygonCompleteHandler(this));
-    //     });
-    // }
-    //
-    // updateMarker(marker: any): Promise<any> {
-    //     return undefined;
-    // }
-    //
-    // updatePolygon(polygon: any): Promise<any> {
-    //     return undefined;
-    // }
-
-    //
-
-
-    //
-    // public cancel() {
-    //     this.cancelDrawingShape = true;
-    //     this.drawingManager.setDrawingMode(null);
-    // }
-
     register() {
         this.mapService.register(this);
     }
@@ -180,7 +89,7 @@ export class GoogleMapProvider implements OnDestroy, MapProvider {
         let setMapArg = visible ? this.map : null;
 
         for (let key in this.drawnObjects) {
-            let mapObject = this.drawnObjects[key];
+            let mapObject = this.drawnObjects[key].object;
 
             if (mapObject instanceof google.maps.Marker) {
                 (<google.maps.Marker>mapObject).setMap(setMapArg);
@@ -188,6 +97,10 @@ export class GoogleMapProvider implements OnDestroy, MapProvider {
 
             if (mapObject instanceof google.maps.Polygon) {
                 (<google.maps.Polygon>mapObject).setMap(setMapArg);
+            }
+
+            if (!visible && this.drawnObjects[key].infoWindow) {
+                this.drawnObjects[key].infoWindow.close();
             }
         }
     }
@@ -227,6 +140,13 @@ export class GoogleMapProvider implements OnDestroy, MapProvider {
         }
     }
 
+    centerTo(object: MapObject): void {
+        if (object instanceof Place) {
+            let center = (<Place>object).coords;
+            this.map.panTo(center);
+        }
+    }
+
     private assertMapReady() {
         if (!this._map) {
             throw new Error('Map is not ready');
@@ -256,6 +176,7 @@ export class GoogleMapProvider implements OnDestroy, MapProvider {
         this.initPlaceAddedListener();
         this.initCenterChangedListener();
         this.initZoomChangedListener();
+        this.initObjectDeletedListener();
     }
 
     private initCenterChangedHandler() {
@@ -346,6 +267,32 @@ export class GoogleMapProvider implements OnDestroy, MapProvider {
         this.listeners.push(listenerId);
     }
 
+    private initObjectDeletedListener() {
+        let listenerId = this.messageBus.listen([MessageNames.DomainObjectDeleted],
+            (observable: Observable<Message<MapObject>>) => {
+                return observable
+                    .subscribe(message => {
+                        this.assertMapReady();
+                        let index = this.drawnObjects.findIndex(x => x.uuid === message.payload.uuid);
+
+                        if (index == -1) {
+                            throw new Error('Object not found');
+                        }
+
+                        if (this.drawnObjects[index].object instanceof google.maps.Marker) {
+                            (<google.maps.Marker>this.drawnObjects[index].object).setMap(null);
+                        }
+
+                        if (this.drawnObjects[index].object instanceof google.maps.Polygon) {
+                            (<google.maps.Polygon>this.drawnObjects[index].object).setMap(null);
+                        }
+
+                        this.drawnObjects.splice(index, 1);
+                    });
+            });
+        this.listeners.push(listenerId);
+    }
+
     private addPhantomPlace(place: Place): GoogleMapDrawnObject {
         this.assertMapReady();
 
@@ -409,5 +356,5 @@ export class GoogleMapProvider implements OnDestroy, MapProvider {
         });
 
         return new GoogleMapDrawnObject(place.uuid, marker, infoWindow);
-    }
+    };
 }

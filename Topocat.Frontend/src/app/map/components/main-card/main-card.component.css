@@ -1,0 +1,6 @@
+.component-container {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 450px;
+}

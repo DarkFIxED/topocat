@@ -7,7 +7,7 @@ import { MapStore } from '../../stores/map.store';
 import { Coords } from '../../../domain/map/coords';
 import { MessageNames } from '../../../infrastructure/message-names';
 import { Observable, Subscription } from 'rxjs';
-import { Message, MessageBusService } from 'litebus';
+import { Message, MessageBusService, SimpleMessage } from 'litebus';
 import { RouterHelper } from '../../../infrastructure/router-helper';
 
 @Component({
@@ -91,6 +91,8 @@ export class MapComponent implements OnInit, OnDestroy {
 
     private setupListeners() {
         this.setupIdleListener();
+        this.setupActivatePopupListener();
+        this.setupDeactivatePopupListener();
     }
 
     private setupIdleListener() {
@@ -111,6 +113,35 @@ export class MapComponent implements OnInit, OnDestroy {
                             replaceUrl: true,
                             skipLocationChange: false,
                         });
+                    });
+                });
+            });
+
+        this.listeners.push(listenerId);
+    }
+
+
+    private setupActivatePopupListener() {
+        let listenerId = this.messageBus.listen([MessageNames.MapActivatePopup],
+            (observable: Observable<Message<string[]>>) => {
+                return observable.subscribe(message => {
+                    this.router.navigate([{outlets: {popups: message.payload}}], {
+                        queryParamsHandling: 'merge',
+                        relativeTo: this.route
+                    });
+                });
+            });
+
+        this.listeners.push(listenerId);
+    }
+
+    private setupDeactivatePopupListener() {
+        let listenerId = this.messageBus.listen([MessageNames.MapDeactivatePopup],
+            (observable: Observable<SimpleMessage>) => {
+                return observable.subscribe(() => {
+                    this.router.navigate([{outlets: {popups: null}}], {
+                        queryParamsHandling: 'merge',
+                        relativeTo: this.route
                     });
                 });
             });

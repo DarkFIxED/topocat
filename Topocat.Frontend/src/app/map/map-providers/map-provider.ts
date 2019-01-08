@@ -19,4 +19,5 @@ export interface MapProvider {
 
     unregister();
 
+    centerTo(object: MapObject): void;
 }

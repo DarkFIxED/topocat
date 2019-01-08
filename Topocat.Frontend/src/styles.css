@@ -10,3 +10,7 @@ body {
 .basic-container {
     height: calc(100vh);
 }
+
+.cursor-default {
+    cursor: default;
+}

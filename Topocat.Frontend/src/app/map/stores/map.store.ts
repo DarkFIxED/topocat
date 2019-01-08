@@ -44,6 +44,11 @@ export class MapStore extends Store<Map> {
            let message = new Message(MessageNames.DomainZoomChanged, zoomChangedEventArgs, sender);
            this.messageBus.publish(message);
         });
+
+        entity.objectDeleted.subscribe(object => {
+            let message = new Message(MessageNames.DomainObjectDeleted, object, sender);
+            this.messageBus.publish(message);
+        })
     }
 
     private setupListeners(entity: Map): void {

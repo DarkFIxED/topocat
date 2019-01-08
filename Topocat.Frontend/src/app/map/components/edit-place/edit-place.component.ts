@@ -10,6 +10,8 @@ import { MapStore } from '../../stores/map.store';
 import { Place } from '../../../domain/map/place';
 import { MessageNames } from '../../../infrastructure/message-names';
 import { MapObjectCoordsChangedEventArgs } from '../../models/map-object-coords-changed-event-args';
+import { MatDialog, MatDialogConfig } from '@angular/material';
+import { ConfirmationDialogComponent } from '../../../infrastructure/dialogs/confirmation-dialog/confirmation-dialog.component';
 
 @Component({
     selector: 'tc-edit-place',
@@ -30,6 +32,8 @@ export class EditPlaceComponent implements OnInit, OnDestroy {
         })
     });
 
+    public isNewPlace = false;
+
     private listeners = [];
 
     constructor(
@@ -37,14 +41,27 @@ export class EditPlaceComponent implements OnInit, OnDestroy {
         private mapStore: MapStore,
         private route: ActivatedRoute,
         private router: Router,
-        private messageBus: MessageBusService
+        private messageBus: MessageBusService,
+        public dialog: MatDialog
     ) {
         this.route.data.subscribe(data => {
-           if (data.newPlace) {
-               this.place = new Place('', '');
-           } else {
-               // TODO: retrieve place.
-           }
+            this.isNewPlace = !!data.newPlace;
+
+            if (this.isNewPlace) {
+                this.place = new Place('', '');
+            } else {
+                this.route.params.subscribe(params => {
+                    let uuid = params['id'];
+                    let originPlace = <Place>this.mapStore.entity.getObject(uuid);
+
+                    if (!originPlace) {
+                        throw new Error('Place not found');
+                    }
+
+                    this.place = new Place();
+                    this.place.copyFrom(originPlace);
+                });
+            }
         });
 
         this.placeForm.setValue({
@@ -78,9 +95,31 @@ export class EditPlaceComponent implements OnInit, OnDestroy {
     }
 
     submit() {
-        this.mapStore.entity.addPlace(this.place);
+        this.mapStore.entity.addOrUpdatePlace(this.place);
 
         this.close();
+    }
+
+    delete() {
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.disableClose = true;
+        dialogConfig.autoFocus = true;
+        dialogConfig.data = {
+            id: 1,
+            title: 'Confirm deletion',
+            content: 'Do you really want to delete place?'
+        };
+
+        const dialogRef = this.dialog.open(ConfirmationDialogComponent, dialogConfig);
+
+        dialogRef.afterClosed()
+            .subscribe(result => {
+                if (result) {
+                    this.mapStore.entity.deleteObject(this.place.uuid);
+                }
+
+                this.close();
+            });
     }
 
     private initialize() {
@@ -134,10 +173,6 @@ export class EditPlaceComponent implements OnInit, OnDestroy {
 
         this.mapService.provider.setDrawnObjectsVisibility(true);
 
-        this.router.navigate([''], {
-            relativeTo: this.route.parent,
-            queryParamsHandling: 'merge',
-        });
+        this.messageBus.publish(new SimpleMessage(MessageNames.MapDeactivatePopup));
     }
-
 }

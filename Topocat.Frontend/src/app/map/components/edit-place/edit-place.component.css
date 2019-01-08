@@ -1,5 +1,5 @@
-.popup-container {
-    left: 10px;
-    top: 230px;
-    width: 425px;
+.component-container {
+    right: 10px;
+    bottom: 10px;
+    width: 400px;
 }

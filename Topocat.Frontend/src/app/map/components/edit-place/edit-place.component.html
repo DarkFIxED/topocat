@@ -1,4 +1,4 @@
-<div class="position-absolute popup-container">
+<div class="position-absolute component-container">
     <mat-card>
         <mat-card-title>Add Place</mat-card-title>
         <mat-card-content>
@@ -42,11 +42,16 @@
         </mat-card-content>
         <mat-card-actions align="right">
             <div>
-                <button mat-button
+                <button *ngIf="!isNewPlace"
+                        mat-button
                         color="warn"
+                        (click)="delete()">Delete
+                </button>
+                <button mat-button
                         (click)="dismiss()">Cancel
                 </button>
                 <button mat-button
+                        color="primary"
                         (click)="submit()">Ok
                 </button>
             </div>
