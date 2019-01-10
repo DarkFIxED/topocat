@@ -10,7 +10,7 @@ import { MessageNames } from '../../../infrastructure/message-names';
 @Component({
     selector: 'tc-map-objects-list',
     templateUrl: './map-objects-list.component.html',
-    styleUrls: ['./map-objects-list.component.css']
+    styleUrls: ['./map-objects-list.component.scss']
 })
 export class MapObjectsListComponent implements OnInit {
 

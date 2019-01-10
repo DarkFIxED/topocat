@@ -12,7 +12,7 @@ import { Router } from '@angular/router';
 @Component({
     selector: 'tc-control-toolbar',
     templateUrl: './control-toolbar.component.html',
-    styleUrls: ['./control-toolbar.component.css']
+    styleUrls: ['./control-toolbar.component.scss']
 })
 export class ControlToolbarComponent implements OnInit {
 

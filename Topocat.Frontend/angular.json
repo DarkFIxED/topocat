@@ -21,10 +21,10 @@
               "src/favicon.ico"
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles.scss"
             ],
             "scripts": [
-                "./node_modules/hammerjs/hammer.js"
+              "./node_modules/hammerjs/hammer.js"
             ]
           },
           "configurations": {
@@ -72,10 +72,10 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "src/tsconfig.spec.json",
             "scripts": [
-                "./node_modules/hammerjs/hammer.js"
+              "./node_modules/hammerjs/hammer.js"
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles.scss"
             ],
             "assets": [
               "src/assets",
@@ -127,7 +127,7 @@
   "schematics": {
     "@schematics/angular:component": {
       "prefix": "tc",
-      "styleext": "css"
+      "styleext": "scss"
     },
     "@schematics/angular:directive": {
       "prefix": "tc"

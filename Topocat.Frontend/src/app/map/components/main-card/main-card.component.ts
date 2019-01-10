@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 @Component({
     selector: 'tc-main-card',
     templateUrl: './main-card.component.html',
-    styleUrls: ['./main-card.component.css']
+    styleUrls: ['./main-card.component.scss']
 })
 export class MainCardComponent implements OnInit {
 

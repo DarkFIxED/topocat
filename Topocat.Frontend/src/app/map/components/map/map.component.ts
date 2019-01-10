@@ -13,7 +13,7 @@ import { RouterHelper } from '../../../infrastructure/router-helper';
 @Component({
     selector: 'tc-map',
     templateUrl: './map.component.html',
-    styleUrls: ['./map.component.css'],
+    styleUrls: ['./map.component.scss'],
     providers: [GoogleMapProvider, GoogleMapConfigurationStore]
 })
 export class MapComponent implements OnInit, OnDestroy {

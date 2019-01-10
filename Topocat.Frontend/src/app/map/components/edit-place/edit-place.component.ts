@@ -16,7 +16,7 @@ import { ConfirmationDialogComponent } from '../../../infrastructure/dialogs/con
 @Component({
     selector: 'tc-edit-place',
     templateUrl: './edit-place.component.html',
-    styleUrls: ['./edit-place.component.css']
+    styleUrls: ['./edit-place.component.scss']
 })
 export class EditPlaceComponent implements OnInit, OnDestroy {
 
