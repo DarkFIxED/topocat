@@ -18,7 +18,6 @@ export class MapObjectsListComponent implements OnInit {
 
     public entities: Array<MapObject> = [];
 
-
     constructor(
         private mapStore: MapStore,
         private mapService: MapService,

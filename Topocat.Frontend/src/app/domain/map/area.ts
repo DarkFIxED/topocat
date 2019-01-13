@@ -17,4 +17,15 @@ export class Area extends NameableMapObject {
             this.path = path;
         }
     }
+
+    copyFrom(anotherArea: Area): any {
+        this.title = anotherArea.title;
+        this.description = anotherArea.description;
+        this.uuid = anotherArea.uuid;
+
+        let newCoords = anotherArea.path.map(coords => new Coords(coords.lat, coords.lng));
+
+        this.path.splice(0, this.path.length, ...newCoords);
+    }
+
 }
