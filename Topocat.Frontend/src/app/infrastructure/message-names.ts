@@ -8,7 +8,8 @@ export class MessageNames {
     public static MapZoomChanged = 'MAP_ZOOM_CHANGED';
     public static MapReady = 'MAP_READY';
     public static MapIdle = 'MAP_IDLE';
-    public static MapPhantomCoordsChanged = 'MAP_PHANTOM_COORDS_CHANGED';
-    public static MapActivatePopup = 'MAP_ACTIVATE_POPUP'
-    public static MapDeactivatePopup = 'MAP_DEACTIVATE_POPUP'
+    public static MapPhantomPlaceCoordsChanged = 'MAP_PHANTOM_PLACE_COORDS_CHANGED';
+    public static MapPhantomAreaCoordsChanged = 'MAP_PHANTOM_AREA_COORDS_CHANGED';
+    public static MapActivatePopup = 'MAP_ACTIVATE_POPUP';
+    public static MapDeactivatePopup = 'MAP_DEACTIVATE_POPUP';
 }

@@ -51,7 +51,7 @@ const appRoutes: Routes = [
                 path: 'new-area',
                 outlet: 'popups',
                 data: {newEntity: true},
-                component: EditPlaceComponent
+                component: EditAreaComponent
             },
         ]
     },

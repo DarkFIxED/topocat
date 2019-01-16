@@ -5,6 +5,7 @@ import { AppComponent } from './app.component';
 import { RouterModule, Routes } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { InfrastructureModule } from './infrastructure/infrastructure.module';
+import { MessageBusService } from 'litebus';
 
 const routes: Routes = [
     {
@@ -20,12 +21,13 @@ const routes: Routes = [
     imports: [
         BrowserModule,
         BrowserAnimationsModule,
-        RouterModule.forRoot(routes, {enableTracing: true}),
+        RouterModule.forRoot(routes),
 
         InfrastructureModule,
     ],
     providers: [
-        { provide: HAMMER_GESTURE_CONFIG, useClass: GestureConfig }
+        { provide: HAMMER_GESTURE_CONFIG, useClass: GestureConfig },
+        MessageBusService,
     ],
     bootstrap: [AppComponent]
 })

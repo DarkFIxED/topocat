@@ -9,7 +9,7 @@ import { MapService } from '../../services/map.service';
 import { MapStore } from '../../stores/map.store';
 import { Place } from '../../../domain/map/place';
 import { MessageNames } from '../../../infrastructure/message-names';
-import { MapObjectCoordsChangedEventArgs } from '../../models/map-object-coords-changed-event-args';
+import { PhantomPlaceCoordsChangedEventArgs } from '../../models/phantom-place-coords-changed-event-args';
 import { ConfirmationDialogService } from '../../../infrastructure/dialogs/confirmation-dialog/confirmation-dialog.service';
 
 @Component({
@@ -20,6 +20,8 @@ import { ConfirmationDialogService } from '../../../infrastructure/dialogs/confi
 export class EditPlaceComponent implements OnInit, OnDestroy {
 
     public place: Place;
+
+    public caption = '';
 
     public placeForm = new FormGroup({
         uuid: new FormControl('', [Validators.required]),
@@ -102,8 +104,8 @@ export class EditPlaceComponent implements OnInit, OnDestroy {
     }
 
     private setupMapPhantomCoordsListener() {
-        let listenerId = this.messageBus.listen([MessageNames.MapPhantomCoordsChanged],
-            (observable: Observable<Message<MapObjectCoordsChangedEventArgs>>) => {
+        let listenerId = this.messageBus.listen([MessageNames.MapPhantomPlaceCoordsChanged],
+            (observable: Observable<Message<PhantomPlaceCoordsChangedEventArgs>>) => {
                 return observable
                     .pipe(
                         filter(x => x.payload.uuid === this.place.uuid)
@@ -163,8 +165,10 @@ export class EditPlaceComponent implements OnInit, OnDestroy {
             this.isNewPlace = !!data.newEntity;
 
             if (this.isNewPlace) {
+                this.caption = 'New place';
                 this.place = new Place('', '');
             } else {
+                this.caption = 'Edit place';
                 this.route.params.subscribe(params => {
                     this.place = this.getCopyOfExistingPlace(params['id']);
                 });
