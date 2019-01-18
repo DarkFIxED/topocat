@@ -25,6 +25,8 @@ import { MapObjectsListComponent } from './components/map-objects-list/map-objec
 import { MainCardComponent } from './components/main-card/main-card.component';
 import { InfrastructureModule } from '../infrastructure/infrastructure.module';
 import { EditAreaComponent } from './components/edit-area/edit-area.component';
+import { PlaceListItemComponent } from './components/place-list-item/place-list-item.component';
+import { AreaListItemComponent } from './components/area-list-item/area-list-item.component';
 
 const appRoutes: Routes = [
     {
@@ -51,6 +53,12 @@ const appRoutes: Routes = [
                 path: 'new-area',
                 outlet: 'popups',
                 data: {newEntity: true},
+                component: EditAreaComponent
+            },
+            {
+                path: 'edit-area/:id',
+                outlet: 'popups',
+                data: {newEntity: false},
                 component: EditAreaComponent
             },
         ]
@@ -90,7 +98,9 @@ const appRoutes: Routes = [
         EditPlaceComponent,
         MapObjectsListComponent,
         MainCardComponent,
-        EditAreaComponent
+        EditAreaComponent,
+        PlaceListItemComponent,
+        AreaListItemComponent
     ],
     exports: [RouterModule],
     providers: [MapStore, MapService]

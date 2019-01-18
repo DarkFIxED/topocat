@@ -70,6 +70,13 @@ export class GoogleMapProvider implements OnDestroy, MapProvider {
         this.drawnObjects.push(drawnObject);
     }
 
+    drawArea(area: Area): void {
+        this.assertMapReady();
+
+        let drawnObject = this.areaToGoogleMapDrawnObjectMapping(area);
+        this.drawnObjects.push(drawnObject);
+    }
+
     ngOnDestroy(): void {
         this.messageBus.stopListen(this.listeners);
         this.listeners.splice(0, this.listeners.length);
@@ -137,6 +144,9 @@ export class GoogleMapProvider implements OnDestroy, MapProvider {
             throw new Error('Phantom not found');
         }
 
+        let phantomIndex = this.phantoms.indexOf(phantom);
+        this.phantoms.splice(phantomIndex, 1);
+
         if (phantom.object instanceof google.maps.Marker) {
             (<google.maps.Marker>phantom.object).setMap(null);
         }
@@ -150,6 +160,17 @@ export class GoogleMapProvider implements OnDestroy, MapProvider {
         if (object instanceof Place) {
             let center = (<Place>object).coords;
             this.map.panTo(center);
+        }
+
+        if (object instanceof Area) {
+            let areaObject = <Area>object;
+
+            let bounds = new google.maps.LatLngBounds();
+            for (let i = 0; i < areaObject.path.length; i++) {
+                bounds.extend(areaObject.path[i]);
+            }
+
+            this.map.panTo(bounds.getCenter());
         }
     }
 
@@ -180,6 +201,7 @@ export class GoogleMapProvider implements OnDestroy, MapProvider {
 
     private initListeners() {
         this.initPlaceAddedListener();
+        this.initAreaAddedListener();
         this.initCenterChangedListener();
         this.initZoomChangedListener();
         this.initObjectDeletedListener();
@@ -238,6 +260,15 @@ export class GoogleMapProvider implements OnDestroy, MapProvider {
         let listenerId = this.messageBus.listen([MessageNames.DomainPlaceAdded],
             (observable: Observable<Message<Place>>) => {
                 return observable.subscribe(message => this.drawPlace(message.payload));
+            });
+
+        this.listeners.push(listenerId);
+    }
+
+    private initAreaAddedListener() {
+        let listenerId = this.messageBus.listen([MessageNames.DomainAreaAdded],
+            (observable: Observable<Message<Area>>) => {
+                return observable.subscribe(message => this.drawArea(message.payload));
             });
 
         this.listeners.push(listenerId);

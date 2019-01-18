@@ -54,12 +54,14 @@ export class EditAreaComponent implements OnInit, OnDestroy {
             }
         });
 
-        this.areaForm.setValue({
+        this.addMissingAreaPathCoords(this.area.path.length);
+        this.areaForm.patchValue({
             uuid: this.area.uuid,
             title: this.area.title,
             description: this.area.description,
             path: this.area.path
-        });
+        }, {emitEvent: false});
+
     }
 
     ngOnInit() {
@@ -181,13 +183,7 @@ export class EditAreaComponent implements OnInit, OnDestroy {
                         filter(x => x.payload.uuid === this.area.uuid)
                     )
                     .subscribe(message => {
-                        if (message.payload.path.length < this.area.path.length) {
-                            this.removeExcessAreaPathCoords(this.area.path.length - message.payload.path.length);
-                        } else if (message.payload.path.length > this.area.path.length) {
-                            this.addMissingAreaPathCoords(message.payload.path.length - this.area.path.length);
-                        }
-
-                        this.updateModelPath(message.payload.path);
+                        this.synchronizePaths(message.payload.path);
                     });
             });
 
@@ -214,5 +210,15 @@ export class EditAreaComponent implements OnInit, OnDestroy {
             let pathArray = <FormArray>this.areaForm.controls['path'];
             pathArray.at(index).patchValue(value, {emitEvent: false});
         });
+    }
+
+    private synchronizePaths(path: Coords[]) {
+        if (path.length < this.area.path.length) {
+            this.removeExcessAreaPathCoords(this.area.path.length - path.length);
+        } else if (path.length > this.area.path.length) {
+            this.addMissingAreaPathCoords(path.length - this.area.path.length);
+        }
+
+        this.updateModelPath(path);
     }
 }

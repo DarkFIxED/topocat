@@ -6,30 +6,15 @@
     <mat-list class="pt-0">
         <mat-list-item *ngFor="let object of entities"
                        [ngSwitch]="getType(object)"
-                        class="list-item">
-            <div *ngSwitchCase="'Place'"
-                 class="d-flex w-100">
-                <mat-icon class="cursor-default"
-                          title="Place"
-                          matListIcon>place
-                </mat-icon>
-                <div class="mr-auto">
-                    <span matLine><b>{{object.title}}</b></span>
-                    <span matLine>{{object.description}} </span>
-                </div>
-                <div>
-                    <button mat-icon-button
-                            title="Center map"
-                            (click)="centerToObject(object)">
-                        <mat-icon matListIcon>my_location</mat-icon>
-                    </button>
-                    <button mat-icon-button
-                            title="Edit place"
-                            (click)="openEditPlacePopup(object)">
-                        <mat-icon matListIcon>edit</mat-icon>
-                    </button>
-                </div>
-            </div>
+                       class="list-item">
+            <tc-place-list-item *ngSwitchCase="'Place'"
+                                class="w-100"
+                                [place]="object">
+            </tc-place-list-item>
+            <tc-area-list-item *ngSwitchCase="'Area'"
+                               class="w-100"
+                               [area]="object">
+            </tc-area-list-item>
         </mat-list-item>
         <mat-list-item *ngIf="!entities.length">
             <mat-icon matListIcon>sentiment_dissatisfied</mat-icon>
