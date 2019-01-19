@@ -13,7 +13,8 @@ import { MapService } from '../../services/map.service';
 import { MapObject } from '../../../domain/map/map-object';
 import { Area } from '../../../domain/map/area';
 import { GoogleMapDrawnObject } from './google-map-drawn-object';
-import { MapObjectCoordsChangedEventArgs } from '../../models/map-object-coords-changed-event-args';
+import { PhantomPlaceCoordsChangedEventArgs } from '../../models/phantom-place-coords-changed-event-args';
+import { PhantomAreaPathChangedEventArgs } from '../../models/phantom-area-path-changed-event-args';
 
 @Injectable()
 export class GoogleMapProvider implements OnDestroy, MapProvider {
@@ -69,6 +70,13 @@ export class GoogleMapProvider implements OnDestroy, MapProvider {
         this.drawnObjects.push(drawnObject);
     }
 
+    drawArea(area: Area): void {
+        this.assertMapReady();
+
+        let drawnObject = this.areaToGoogleMapDrawnObjectMapping(area);
+        this.drawnObjects.push(drawnObject);
+    }
+
     ngOnDestroy(): void {
         this.messageBus.stopListen(this.listeners);
         this.listeners.splice(0, this.listeners.length);
@@ -118,7 +126,12 @@ export class GoogleMapProvider implements OnDestroy, MapProvider {
         }
 
         if (mapObject instanceof Area) {
-            this.phantoms.push(this.addPhantomArea(<Area>mapObject));
+            let area = <Area>mapObject;
+            if (this.phantoms.find(x => x.uuid === area.uuid)) {
+                this.updatePhantomArea(area)
+            } else {
+                this.phantoms.push(this.addPhantomArea(area));
+            }
         }
     }
 
@@ -130,6 +143,9 @@ export class GoogleMapProvider implements OnDestroy, MapProvider {
         if (!phantom) {
             throw new Error('Phantom not found');
         }
+
+        let phantomIndex = this.phantoms.indexOf(phantom);
+        this.phantoms.splice(phantomIndex, 1);
 
         if (phantom.object instanceof google.maps.Marker) {
             (<google.maps.Marker>phantom.object).setMap(null);
@@ -144,6 +160,17 @@ export class GoogleMapProvider implements OnDestroy, MapProvider {
         if (object instanceof Place) {
             let center = (<Place>object).coords;
             this.map.panTo(center);
+        }
+
+        if (object instanceof Area) {
+            let areaObject = <Area>object;
+
+            let bounds = new google.maps.LatLngBounds();
+            for (let i = 0; i < areaObject.path.length; i++) {
+                bounds.extend(areaObject.path[i]);
+            }
+
+            this.map.panTo(bounds.getCenter());
         }
     }
 
@@ -174,6 +201,7 @@ export class GoogleMapProvider implements OnDestroy, MapProvider {
 
     private initListeners() {
         this.initPlaceAddedListener();
+        this.initAreaAddedListener();
         this.initCenterChangedListener();
         this.initZoomChangedListener();
         this.initObjectDeletedListener();
@@ -232,6 +260,15 @@ export class GoogleMapProvider implements OnDestroy, MapProvider {
         let listenerId = this.messageBus.listen([MessageNames.DomainPlaceAdded],
             (observable: Observable<Message<Place>>) => {
                 return observable.subscribe(message => this.drawPlace(message.payload));
+            });
+
+        this.listeners.push(listenerId);
+    }
+
+    private initAreaAddedListener() {
+        let listenerId = this.messageBus.listen([MessageNames.DomainAreaAdded],
+            (observable: Observable<Message<Area>>) => {
+                return observable.subscribe(message => this.drawArea(message.payload));
             });
 
         this.listeners.push(listenerId);
@@ -302,9 +339,9 @@ export class GoogleMapProvider implements OnDestroy, MapProvider {
 
         let drawnObject = this.placeToGoogleMapDrawnObjectMapping(place, true);
         let onMarkerDrag = function (provider: GoogleMapProvider, drawnObject: GoogleMapDrawnObject) {
-            return function (event: any) {
-                let payload = new MapObjectCoordsChangedEventArgs(drawnObject.uuid, event.latLng.lat(), event.latLng.lng());
-                let message = new Message(MessageNames.MapPhantomCoordsChanged, payload, provider);
+            return function (event: google.maps.MouseEvent) {
+                let payload = new PhantomPlaceCoordsChangedEventArgs(drawnObject.uuid, event.latLng.lat(), event.latLng.lng());
+                let message = new Message(MessageNames.MapPhantomPlaceCoordsChanged, payload, provider);
                 provider.messageBus.publish(message);
             };
         };
@@ -326,16 +363,51 @@ export class GoogleMapProvider implements OnDestroy, MapProvider {
 
         (<google.maps.Marker>drawnPhantom.object).setOptions({
             label: place.title,
-            opacity: 0.4,
-            position: place.coords,
-            draggable: true,
-            map: this.map
+            position: place.coords
         });
-
     }
 
     private addPhantomArea(area: Area): GoogleMapDrawnObject {
-        throw new Error('Not implemented yet.');
+        this.assertMapReady();
+
+        if (this.phantoms.some(x => x.uuid === area.uuid)) {
+            throw new Error('There is a phantom with same uuid.')
+        }
+
+        let drawnObject = this.areaToGoogleMapDrawnObjectMapping(area, true);
+
+        let polygon = <google.maps.Polygon>drawnObject.object;
+
+        polygon.addListener('dragend', this.onPolygonDrag(this, drawnObject));
+        polygon.addListener('updated', this.onPolygonDrag(this, drawnObject));
+        this.setPolygonPathListeners(drawnObject);
+
+        return drawnObject;
+    }
+
+    private updatePhantomArea(area: Area) {
+        let drawnPhantom: GoogleMapDrawnObject = this.phantoms.find(x => x.uuid === area.uuid);
+
+        if (!drawnPhantom) {
+            throw new Error('Phantom not found');
+        }
+
+        if (drawnPhantom.infoWindow) {
+            drawnPhantom.infoWindow.setContent(`${area.title}: ${area.description}`);
+        }
+
+       let newPathValue = area.path.map(coord => {
+            return {lat: coord.lat, lng: coord.lng}
+        });
+
+        let polygon = (<google.maps.Polygon>drawnPhantom.object);
+
+        polygon.getPath().unbindAll();
+
+        polygon.setPath(newPathValue);
+        this.setPolygonPathListeners(drawnPhantom);
+
+        polygon.notify('updated');
     }
 
     private placeToGoogleMapDrawnObjectMapping = (place: Place, isPhantom = false): GoogleMapDrawnObject => {
@@ -357,4 +429,77 @@ export class GoogleMapProvider implements OnDestroy, MapProvider {
 
         return new GoogleMapDrawnObject(place.uuid, marker, infoWindow);
     };
+
+
+    private areaToGoogleMapDrawnObjectMapping = (area: Area, isPhantom = false): GoogleMapDrawnObject => {
+        let infoWindow = new google.maps.InfoWindow({
+            content: `${area.title}: ${area.description}`
+        });
+
+        let pathValue = area.path.map(coord => {
+            return {lat: coord.lat, lng: coord.lng}
+        });
+
+        let polygon = new google.maps.Polygon({
+            fillOpacity: isPhantom ? 0.2 : 0.5,
+            strokeOpacity: isPhantom ? 0.4 : 1,
+            paths: [pathValue],
+            editable: isPhantom,
+            draggable: isPhantom,
+            clickable: true,
+            map: this.map
+        });
+
+        polygon.addListener('click', function () {
+            let bounds = new google.maps.LatLngBounds();
+            polygon.getPath().getArray().forEach(value => bounds.extend(value));
+            let center = bounds.getCenter();
+
+            let marker = new google.maps.Marker({
+                position: center,
+                map: polygon.getMap(),
+                opacity: 0
+            });
+
+            infoWindow.open(polygon.getMap(), marker);
+        });
+
+        return new GoogleMapDrawnObject(area.uuid, polygon, infoWindow);
+    };
+
+    private onPolygonDrag = function (provider: GoogleMapProvider, drawnObject: GoogleMapDrawnObject) {
+        return function () {
+            let polygon = <google.maps.Polygon>drawnObject.object;
+            let path = polygon.getPath().getArray().map(latLng => {
+                return {lat: latLng.lat(), lng: latLng.lng()}
+            });
+
+            let payload = new PhantomAreaPathChangedEventArgs(drawnObject.uuid, path);
+            let message = new Message(MessageNames.MapPhantomAreaCoordsChanged, payload, provider);
+            provider.messageBus.publish(message);
+        };
+    };
+
+    private onRemovedInPhantomPolygonPath = function (provider: GoogleMapProvider, drawnObject: GoogleMapDrawnObject) {
+        return function (index: number) {
+            let polygon = <google.maps.Polygon>drawnObject.object;
+            let path = polygon.getPath().getArray().map(latLng => {
+                return {lat: latLng.lat(), lng: latLng.lng()}
+            });
+
+            path.splice(index, 1);
+
+            let payload = new PhantomAreaPathChangedEventArgs(drawnObject.uuid, path);
+            let message = new Message(MessageNames.MapPhantomAreaCoordsChanged, payload, provider);
+            provider.messageBus.publish(message);
+        };
+    };
+
+    private setPolygonPathListeners(polygonPhantom: GoogleMapDrawnObject) {
+        let path = (<google.maps.Polygon>polygonPhantom.object).getPath();
+
+        path.addListener('insert_at', this.onPolygonDrag(this, polygonPhantom));
+        path.addListener('remove_at', this.onRemovedInPhantomPolygonPath(this, polygonPhantom));
+        path.addListener('set_at', this.onPolygonDrag(this, polygonPhantom));
+    }
 }

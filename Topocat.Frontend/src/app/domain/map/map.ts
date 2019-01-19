@@ -82,10 +82,14 @@ export class Map extends AggregationRoot {
         }
     }
 
-    public addArea(area: Area): void {
-        this._mapObjects.push(area);
-
-        this.areaAdded.next(area);
+    public addOrUpdateArea(area: Area): void {
+        let existingArea = <Area>this.getObject(area.uuid);
+        if (!existingArea) {
+            this._mapObjects.push(area);
+            this.areaAdded.next(area);
+        } else {
+            existingArea.copyFrom(area);
+        }
     }
 
     public addAreas(areas: Area[]): void {

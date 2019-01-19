@@ -21,8 +21,8 @@ export class Place extends NameableMapObject {
     public copyFrom(anotherPlace: Place): void {
         this.title = anotherPlace.title;
         this.description = anotherPlace.description;
+        this.uuid = anotherPlace.uuid;
         this.coords.lat = anotherPlace.coords.lat;
         this.coords.lng = anotherPlace.coords.lng;
-        this.uuid = anotherPlace.uuid;
     }
 }

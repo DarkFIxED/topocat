@@ -18,7 +18,6 @@ export class MapObjectsListComponent implements OnInit {
 
     public entities: Array<MapObject> = [];
 
-
     constructor(
         private mapStore: MapStore,
         private mapService: MapService,
@@ -36,17 +35,22 @@ export class MapObjectsListComponent implements OnInit {
         return object.constructor.name;
     }
 
+    centerToObject(object: MapObject) {
+        this.mapService.provider.centerTo(object);
+    }
+
     openNewPlacePopup() {
         let message = new Message(MessageNames.MapActivatePopup, ['new-place'], this);
         this.messageBus.publish(message);
     }
 
-    centerToObject(object: MapObject) {
-        this.mapService.provider.centerTo(object);
-    }
-
     openEditPlacePopup(object: MapObject) {
         let message = new Message(MessageNames.MapActivatePopup, ['edit-place', object.uuid], this);
+        this.messageBus.publish(message);
+    }
+
+    openNewAreaPopup() {
+        let message = new Message(MessageNames.MapActivatePopup, ['new-area'], this);
         this.messageBus.publish(message);
     }
 }
