@@ -470,12 +470,27 @@ export class GoogleMapProvider implements OnDestroy, MapProvider {
         };
     };
 
+    private onRemovedInPhantomPolygonPath = function (provider: GoogleMapProvider, drawnObject: GoogleMapDrawnObject) {
+        return function (index: number) {
+            let polygon = <google.maps.Polygon>drawnObject.object;
+            let path = polygon.getPath().getArray().map(latLng => {
+                return {lat: latLng.lat(), lng: latLng.lng()}
+            });
+
+            path.splice(index, 1);
+
+            let payload = new PhantomAreaPathChangedEventArgs(drawnObject.uuid, path);
+            let message = new Message(MessageNames.MapPhantomAreaCoordsChanged, payload, provider);
+            provider.messageBus.publish(message);
+        };
+    };
+
     private setPolygonPathListeners(polygonPhantom: GoogleMapDrawnObject) {
         let path = (<google.maps.Polygon>polygonPhantom.object).getPath();
 
-        path.addListener('update', this.onPolygonDrag(this, polygonPhantom));
+        //path.addListener('update', this.onPolygonDrag(this, polygonPhantom));
         path.addListener('insert_at', this.onPolygonDrag(this, polygonPhantom));
-        path.addListener('remove_at', this.onPolygonDrag(this, polygonPhantom));
+        path.addListener('remove_at', this.onRemovedInPhantomPolygonPath(this, polygonPhantom));
         path.addListener('set_at', this.onPolygonDrag(this, polygonPhantom));
     }
 }

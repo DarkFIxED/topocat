@@ -50,11 +50,11 @@ export class EditAreaComponent implements OnInit, OnDestroy {
                 this.caption = 'Edit area';
                 this.route.params.subscribe(params => {
                     this.area = this.getCopyOfExistingArea(params['id']);
+                    this.addMissingFormPathCoords(this.area.path);
                 });
             }
         });
 
-        this.addMissingAreaPathCoords(this.area.path.length);
         this.areaForm.patchValue({
             uuid: this.area.uuid,
             title: this.area.title,
@@ -102,22 +102,10 @@ export class EditAreaComponent implements OnInit, OnDestroy {
             });
     }
 
-    addCoord() {
-        let path = <FormArray>this.areaForm.controls['path'];
-
-        let coord = new FormGroup({
-            lat: new FormControl('', [Validators.required]),
-            lng: new FormControl('', [Validators.required])
-        });
-
-        path.push(coord);
-
-        let coordsIndex = this.area.path.push(new Coords()) - 1;
-
-        coord.valueChanges.subscribe(value => {
-            this.area.path[coordsIndex].lat = value.lat;
-            this.area.path[coordsIndex].lng = value.lng;
-        });
+    appendCoords() {
+        let coords = new Coords(0,0);
+        this.area.path.push(coords);
+        this.appendCoordsToForm(coords);
     }
 
     removeCoord(index: number) {
@@ -126,6 +114,25 @@ export class EditAreaComponent implements OnInit, OnDestroy {
         this.area.path.splice(index, 1);
         path.removeAt(index);
     }
+
+    private appendCoordsToForm(coords: Coords) {
+        let path = <FormArray>this.areaForm.controls['path'];
+
+        let coord = new FormGroup({
+            lat: new FormControl(coords.lat, [Validators.required]),
+            lng: new FormControl(coords.lng, [Validators.required])
+        });
+
+        path.push(coord);
+
+        let coordsIndex = path.length - 1;
+
+        coord.valueChanges.subscribe(value => {
+            this.area.path[coordsIndex].lat = +value.lat;
+            this.area.path[coordsIndex].lng = +value.lng;
+        });
+    }
+
 
     private initialize() {
         this.mapService.provider.setDrawnObjectsVisibility(false);
@@ -198,7 +205,7 @@ export class EditAreaComponent implements OnInit, OnDestroy {
 
     private addMissingAreaPathCoords(amountOfMissingItems: number) {
         for (let i = 0; i < amountOfMissingItems; i++) {
-            this.addCoord();
+            this.appendCoords();
         }
     }
 
@@ -210,6 +217,8 @@ export class EditAreaComponent implements OnInit, OnDestroy {
             let pathArray = <FormArray>this.areaForm.controls['path'];
             pathArray.at(index).patchValue(value, {emitEvent: false});
         });
+
+        this.areaForm.patchValue({},{emitEvent: true});
     }
 
     private synchronizePaths(path: Coords[]) {
@@ -220,5 +229,12 @@ export class EditAreaComponent implements OnInit, OnDestroy {
         }
 
         this.updateModelPath(path);
+    }
+
+    private addMissingFormPathCoords(path: Coords[]) {
+        let formPath = <FormArray>this.areaForm.controls['path'];
+        for (let i = formPath.length; i<path.length; i++) {
+            this.appendCoordsToForm(path[i]);
+        }
     }
 }
