@@ -451,7 +451,17 @@ export class GoogleMapProvider implements OnDestroy, MapProvider {
         });
 
         polygon.addListener('click', function () {
-            infoWindow.open(polygon.getMap(), polygon);
+            let bounds = new google.maps.LatLngBounds();
+            polygon.getPath().getArray().forEach(value => bounds.extend(value));
+            let center = bounds.getCenter();
+
+            let marker = new google.maps.Marker({
+                position: center,
+                map: polygon.getMap(),
+                opacity: 0
+            });
+
+            infoWindow.open(polygon.getMap(), marker);
         });
 
         return new GoogleMapDrawnObject(area.uuid, polygon, infoWindow);
@@ -488,7 +498,6 @@ export class GoogleMapProvider implements OnDestroy, MapProvider {
     private setPolygonPathListeners(polygonPhantom: GoogleMapDrawnObject) {
         let path = (<google.maps.Polygon>polygonPhantom.object).getPath();
 
-        //path.addListener('update', this.onPolygonDrag(this, polygonPhantom));
         path.addListener('insert_at', this.onPolygonDrag(this, polygonPhantom));
         path.addListener('remove_at', this.onRemovedInPhantomPolygonPath(this, polygonPhantom));
         path.addListener('set_at', this.onPolygonDrag(this, polygonPhantom));
