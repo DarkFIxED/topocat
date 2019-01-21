@@ -183,7 +183,7 @@ export class EditAreaComponent implements OnInit, OnDestroy {
     }
 
     private setupMapPhantomCoordsListener() {
-        let listenerId = this.messageBus.listen([MessageNames.MapPhantomAreaCoordsChanged],
+        let listenerId = this.messageBus.listen([MessageNames.MapPhantomAreaPathChanged],
             (observable: Observable<Message<PhantomAreaPathChangedEventArgs>>) => {
                 return observable
                     .pipe(

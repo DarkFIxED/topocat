@@ -24,5 +24,7 @@ export class Place extends NameableMapObject {
         this.uuid = anotherPlace.uuid;
         this.coords.lat = anotherPlace.coords.lat;
         this.coords.lng = anotherPlace.coords.lng;
+
+        this.emitObjectChanged();
     }
 }

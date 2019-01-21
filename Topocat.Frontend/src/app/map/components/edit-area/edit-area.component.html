@@ -23,7 +23,7 @@
 
                 <mat-divider></mat-divider>
 
-                <div formArrayName="path">
+                <div class="coords-container" formArrayName="path">
                     <div *ngFor="let coord of areaForm.controls['path'].controls; let i = index" [formGroupName]="i" class="d-flex">
                         <div>
                             <mat-form-field class="w-50">

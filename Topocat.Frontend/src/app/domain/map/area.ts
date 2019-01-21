@@ -26,6 +26,8 @@ export class Area extends NameableMapObject {
         let newCoords = anotherArea.path.map(coords => new Coords(coords.lat, coords.lng));
 
         this.path.splice(0, this.path.length, ...newCoords);
+
+        this.emitObjectChanged();
     }
 
 }
