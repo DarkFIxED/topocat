@@ -145,7 +145,7 @@ export class EditAreaComponent implements OnInit, OnDestroy {
     }
 
     private close() {
-        this.mapService.provider.removePhantom(this.area);
+        this.mapService.provider.deletePhantom(this.area.uuid);
 
         this.mapService.provider.setDrawnObjectsVisibility(true);
 

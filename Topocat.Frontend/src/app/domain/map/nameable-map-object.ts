@@ -1,7 +1,8 @@
 import { MapObject } from './map-object';
 import { Subject } from 'rxjs';
-import { JsonProperty } from 'json2typescript';
+import { JsonObject, JsonProperty } from 'json2typescript';
 
+@JsonObject
 export abstract class NameableMapObject extends MapObject {
 
     public changed: Subject<NameableMapObject> = new Subject<NameableMapObject>();

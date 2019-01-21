@@ -19,7 +19,7 @@ export class Map extends AggregationRoot {
 
     public objectDeleted: Subject<MapObject> = new Subject<MapObject>();
 
-    @JsonProperty('mapObjects')
+    @JsonProperty('mapObjects', [Place, Area])
     protected _mapObjects: Array<MapObject> = [];
 
     public get mapObjects(): Array<MapObject> {

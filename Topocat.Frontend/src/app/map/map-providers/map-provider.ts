@@ -16,7 +16,7 @@ export interface MapProvider {
 
     addOrUpdatePhantom(mapObject: MapObject);
 
-    removePhantom(mapObject: MapObject);
+    deletePhantom(uuid: string);
 
     register();
 
@@ -29,6 +29,8 @@ export interface MapProvider {
     setZoom(zoom: number);
 
     deleteObject(uuid: string);
+
+    deleteAll();
 
     idle: Observable<{zoom: number, center: Coords}>;
 

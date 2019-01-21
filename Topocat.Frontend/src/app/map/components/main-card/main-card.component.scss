@@ -4,3 +4,7 @@
     left: 10px;
     width: 450px;
 }
+
+::ng-deep.mat-tab-link {
+    min-width: 100px !important;
+}

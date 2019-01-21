@@ -27,6 +27,8 @@ import { InfrastructureModule } from '../infrastructure/infrastructure.module';
 import { EditAreaComponent } from './components/edit-area/edit-area.component';
 import { PlaceListItemComponent } from './components/place-list-item/place-list-item.component';
 import { AreaListItemComponent } from './components/area-list-item/area-list-item.component';
+import { LoadMapComponent } from './components/load-map/load-map.component';
+import { SaveMapComponent } from './components/save-map/save-map.component';
 
 const appRoutes: Routes = [
     {
@@ -36,6 +38,14 @@ const appRoutes: Routes = [
             {
                 path: 'items',
                 component: MapObjectsListComponent,
+            },
+            {
+                path: 'load',
+                component: LoadMapComponent
+            },
+            {
+                path: 'save',
+                component: SaveMapComponent
             },
             {
                 path: 'new-place',
@@ -100,7 +110,9 @@ const appRoutes: Routes = [
         MainCardComponent,
         EditAreaComponent,
         PlaceListItemComponent,
-        AreaListItemComponent
+        AreaListItemComponent,
+        LoadMapComponent,
+        SaveMapComponent
     ],
     exports: [RouterModule],
     providers: [MapStore, MapService]
