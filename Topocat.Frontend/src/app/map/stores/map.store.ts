@@ -12,7 +12,7 @@ export class MapStore extends Store<Map> {
     constructor(private messageBus: MessageBusService) {
         super();
 
-        this.entitySet.subscribe(map => {
+        this.entityChangedSubject.subscribe(map => {
             this.setupSubscriptions(map);
             this.setupListeners(map);
         });
@@ -25,16 +25,6 @@ export class MapStore extends Store<Map> {
 
         let sender = this;
 
-        entity.areaAdded.subscribe(area => {
-            let message = new Message(MessageNames.DomainAreaAdded, area, sender);
-            this.messageBus.publish(message);
-        });
-
-        entity.placeAdded.subscribe(place => {
-            let message = new Message(MessageNames.DomainPlaceAdded, place, sender);
-            this.messageBus.publish(message);
-        });
-
         entity.centerChanged.subscribe(centerChangedEventArgs => {
             let message = new Message(MessageNames.DomainCenterChanged, centerChangedEventArgs, sender);
             this.messageBus.publish(message);
@@ -44,11 +34,6 @@ export class MapStore extends Store<Map> {
            let message = new Message(MessageNames.DomainZoomChanged, zoomChangedEventArgs, sender);
            this.messageBus.publish(message);
         });
-
-        entity.objectDeleted.subscribe(object => {
-            let message = new Message(MessageNames.DomainObjectDeleted, object, sender);
-            this.messageBus.publish(message);
-        })
     }
 
     private setupListeners(entity: Map): void {

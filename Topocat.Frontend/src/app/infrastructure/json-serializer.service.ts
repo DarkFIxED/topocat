@@ -2,7 +2,7 @@ import { JsonConvert, OperationMode, ValueCheckingMode } from 'json2typescript';
 import { Injectable } from '@angular/core';
 
 @Injectable()
-export class JsonDeserializer {
+export class JsonSerializer {
 
     private jsonConvert: JsonConvert;
 
@@ -16,6 +16,12 @@ export class JsonDeserializer {
     }
 
     public deserialize<T>(classReference: new() => T, json: string): T {
-        return this.jsonConvert.deserialize(json, classReference);
+        let jsonObject = JSON.parse(json);
+        return this.jsonConvert.deserialize(jsonObject, classReference);
+    }
+
+    public serialize(object: any): string {
+        let simplifiedObject = this.jsonConvert.serialize(object);
+        return JSON.stringify(simplifiedObject);
     }
 }

@@ -9,10 +9,7 @@ import { MessageNames } from '../../../infrastructure/message-names';
 import { Observable, Subscription } from 'rxjs';
 import { Message, MessageBusService, SimpleMessage } from 'litebus';
 import { RouterHelper } from '../../../infrastructure/router-helper';
-import { CenterChangedEventArgs } from '../../../domain/map/event-args/center-changed.event-args';
 import { filter } from 'rxjs/operators';
-import { ZoomChangedEventArgs } from '../../../domain/map/event-args/zoom-changed.event-args';
-import { MapObject } from '../../../domain/map/map-object';
 
 @Component({
     selector: 'tc-map',
@@ -40,6 +37,7 @@ export class MapComponent implements OnInit, OnDestroy {
         });
 
         this.setupListeners();
+        this.setupStoreSubscriptions();
     }
 
     ngOnInit(): void {
@@ -95,11 +93,6 @@ export class MapComponent implements OnInit, OnDestroy {
     private setupListeners() {
         this.setupActivatePopupListener();
         this.setupDeactivatePopupListener();
-
-        this.setupMapObjectAddedListener();
-        this.setupCenterChangedListener();
-        this.setupZoomChangedListener();
-        this.setupMapObjectDeletedListener();
     }
 
     private updateQueryString(zoom: number, center: Coords) {
@@ -148,57 +141,7 @@ export class MapComponent implements OnInit, OnDestroy {
         this.listeners.push(listenerId);
     }
 
-    private setupMapObjectAddedListener() {
-        let listenerId = this.messageBus.listen([MessageNames.DomainPlaceAdded, MessageNames.DomainAreaAdded],
-            (observable: Observable<Message<MapObject>>) => {
-                return observable.subscribe(message => this.mapProvider.draw(message.payload));
-            });
-
-        this.listeners.push(listenerId);
-    }
-
-    private setupCenterChangedListener() {
-        let listenerId = this.messageBus.listen([MessageNames.DomainCenterChanged],
-            (observable: Observable<Message<CenterChangedEventArgs>>) => {
-                return observable
-                    .pipe(
-                        filter(x => !x.payload.setFromMap)
-                    )
-                    .subscribe(message => {
-                        this.mapProvider.panToCoords(message.payload.center);
-                    });
-            });
-        this.listeners.push(listenerId);
-    }
-
-    private setupZoomChangedListener() {
-        let listenerId = this.messageBus.listen([MessageNames.DomainZoomChanged],
-            (observable: Observable<Message<ZoomChangedEventArgs>>) => {
-                return observable
-                    .pipe(
-                        filter(x => !x.payload.setFromMap)
-                    )
-                    .subscribe(message => {
-                        this.mapProvider.setZoom(message.payload.zoom);
-                    });
-            });
-        this.listeners.push(listenerId);
-    }
-
-    private setupMapObjectDeletedListener() {
-        let listenerId = this.messageBus.listen([MessageNames.DomainObjectDeleted],
-            (observable: Observable<Message<MapObject>>) => {
-                return observable
-                    .subscribe(message => {
-
-                        this.mapProvider.deleteObject(message.payload.uuid);
-
-                    });
-            });
-        this.listeners.push(listenerId);
-    }
-
-    private setupMapProvider(map:any, initialState: any){
+    private setupMapProvider(map: any, initialState: any) {
 
         this.mapProvider.idle.subscribe(newState => {
             this.mapStore.entity.updateCenterFromMap(newState.center);
@@ -217,11 +160,42 @@ export class MapComponent implements OnInit, OnDestroy {
             this.messageBus.publish(message);
         });
 
-        this.mapProvider.ready.subscribe(()=> {
+        this.mapProvider.ready.subscribe(() => {
             let message = new SimpleMessage(MessageNames.MapReady);
             this.messageBus.publish(message);
         });
 
         this.mapProvider.setup(map, initialState);
+    }
+
+    private setupStoreSubscriptions() {
+        this.mapStore.entity.objectAdded.subscribe(object => {
+            this.mapProvider.draw(object);
+        });
+
+        this.mapStore.entity.objectDeleted.subscribe(object => {
+            this.mapProvider.deleteObject(object.uuid);
+        });
+
+        this.mapStore.entity.zoomChanged
+            .pipe(
+                filter(x => !x.setFromMap)
+            )
+            .subscribe(args => {
+                this.mapProvider.setZoom(args.zoom);
+            });
+
+        this.mapStore.entity.centerChanged
+            .pipe(
+                filter(x => !x.setFromMap)
+            )
+            .subscribe(args => {
+                this.mapProvider.panToCoords(args.center);
+            });
+
+        this.mapStore.entityChanged.subscribe(newMap => {
+            this.mapProvider.deleteAll();
+            this.mapProvider.drawMany(newMap.mapObjects);
+        });
     }
 }

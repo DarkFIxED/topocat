@@ -96,7 +96,7 @@ export class EditPlaceComponent implements OnInit, OnDestroy {
     }
 
     private close() {
-        this.mapService.provider.removePhantom(this.place);
+        this.mapService.provider.deletePhantom(this.place.uuid);
 
         this.mapService.provider.setDrawnObjectsVisibility(true);
 

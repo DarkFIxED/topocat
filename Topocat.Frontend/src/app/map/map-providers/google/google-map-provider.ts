@@ -75,6 +75,15 @@ export class GoogleMapProvider implements OnDestroy, MapProvider {
         this.drawnObjects.push(drawnObject);
     }
 
+    drawMany(mapObjects: MapObject[]): void {
+        this.assertMapReady();
+
+        mapObjects.forEach(mapObject => {
+            let drawnObject = this.objectDrawer.draw(mapObject);
+            this.drawnObjects.push(drawnObject);
+        });
+    }
+
     ngOnDestroy(): void {
         this.unregister();
     }
@@ -121,10 +130,10 @@ export class GoogleMapProvider implements OnDestroy, MapProvider {
         }
     }
 
-    removePhantom(mapObject: MapObject) {
+    deletePhantom(uuid: string) {
         this.assertMapReady();
 
-        let phantom = this.phantoms.find(x => x.uuid === mapObject.uuid);
+        let phantom = this.phantoms.find(x => x.uuid === uuid);
 
         if (!phantom) {
             throw new Error('Phantom not found');
@@ -164,6 +173,18 @@ export class GoogleMapProvider implements OnDestroy, MapProvider {
         this.drawnObjects.splice(index, 1);
     }
 
+    deleteAll() {
+        let drawnObjectsIds = this.drawnObjects.map(x=>x.uuid);
+        for(let id of drawnObjectsIds) {
+            this.deleteObject(id);
+        }
+
+        let phantomsIds = this.phantoms.map(x=>x.uuid);
+        for(let id of phantomsIds) {
+            this.deletePhantom(id);
+        }
+    }
+
     private assertMapReady() {
         if (!this._map) {
             throw new Error('Map is not ready');
@@ -201,4 +222,5 @@ export class GoogleMapProvider implements OnDestroy, MapProvider {
 
         this._map.addListener('idle', onIdle(this));
     }
+
 }

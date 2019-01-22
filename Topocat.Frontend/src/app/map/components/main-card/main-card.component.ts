@@ -13,6 +13,16 @@ export class MainCardComponent implements OnInit {
             title: 'Items',
             url: 'items',
             icon: 'list'
+        },
+        {
+            title: 'Save',
+            url: 'save',
+            icon: 'cloud_download'
+        },
+        {
+            title: 'Load',
+            url: 'load',
+            icon: 'cloud_upload'
         }
     ];
 
