@@ -11,13 +11,12 @@ import { ZoomChangedEventArgs } from './event-args/zoom-changed.event-args';
 @JsonObject('map')
 export class Map extends AggregationRoot {
 
-    public placeAdded: Subject<Place> = new Subject<Place>();
-    public areaAdded: Subject<Area> = new Subject<Area>();
-
     public centerChanged: Subject<CenterChangedEventArgs> = new Subject<CenterChangedEventArgs>();
     public zoomChanged: Subject<ZoomChangedEventArgs> = new Subject<ZoomChangedEventArgs>();
 
     public objectDeleted: Subject<MapObject> = new Subject<MapObject>();
+    public objectAdded: Subject<MapObject> = new Subject<MapObject>();
+
 
     @JsonProperty('mapObjects', [Place, Area])
     protected _mapObjects: Array<MapObject> = [];
@@ -26,7 +25,7 @@ export class Map extends AggregationRoot {
         return this._mapObjects;
     }
 
-    @JsonProperty('center')
+    @JsonProperty('center', Coords)
     protected _center: Coords = new Coords();
 
     public get center(): Coords {
@@ -68,7 +67,7 @@ export class Map extends AggregationRoot {
         let existingPlace = <Place>this.getObject(place.uuid);
         if (!existingPlace) {
             this._mapObjects.push(place);
-            this.placeAdded.next(place);
+            this.objectAdded.next(place);
         } else {
             existingPlace.copyFrom(place);
         }
@@ -78,7 +77,7 @@ export class Map extends AggregationRoot {
         this._mapObjects.push(...places);
 
         for (let place of places) {
-            this.placeAdded.next(place);
+            this.objectAdded.next(place);
         }
     }
 
@@ -86,7 +85,7 @@ export class Map extends AggregationRoot {
         let existingArea = <Area>this.getObject(area.uuid);
         if (!existingArea) {
             this._mapObjects.push(area);
-            this.areaAdded.next(area);
+            this.objectAdded.next(area);
         } else {
             existingArea.copyFrom(area);
         }
@@ -96,7 +95,7 @@ export class Map extends AggregationRoot {
         this._mapObjects.push(...areas);
 
         for (let area of areas) {
-            this.areaAdded.next(area);
+            this.objectAdded.next(area);
         }
     }
 

@@ -16,7 +16,8 @@ export class JsonSerializer {
     }
 
     public deserialize<T>(classReference: new() => T, json: string): T {
-        return this.jsonConvert.deserialize(json, classReference);
+        let jsonObject = JSON.parse(json);
+        return this.jsonConvert.deserialize(jsonObject, classReference);
     }
 
     public serialize(object: any): string {

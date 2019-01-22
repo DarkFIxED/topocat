@@ -75,6 +75,15 @@ export class GoogleMapProvider implements OnDestroy, MapProvider {
         this.drawnObjects.push(drawnObject);
     }
 
+    drawMany(mapObjects: MapObject[]): void {
+        this.assertMapReady();
+
+        mapObjects.forEach(mapObject => {
+            let drawnObject = this.objectDrawer.draw(mapObject);
+            this.drawnObjects.push(drawnObject);
+        });
+    }
+
     ngOnDestroy(): void {
         this.unregister();
     }

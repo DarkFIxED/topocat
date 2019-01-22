@@ -2,7 +2,8 @@ import { AggregationRoot } from './aggregation-root';
 import { Subject } from 'rxjs';
 
 export abstract class Store<T extends AggregationRoot> {
-    protected entitySet: Subject<T> = new Subject<T>();
+    protected entityChangedSubject: Subject<T> = new Subject<T>();
+    public entityChanged = this.entityChangedSubject.asObservable();
 
     protected _entity: T;
 
@@ -13,6 +14,6 @@ export abstract class Store<T extends AggregationRoot> {
     public set entity(entity: T) {
         this._entity = entity;
 
-        this.entitySet.next(this._entity);
+        this.entityChangedSubject.next(this._entity);
     }
 }

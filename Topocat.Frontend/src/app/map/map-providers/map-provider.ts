@@ -12,6 +12,8 @@ export interface MapProvider {
 
     draw(mapObject: MapObject);
 
+    drawMany(mapObjects: MapObject[]): void
+
     setDrawnObjectsVisibility(visibility: boolean);
 
     addOrUpdatePhantom(mapObject: MapObject);
