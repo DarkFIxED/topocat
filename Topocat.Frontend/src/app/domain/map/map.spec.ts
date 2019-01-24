@@ -66,7 +66,7 @@ describe('Map', () => {
         const place = new Place();
         place.coords = new Coords(32,23);
 
-        map.placeAdded.subscribe(addedPlace => {
+        map.objectAdded.subscribe(addedPlace => {
             expect(addedPlace).toBe(place);
         });
 
@@ -84,8 +84,9 @@ describe('Map', () => {
 
         let places = [place1, place2];
 
-        map.placeAdded.subscribe(addedPlace => {
-            expect(places).toContain(addedPlace);
+        map.objectAdded.subscribe(addedPlace => {
+            let has = places.some(x=>x.uuid === addedPlace.uuid);
+            expect(has).toBeTruthy();
         });
 
         map.addPlaces(places);

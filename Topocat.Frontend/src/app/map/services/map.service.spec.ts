@@ -1,6 +1,10 @@
 import { MapService } from './map.service';
 import { MapProvider } from '../map-providers/map-provider';
-import { Place } from '../../domain/map/place';
+import { Coords } from '../../domain/map/coords';
+import { MapObject } from '../../domain/map/map-object';
+import { Observable } from 'rxjs';
+import { PhantomAreaPathChangedEventArgs } from '../models/phantom-area-path-changed-event-args';
+import { PhantomPlaceCoordsChangedEventArgs } from '../models/phantom-place-coords-changed-event-args';
 
 describe('MapService', () => {
 
@@ -20,12 +24,47 @@ describe('MapService', () => {
     it('Has provider after registration', () => {
 
         // arrange
-        let mapProvider: MapProvider = {
-            maxZoom: 5,
-            drawPlace(place: Place): void {
-            },
+        let mapProvider: MapProvider = new class implements MapProvider {
+            idle: Observable<{ zoom: number; center: Coords }>;
+            mapReady: boolean;
+            maxZoom: number;
+            phantomAreaPathChanged: Observable<PhantomAreaPathChangedEventArgs>;
+            phantomPlaceCoordsChanged: Observable<PhantomPlaceCoordsChangedEventArgs>;
+            ready: Observable<void>;
+
+            addOrUpdatePhantom(mapObject: MapObject) {
+            }
+
+            centerTo(object: MapObject): void {
+            }
+
+            deleteAll() {
+            }
+
+            deleteObject(uuid: string) {
+            }
+
+            deletePhantom(uuid: string) {
+            }
+
+            draw(mapObject: MapObject) {
+            }
+
+            drawMany(mapObjects: MapObject[]): void {
+            }
+
+            panToCoords(coords: Coords): void {
+            }
+
             register() {
-            },
+            }
+
+            setDrawnObjectsVisibility(visibility: boolean) {
+            }
+
+            setZoom(zoom: number) {
+            }
+
             unregister() {
             }
         };
@@ -41,16 +80,50 @@ describe('MapService', () => {
     it('No provider after un-registration', () => {
 
         // arrange
-        let mapProvider: MapProvider = {
-            maxZoom: 5,
-            drawPlace(place: Place): void {
-            },
+        let mapProvider: MapProvider = new class implements MapProvider {
+            idle: Observable<{ zoom: number; center: Coords }>;
+            mapReady: boolean;
+            maxZoom: number;
+            phantomAreaPathChanged: Observable<PhantomAreaPathChangedEventArgs>;
+            phantomPlaceCoordsChanged: Observable<PhantomPlaceCoordsChangedEventArgs>;
+            ready: Observable<void>;
+
+            addOrUpdatePhantom(mapObject: MapObject) {
+            }
+
+            centerTo(object: MapObject): void {
+            }
+
+            deleteAll() {
+            }
+
+            deleteObject(uuid: string) {
+            }
+
+            deletePhantom(uuid: string) {
+            }
+
+            draw(mapObject: MapObject) {
+            }
+
+            drawMany(mapObjects: MapObject[]): void {
+            }
+
+            panToCoords(coords: Coords): void {
+            }
+
             register() {
-            },
+            }
+
+            setDrawnObjectsVisibility(visibility: boolean) {
+            }
+
+            setZoom(zoom: number) {
+            }
+
             unregister() {
             }
         };
-
         // act
         mapService.register(mapProvider);
         mapService.unregister(mapProvider);
@@ -63,12 +136,47 @@ describe('MapService', () => {
     it('Throws error when trying to override registered provider', () => {
 
         // arrange
-        let mapProvider: MapProvider = {
-            maxZoom: 5,
-            drawPlace(place: Place): void {
-            },
+        let mapProvider: MapProvider = new class implements MapProvider {
+            idle: Observable<{ zoom: number; center: Coords }>;
+            mapReady: boolean;
+            maxZoom: number;
+            phantomAreaPathChanged: Observable<PhantomAreaPathChangedEventArgs>;
+            phantomPlaceCoordsChanged: Observable<PhantomPlaceCoordsChangedEventArgs>;
+            ready: Observable<void>;
+
+            addOrUpdatePhantom(mapObject: MapObject) {
+            }
+
+            centerTo(object: MapObject): void {
+            }
+
+            deleteAll() {
+            }
+
+            deleteObject(uuid: string) {
+            }
+
+            deletePhantom(uuid: string) {
+            }
+
+            draw(mapObject: MapObject) {
+            }
+
+            drawMany(mapObjects: MapObject[]): void {
+            }
+
+            panToCoords(coords: Coords): void {
+            }
+
             register() {
-            },
+            }
+
+            setDrawnObjectsVisibility(visibility: boolean) {
+            }
+
+            setZoom(zoom: number) {
+            }
+
             unregister() {
             }
         };
@@ -81,12 +189,47 @@ describe('MapService', () => {
     it('Throws error when trying to unregister non-registered provider', () => {
 
         // arrange
-        let mapProvider: MapProvider = {
-            maxZoom: 5,
-            drawPlace(place: Place): void {
-            },
+        let mapProvider: MapProvider = new class implements MapProvider {
+            idle: Observable<{ zoom: number; center: Coords }>;
+            mapReady: boolean;
+            maxZoom: number;
+            phantomAreaPathChanged: Observable<PhantomAreaPathChangedEventArgs>;
+            phantomPlaceCoordsChanged: Observable<PhantomPlaceCoordsChangedEventArgs>;
+            ready: Observable<void>;
+
+            addOrUpdatePhantom(mapObject: MapObject) {
+            }
+
+            centerTo(object: MapObject): void {
+            }
+
+            deleteAll() {
+            }
+
+            deleteObject(uuid: string) {
+            }
+
+            deletePhantom(uuid: string) {
+            }
+
+            draw(mapObject: MapObject) {
+            }
+
+            drawMany(mapObjects: MapObject[]): void {
+            }
+
+            panToCoords(coords: Coords): void {
+            }
+
             register() {
-            },
+            }
+
+            setDrawnObjectsVisibility(visibility: boolean) {
+            }
+
+            setZoom(zoom: number) {
+            }
+
             unregister() {
             }
         };
