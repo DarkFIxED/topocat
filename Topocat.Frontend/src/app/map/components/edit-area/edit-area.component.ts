@@ -26,7 +26,7 @@ export class EditAreaComponent implements OnInit, OnDestroy {
     public areaForm = new FormGroup({
         uuid: new FormControl('', [Validators.required]),
         title: new FormControl('', [Validators.required]),
-        description: new FormControl('', [Validators.required]),
+        description: new FormControl('', []),
         path: new FormArray([])
     });
     public isNewArea = false;
@@ -236,5 +236,14 @@ export class EditAreaComponent implements OnInit, OnDestroy {
         for (let i = formPath.length; i<path.length; i++) {
             this.appendCoordsToForm(path[i]);
         }
+    }
+
+    async draw() {
+        this.mapService.provider.setPhantomsVisibility(false);
+
+        let path = await this.mapService.provider.drawPath();
+        this.synchronizePaths(path);
+
+        this.mapService.provider.setPhantomsVisibility(true);
     }
 }

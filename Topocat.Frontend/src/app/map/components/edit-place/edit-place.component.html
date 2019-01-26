@@ -42,6 +42,9 @@
         </mat-card-content>
         <mat-card-actions align="right">
             <div>
+                <button mat-button
+                        (click)="draw()">Draw
+                </button>
                 <button *ngIf="!isNewPlace"
                         mat-button
                         color="warn"

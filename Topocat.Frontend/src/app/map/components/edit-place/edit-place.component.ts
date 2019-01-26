@@ -182,4 +182,13 @@ export class EditPlaceComponent implements OnInit, OnDestroy {
             coords: this.place.coords
         });
     }
+
+    async draw() {
+        this.mapService.provider.setPhantomsVisibility(false);
+
+        let coords = await this.mapService.provider.drawCoords();
+        this.placeForm.patchValue({coords: coords});
+
+        this.mapService.provider.setPhantomsVisibility(true);
+    }
 }
