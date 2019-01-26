@@ -33,6 +33,8 @@ export class LoadMapComponent implements OnInit {
             reader.onload = onLoad(this, reader);
             reader.readAsText(file);
         }
+
+        event.target.value = '';
     }
 
 }
