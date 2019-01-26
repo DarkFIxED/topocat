@@ -7,6 +7,7 @@ import { Area } from './area';
 import { Coords } from './coords';
 import { CenterChangedEventArgs } from './event-args/center-changed.event-args';
 import { ZoomChangedEventArgs } from './event-args/zoom-changed.event-args';
+import { MapObjectsArrayConverter } from '../../infrastructure/converters/map-objects-array.converter';
 
 @JsonObject('map')
 export class Map extends AggregationRoot {
@@ -18,7 +19,7 @@ export class Map extends AggregationRoot {
     public objectAdded: Subject<MapObject> = new Subject<MapObject>();
 
 
-    @JsonProperty('mapObjects', [Place, Area])
+    @JsonProperty('mapObjects', MapObjectsArrayConverter)
     protected _mapObjects: Array<MapObject> = [];
 
     public get mapObjects(): Array<MapObject> {
@@ -104,7 +105,7 @@ export class Map extends AggregationRoot {
     }
 
     public deleteObject(uuid: string): void {
-        let index = this.mapObjects.findIndex(x=>x.uuid === uuid);
+        let index = this.mapObjects.findIndex(x => x.uuid === uuid);
         if (index >= 0) {
             let object = this.mapObjects[index];
 
