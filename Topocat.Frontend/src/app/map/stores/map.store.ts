@@ -5,11 +5,14 @@ import { Observable } from 'rxjs';
 import { Coords } from '../../domain/map/coords';
 import { MessageNames } from '../../infrastructure/message-names';
 import { Message, MessageBusService } from 'litebus';
+import { DataContainer } from '../../infrastructure/data-container';
+import { JsonSerializer } from '../../infrastructure/json-serializer.service';
 
 @Injectable()
 export class MapStore extends Store<Map> {
 
-    constructor(private messageBus: MessageBusService) {
+    constructor(private messageBus: MessageBusService,
+                private json: JsonSerializer) {
         super();
 
         this.entityChangedSubject.subscribe(map => {
@@ -19,6 +22,16 @@ export class MapStore extends Store<Map> {
 
         // TODO: load or create new map.
         this.entity = new Map();
+    }
+
+    public export(): DataContainer<any> {
+        let serializedEntity = this.json.toAnonymous(this.entity);
+
+        return new DataContainer(serializedEntity);
+    }
+
+    public import(container: DataContainer<any>): void {
+        this.entity = this.json.fromAnonymous(container.data, Map);
     }
 
     private setupSubscriptions(entity: Map): void {

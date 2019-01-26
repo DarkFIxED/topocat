@@ -111,7 +111,7 @@ export class GoogleMapProvider implements OnDestroy, MapProvider {
     setPhantomsVisibility(visibility: boolean) {
         this.assertMapReady();
 
-        for (let key in this.drawnObjects) {
+        for (let key in this.phantoms) {
             if (visibility) {
                 this.objectDrawer.show(this.phantoms[key]);
             } else {
