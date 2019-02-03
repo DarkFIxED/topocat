@@ -38,7 +38,7 @@ export class Place extends NameableMapObject {
 
     merge(otherObject: Place) {
         super.merge(otherObject);
-        this.coords.setValue(otherObject.coords.lat, otherObject.coords.lng)
+        this.coords.setValue(otherObject.coords.lat, otherObject.coords.lng);
 
         this.emitObjectChanged();
     }

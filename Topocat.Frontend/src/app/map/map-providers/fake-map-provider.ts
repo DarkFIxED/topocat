@@ -5,6 +5,7 @@ import { Coords } from '../../domain/map/coords';
 import { MapObject } from '../../domain/map/map-object';
 import { Observable } from 'rxjs';
 
+
 export class FakeMapProvider implements MapProvider{
     idle: Observable<{ zoom: number; center: Coords }>;
     mapReady: boolean;
