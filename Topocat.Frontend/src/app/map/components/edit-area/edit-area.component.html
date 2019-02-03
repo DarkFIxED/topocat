@@ -54,6 +54,9 @@
         </mat-card-content>
         <mat-card-actions align="right">
             <div>
+                <button mat-button
+                        (click)="draw()">Draw
+                </button>
                 <button *ngIf="!isNewArea"
                         mat-button
                         color="warn"
@@ -63,6 +66,7 @@
                         (click)="dismiss()">Cancel
                 </button>
                 <button mat-button
+                        [disabled]="areaForm.invalid"
                         color="primary"
                         (click)="submit()">Ok
                 </button>

@@ -7,6 +7,7 @@ import { Area } from './area';
 import { Coords } from './coords';
 import { CenterChangedEventArgs } from './event-args/center-changed.event-args';
 import { ZoomChangedEventArgs } from './event-args/zoom-changed.event-args';
+import { MapObjectsArrayConverter } from '../../infrastructure/converters/map-objects-array.converter';
 
 @JsonObject('map')
 export class Map extends AggregationRoot {
@@ -18,7 +19,7 @@ export class Map extends AggregationRoot {
     public objectAdded: Subject<MapObject> = new Subject<MapObject>();
 
 
-    @JsonProperty('mapObjects', [Place, Area])
+    @JsonProperty('mapObjects', MapObjectsArrayConverter)
     protected _mapObjects: Array<MapObject> = [];
 
     public get mapObjects(): Array<MapObject> {
@@ -73,12 +74,9 @@ export class Map extends AggregationRoot {
         }
     }
 
-    public addPlaces(places: Place[]): void {
-        this._mapObjects.push(...places);
-
-        for (let place of places) {
-            this.objectAdded.next(place);
-        }
+    public addObject(object: MapObject): void {
+        this._mapObjects.push(object);
+        this.objectAdded.next(object);
     }
 
     public addOrUpdateArea(area: Area): void {
@@ -91,20 +89,12 @@ export class Map extends AggregationRoot {
         }
     }
 
-    public addAreas(areas: Area[]): void {
-        this._mapObjects.push(...areas);
-
-        for (let area of areas) {
-            this.objectAdded.next(area);
-        }
-    }
-
     public getObject(uuid: string): MapObject {
         return this.mapObjects.find(x => x.uuid === uuid);
     }
 
     public deleteObject(uuid: string): void {
-        let index = this.mapObjects.findIndex(x=>x.uuid === uuid);
+        let index = this.mapObjects.findIndex(x => x.uuid === uuid);
         if (index >= 0) {
             let object = this.mapObjects[index];
 

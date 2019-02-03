@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { MapStore } from '../../stores/map.store';
-import { JsonSerializer } from '../../../infrastructure/json-serializer.service';
 import * as FileSaver from 'file-saver';
 
 @Component({
@@ -10,17 +9,16 @@ import * as FileSaver from 'file-saver';
 })
 export class SaveMapComponent implements OnInit {
 
-    constructor(private mapStore: MapStore,
-                private json: JsonSerializer) {
+    constructor(private mapStore: MapStore) {
     }
 
     ngOnInit() {
     }
 
     onSave() {
-        let serializedEntity = this.json.serialize(this.mapStore.entity);
-
-        let blob = new Blob([serializedEntity], {type: "application/json;charset=utf-8"});
+        let container = this.mapStore.export();
+        let json = JSON.stringify(container);
+        let blob = new Blob([json], {type: "application/json;charset=utf-8"});
         FileSaver.saveAs(blob, "map.json");
     }
 }

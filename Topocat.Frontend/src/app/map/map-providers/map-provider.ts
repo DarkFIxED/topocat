@@ -16,9 +16,19 @@ export interface MapProvider {
 
     setDrawnObjectsVisibility(visibility: boolean);
 
+    setPhantomsVisibility(visibility: boolean);
+
     addOrUpdatePhantom(mapObject: MapObject);
 
     deletePhantom(uuid: string);
+
+    drawCoordsManually(): Promise<Coords>;
+
+    drawPathManually(): Promise<Coords[]>;
+
+    cancelManualDrawing();
+
+    isDrawingManually(): boolean;
 
     register();
 

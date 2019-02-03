@@ -29,6 +29,7 @@ import { PlaceListItemComponent } from './components/place-list-item/place-list-
 import { AreaListItemComponent } from './components/area-list-item/area-list-item.component';
 import { LoadMapComponent } from './components/load-map/load-map.component';
 import { SaveMapComponent } from './components/save-map/save-map.component';
+import { MapMerger } from '../infrastructure/mergers/map.merger';
 
 const appRoutes: Routes = [
     {
@@ -115,7 +116,7 @@ const appRoutes: Routes = [
         SaveMapComponent
     ],
     exports: [RouterModule],
-    providers: [MapStore, MapService]
+    providers: [MapStore, MapService, MapMerger]
 })
 export class MapModule {
 }

@@ -13,6 +13,7 @@ import { MessageNames } from '../../../infrastructure/message-names';
 import { ConfirmationDialogService } from '../../../infrastructure/dialogs/confirmation-dialog/confirmation-dialog.service';
 import { PhantomAreaPathChangedEventArgs } from '../../models/phantom-area-path-changed-event-args';
 import { Coords } from '../../../domain/map/coords';
+import { Path } from '../../../domain/map/path';
 
 @Component({
     selector: 'tc-edit-area',
@@ -26,7 +27,7 @@ export class EditAreaComponent implements OnInit, OnDestroy {
     public areaForm = new FormGroup({
         uuid: new FormControl('', [Validators.required]),
         title: new FormControl('', [Validators.required]),
-        description: new FormControl('', [Validators.required]),
+        description: new FormControl('', []),
         path: new FormArray([])
     });
     public isNewArea = false;
@@ -59,7 +60,7 @@ export class EditAreaComponent implements OnInit, OnDestroy {
             uuid: this.area.uuid,
             title: this.area.title,
             description: this.area.description,
-            path: this.area.path
+            path: this.area.path.coords
         }, {emitEvent: false});
 
     }
@@ -82,6 +83,10 @@ export class EditAreaComponent implements OnInit, OnDestroy {
     }
 
     dismiss() {
+        if (this.mapService.provider.isDrawingManually()) {
+            this.mapService.provider.cancelManualDrawing();
+        }
+
         this.close();
     }
 
@@ -103,16 +108,25 @@ export class EditAreaComponent implements OnInit, OnDestroy {
     }
 
     appendCoords() {
-        let coords = new Coords(0,0);
-        this.area.path.push(coords);
+        let coords = new Coords(0, 0);
+        this.area.path.append(coords);
         this.appendCoordsToForm(coords);
     }
 
     removeCoord(index: number) {
         let path = <FormArray>this.areaForm.controls['path'];
 
-        this.area.path.splice(index, 1);
+        this.area.path.removeAt(index);
         path.removeAt(index);
+    }
+
+    async draw() {
+        this.mapService.provider.setPhantomsVisibility(false);
+
+        let path = await this.mapService.provider.drawPathManually();
+        this.synchronizePaths(path);
+
+        this.mapService.provider.setPhantomsVisibility(true);
     }
 
     private appendCoordsToForm(coords: Coords) {
@@ -133,7 +147,6 @@ export class EditAreaComponent implements OnInit, OnDestroy {
         });
     }
 
-
     private initialize() {
         this.mapService.provider.setDrawnObjectsVisibility(false);
 
@@ -151,7 +164,6 @@ export class EditAreaComponent implements OnInit, OnDestroy {
 
         this.messageBus.publish(new SimpleMessage(MessageNames.MapDeactivatePopup));
     }
-
 
     private getCopyOfExistingArea(uuid: string): Area {
         let originArea = <Area>this.mapStore.entity.getObject(uuid);
@@ -176,9 +188,7 @@ export class EditAreaComponent implements OnInit, OnDestroy {
         });
 
         this.areaForm.valueChanges.subscribe(() => {
-            if (this.areaForm.valid) {
-                this.mapService.provider.addOrUpdatePhantom(this.area);
-            }
+            this.mapService.provider.addOrUpdatePhantom(this.area);
         });
     }
 
@@ -209,32 +219,31 @@ export class EditAreaComponent implements OnInit, OnDestroy {
         }
     }
 
-    private updateModelPath(path: Coords[]) {
-        path.forEach((value, index) => {
-            this.area.path[index].lat = value.lat;
-            this.area.path[index].lng = value.lng;
+    private updateModelPath(coords: Coords[]) {
+        coords.forEach((value, index) => {
+            this.area.path.updateAt(value, index);
 
             let pathArray = <FormArray>this.areaForm.controls['path'];
-            pathArray.at(index).patchValue(value, {emitEvent: false});
+            pathArray.at(index).patchValue(value.getLatLng(), {emitEvent: false});
         });
 
-        this.areaForm.patchValue({},{emitEvent: true});
+        this.areaForm.patchValue({}, {emitEvent: true});
     }
 
-    private synchronizePaths(path: Coords[]) {
-        if (path.length < this.area.path.length) {
-            this.removeExcessAreaPathCoords(this.area.path.length - path.length);
-        } else if (path.length > this.area.path.length) {
-            this.addMissingAreaPathCoords(path.length - this.area.path.length);
+    private synchronizePaths(coords: Coords[]) {
+        if (coords.length < this.area.path.length) {
+            this.removeExcessAreaPathCoords(this.area.path.length - coords.length);
+        } else if (coords.length > this.area.path.length) {
+            this.addMissingAreaPathCoords(coords.length - this.area.path.length);
         }
 
-        this.updateModelPath(path);
+        this.updateModelPath(coords);
     }
 
-    private addMissingFormPathCoords(path: Coords[]) {
+    private addMissingFormPathCoords(path: Path) {
         let formPath = <FormArray>this.areaForm.controls['path'];
-        for (let i = formPath.length; i<path.length; i++) {
-            this.appendCoordsToForm(path[i]);
+        for (let i = formPath.length; i < path.length; i++) {
+            this.appendCoordsToForm(path.coords[i]);
         }
     }
 }

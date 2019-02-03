@@ -15,13 +15,21 @@ export class JsonSerializer {
         this.jsonConvert.valueCheckingMode = ValueCheckingMode.ALLOW_NULL; // never allow null
     }
 
-    public deserialize<T>(classReference: new() => T, json: string): T {
+    public deserialize<T>(json: string, classReference: new() => T): T {
         let jsonObject = JSON.parse(json);
-        return this.jsonConvert.deserialize(jsonObject, classReference);
+        return this.fromAnonymous(jsonObject, classReference);
     }
 
     public serialize(object: any): string {
-        let simplifiedObject = this.jsonConvert.serialize(object);
+        let simplifiedObject = this.toAnonymous(object);
         return JSON.stringify(simplifiedObject);
+    }
+
+    public toAnonymous(object: any): any{
+        return this.jsonConvert.serialize(object);
+    }
+
+    public fromAnonymous<T>(object: any, classReference: new() => T): T {
+        return this.jsonConvert.deserialize(object, classReference);
     }
 }

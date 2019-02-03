@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { MapStore } from '../../stores/map.store';
-import { JsonSerializer } from '../../../infrastructure/json-serializer.service';
-import { Map } from '../../../domain/map/map'
 
 @Component({
     selector: 'tc-load-map',
@@ -10,8 +8,7 @@ import { Map } from '../../../domain/map/map'
 })
 export class LoadMapComponent implements OnInit {
 
-    constructor(private mapStore: MapStore,
-                private jsonSerializer: JsonSerializer) {
+    constructor(private mapStore: MapStore) {
     }
 
     ngOnInit() {
@@ -25,9 +22,9 @@ export class LoadMapComponent implements OnInit {
             let onLoad = function (component: LoadMapComponent, reader: FileReader) {
                 return function () {
                     let text = <string>reader.result;
-
-                    component.mapStore.entity = component.jsonSerializer.deserialize(Map, text);
-                }
+                    let container = JSON.parse(text);
+                    component.mapStore.import(container);
+                };
             };
 
             reader.onload = onLoad(this, reader);
@@ -37,4 +34,23 @@ export class LoadMapComponent implements OnInit {
         event.target.value = '';
     }
 
+    onMergeFileChange(event) {
+        let reader = new FileReader();
+        if (event.target.files && event.target.files.length > 0) {
+            let file = event.target.files[0];
+
+            let onLoad = function (component: LoadMapComponent, reader: FileReader) {
+                return function () {
+                    let text = <string>reader.result;
+                    let container = JSON.parse(text);
+                    component.mapStore.merge(container);
+                };
+            };
+
+            reader.onload = onLoad(this, reader);
+            reader.readAsText(file);
+        }
+
+        event.target.value = '';
+    }
 }

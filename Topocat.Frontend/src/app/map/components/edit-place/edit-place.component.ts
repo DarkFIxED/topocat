@@ -65,6 +65,10 @@ export class EditPlaceComponent implements OnInit, OnDestroy {
     }
 
     dismiss() {
+        if (this.mapService.provider.isDrawingManually()) {
+            this.mapService.provider.cancelManualDrawing();
+        }
+
         this.close();
     }
 
@@ -83,6 +87,15 @@ export class EditPlaceComponent implements OnInit, OnDestroy {
 
                 this.close();
             });
+    }
+
+    async draw() {
+        this.mapService.provider.setPhantomsVisibility(false);
+
+        let coords = await this.mapService.provider.drawCoordsManually();
+        this.placeForm.patchValue({coords: coords.getLatLng()});
+
+        this.mapService.provider.setPhantomsVisibility(true);
     }
 
     private initialize() {
@@ -111,8 +124,7 @@ export class EditPlaceComponent implements OnInit, OnDestroy {
                         filter(x => x.payload.uuid === this.place.uuid)
                     )
                     .subscribe(message => {
-                        this.place.coords.lat = message.payload.lat;
-                        this.place.coords.lng = message.payload.lng;
+                        this.place.updateCoordsFromLatLng(message.payload.lat, message.payload.lng);
 
                         this.placeForm.patchValue({
                             coords: {
@@ -136,14 +148,11 @@ export class EditPlaceComponent implements OnInit, OnDestroy {
         });
 
         this.placeForm.controls['coords'].valueChanges.subscribe(newCoords => {
-            this.place.coords.lat = +newCoords.lat;
-            this.place.coords.lng = +newCoords.lng;
+            this.place.updateCoordsFromLatLng(+newCoords.lat, +newCoords.lng);
         });
 
         this.placeForm.valueChanges.subscribe(() => {
-            if (this.placeForm.valid) {
-                this.mapService.provider.addOrUpdatePhantom(this.place);
-            }
+            this.mapService.provider.addOrUpdatePhantom(this.place);
         });
     }
 
@@ -179,7 +188,7 @@ export class EditPlaceComponent implements OnInit, OnDestroy {
             uuid: this.place.uuid,
             title: this.place.title,
             description: this.place.description,
-            coords: this.place.coords
+            coords: this.place.coords.getLatLng()
         });
     }
 }

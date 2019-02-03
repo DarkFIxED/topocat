@@ -96,14 +96,26 @@ export class GoogleMapProvider implements OnDestroy, MapProvider {
         this.mapService.unregister(this);
     }
 
-    setDrawnObjectsVisibility(visible: boolean) {
+    setDrawnObjectsVisibility(visibility: boolean) {
         this.assertMapReady();
 
         for (let key in this.drawnObjects) {
-            if (visible) {
+            if (visibility) {
                 this.objectDrawer.show(this.drawnObjects[key]);
             } else {
                 this.objectDrawer.hide(this.drawnObjects[key]);
+            }
+        }
+    }
+
+    setPhantomsVisibility(visibility: boolean) {
+        this.assertMapReady();
+
+        for (let key in this.phantoms) {
+            if (visibility) {
+                this.objectDrawer.show(this.phantoms[key]);
+            } else {
+                this.objectDrawer.hide(this.phantoms[key]);
             }
         }
     }
@@ -145,6 +157,61 @@ export class GoogleMapProvider implements OnDestroy, MapProvider {
         this.objectDrawer.hide(phantom);
     }
 
+    drawPathManually(): Promise<Coords[]> {
+        return new Promise<Coords[]>((resolve) => {
+            this.assertMapReady();
+
+            this.drawingManager.setMap(this.map);
+            this.drawingManager.setDrawingMode(google.maps.drawing.OverlayType.POLYGON);
+
+            let onPolygonCompleteHandler = function (provider: GoogleMapProvider) {
+                return function (polygon: google.maps.Polygon) {
+                    provider.drawingManager.unbind('polygoncomplete');
+                    provider.drawingManager.setMap(null);
+
+                    let coords = polygon.getPath().getArray().map(latLng => new Coords(latLng.lat(), latLng.lng()));
+                    polygon.setMap(null);
+
+                    resolve(coords);
+                };
+            };
+
+            google.maps.event.addListener(this.drawingManager, 'polygoncomplete', onPolygonCompleteHandler(this));
+        });
+    }
+
+    drawCoordsManually(): Promise<Coords> {
+        return new Promise<any>((resolve) => {
+            this.assertMapReady();
+
+            this.drawingManager.setMap(this.map);
+            this.drawingManager.setDrawingMode(google.maps.drawing.OverlayType.MARKER);
+
+            let onMarkerCompleteHandler = function (provider: GoogleMapProvider) {
+                return function (marker: google.maps.Marker) {
+                    provider.drawingManager.unbind('markercomplete');
+                    provider.drawingManager.setMap(null);
+
+                    let coords = new Coords(marker.getPosition().lat(), marker.getPosition().lng());
+                    marker.setMap(null);
+
+                    resolve(coords);
+                }
+            };
+
+            google.maps.event.addListener(this.drawingManager, 'markercomplete', onMarkerCompleteHandler(this));
+        });
+    }
+
+    cancelManualDrawing() {
+        this.drawingManager.unbindAll();
+        this.drawingManager.setMap(null);
+    }
+
+    isDrawingManually(): boolean {
+        return this.drawingManager.getMap() != null;
+    }
+
     centerTo(object: MapObject): void {
         let center = this.objectDrawer.getCenter(object);
         this.map.panTo(center);
@@ -174,13 +241,13 @@ export class GoogleMapProvider implements OnDestroy, MapProvider {
     }
 
     deleteAll() {
-        let drawnObjectsIds = this.drawnObjects.map(x=>x.uuid);
-        for(let id of drawnObjectsIds) {
+        let drawnObjectsIds = this.drawnObjects.map(x => x.uuid);
+        for (let id of drawnObjectsIds) {
             this.deleteObject(id);
         }
 
-        let phantomsIds = this.phantoms.map(x=>x.uuid);
-        for(let id of phantomsIds) {
+        let phantomsIds = this.phantoms.map(x => x.uuid);
+        for (let id of phantomsIds) {
             this.deletePhantom(id);
         }
     }
@@ -222,5 +289,4 @@ export class GoogleMapProvider implements OnDestroy, MapProvider {
 
         this._map.addListener('idle', onIdle(this));
     }
-
 }

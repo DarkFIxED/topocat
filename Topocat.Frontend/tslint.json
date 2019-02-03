@@ -35,7 +35,8 @@
                     "static-field",
                     "instance-field",
                     "static-method",
-                    "instance-method",
+                    "public-instance-method",
+                    "protected-instance-method",
                     "private-instance-method"
                 ]
             }
