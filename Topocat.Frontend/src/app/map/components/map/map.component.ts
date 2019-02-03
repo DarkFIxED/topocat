@@ -36,6 +36,13 @@ export class MapComponent implements OnInit, OnDestroy {
             this.handleQueryParams(queryParams);
         });
 
+        this.mapStore.entityChanged.subscribe(newMap => {
+            this.setupStoreSubscriptions();
+
+            this.mapProvider.deleteAll();
+            this.mapProvider.drawMany(newMap.mapObjects);
+        });
+
         this.setupListeners();
         this.setupStoreSubscriptions();
     }
@@ -192,10 +199,5 @@ export class MapComponent implements OnInit, OnDestroy {
             .subscribe(args => {
                 this.mapProvider.panToCoords(args.center);
             });
-
-        this.mapStore.entityChanged.subscribe(newMap => {
-            this.mapProvider.deleteAll();
-            this.mapProvider.drawMany(newMap.mapObjects);
-        });
     }
 }

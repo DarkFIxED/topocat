@@ -23,4 +23,6 @@ export abstract class MapObject extends DomainEntity {
         let date = new Date();
         this._lastModifiedTimeStamp = date.getTime();
     }
+
+    public abstract merge(otherObject: MapObject);
 }

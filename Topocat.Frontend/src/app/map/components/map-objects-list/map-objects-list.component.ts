@@ -29,14 +29,14 @@ export class MapObjectsListComponent implements OnInit {
 
     ngOnInit() {
         this.entities = this.mapStore.entity.mapObjects;
+
+        this.mapStore.entityChanged.subscribe(map => {
+            this.entities = map.mapObjects;
+        })
     }
 
     getType(object: MapObject): string {
         return object.constructor.name;
-    }
-
-    centerToObject(object: MapObject) {
-        this.mapService.provider.centerTo(object);
     }
 
     openNewPlacePopup() {

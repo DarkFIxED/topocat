@@ -43,4 +43,14 @@ export abstract class NameableMapObject extends MapObject {
     protected emitObjectChanged() {
         this.changed.next(this);
     }
+
+    public merge(otherObject: NameableMapObject) {
+        if (otherObject._lastModifiedTimeStamp <= this._lastModifiedTimeStamp) {
+            throw new Error('Current object newest that other.');
+        }
+
+        this._title = otherObject._title;
+        this._description = otherObject._description;
+        this._lastModifiedTimeStamp = otherObject._lastModifiedTimeStamp;
+    }
 }

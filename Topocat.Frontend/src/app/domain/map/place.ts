@@ -35,4 +35,11 @@ export class Place extends NameableMapObject {
 
         this.emitObjectChanged();
     }
+
+    merge(otherObject: Place) {
+        super.merge(otherObject);
+        this.coords.setValue(otherObject.coords.lat, otherObject.coords.lng)
+
+        this.emitObjectChanged();
+    }
 }

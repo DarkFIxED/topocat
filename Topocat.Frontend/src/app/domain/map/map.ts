@@ -74,12 +74,9 @@ export class Map extends AggregationRoot {
         }
     }
 
-    public addPlaces(places: Place[]): void {
-        this._mapObjects.push(...places);
-
-        for (let place of places) {
-            this.objectAdded.next(place);
-        }
+    public addObject(object: MapObject): void {
+        this._mapObjects.push(object);
+        this.objectAdded.next(object);
     }
 
     public addOrUpdateArea(area: Area): void {
@@ -89,14 +86,6 @@ export class Map extends AggregationRoot {
             this.objectAdded.next(area);
         } else {
             existingArea.copyFrom(area);
-        }
-    }
-
-    public addAreas(areas: Area[]): void {
-        this._mapObjects.push(...areas);
-
-        for (let area of areas) {
-            this.objectAdded.next(area);
         }
     }
 

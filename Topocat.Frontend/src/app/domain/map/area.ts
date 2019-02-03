@@ -30,4 +30,11 @@ export class Area extends NameableMapObject {
         this.emitObjectChanged();
     }
 
+    merge(otherObject: Area) {
+        super.merge(otherObject);
+        this.path.setValue(otherObject.path.coords.map(x=>new Coords(x.lat, x.lng)));
+
+        this.emitObjectChanged();
+    }
+
 }
