@@ -63,8 +63,7 @@ describe('Map', () => {
     });
 
     it('addOrUpdatePlace() adds place value and emit placeAdded subject', () => {
-        const place = new Place();
-        place.coords = new Coords(32,23);
+        const place =new Place(undefined, undefined, new Coords(32,23));
 
         map.objectAdded.subscribe(addedPlace => {
             expect(addedPlace).toBe(place);
@@ -75,12 +74,9 @@ describe('Map', () => {
         expect(map.mapObjects).toContain(place);
     });
 
-    it('addPlaces() adds some places value and emit placeAdded subjects', () => {
-        const place1 = new Place();
-        place1.coords = new Coords(32,23);
-
-        const place2 = new Place();
-        place2.coords = new Coords(33,24);
+    it('addObject() adds some places value and emit objectAdded subjects', () => {
+        const place1 = new Place(undefined, undefined, new Coords(32,23));
+        const place2 = new Place(undefined, undefined, new Coords(33,24));
 
         let places = [place1, place2];
 
@@ -89,7 +85,8 @@ describe('Map', () => {
             expect(has).toBeTruthy();
         });
 
-        map.addPlaces(places);
+        map.addObject(place1);
+        map.addObject(place2);
 
         expect(map.mapObjects).toContain(place1);
         expect(map.mapObjects).toContain(place2);
