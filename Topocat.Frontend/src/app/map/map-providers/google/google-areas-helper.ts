@@ -38,7 +38,6 @@ export class GoogleAreasHelper {
         this.updateDrawnObject(drawnObject, object);
 
         this.setPolygonPathListeners(drawnObject);
-
     }
 
     getCenter(object: Area): Coords {
@@ -57,9 +56,7 @@ export class GoogleAreasHelper {
             drawnObject.infoWindow.setContent(`${object.title}: ${object.description}`);
         }
 
-        let newPathValue = object.path.map(coord => {
-            return {lat: coord.lat, lng: coord.lng}
-        });
+        let newPathValue = object.path.coords.map(coord => coord.getLatLng());
 
         let polygon = (<google.maps.Polygon>drawnObject.object);
 
@@ -73,9 +70,7 @@ export class GoogleAreasHelper {
             content: `${area.title}: ${area.description}`
         });
 
-        let pathValue = area.path.map(coord => {
-            return {lat: coord.lat, lng: coord.lng}
-        });
+        let pathValue = area.path.coords.map(coord => coord.getLatLng());
 
         let polygon = new google.maps.Polygon({
             fillOpacity: isPhantom ? 0.2 : 0.5,
@@ -119,7 +114,7 @@ export class GoogleAreasHelper {
         return function () {
             let polygon = <google.maps.Polygon>drawnObject.object;
             let path = polygon.getPath().getArray().map(latLng => {
-                return {lat: latLng.lat(), lng: latLng.lng()}
+                return new Coords(latLng.lat(), latLng.lng());
             });
 
             let payload = new PhantomAreaPathChangedEventArgs(drawnObject.uuid, path);
@@ -132,8 +127,9 @@ export class GoogleAreasHelper {
         return function (index: number) {
             let polygon = <google.maps.Polygon>drawnObject.object;
             let path = polygon.getPath().getArray().map(latLng => {
-                return {lat: latLng.lat(), lng: latLng.lng()}
+                return new Coords(latLng.lat(), latLng.lng());
             });
+
             path.splice(index, 1);
 
             let payload = new PhantomAreaPathChangedEventArgs(drawnObject.uuid, path);

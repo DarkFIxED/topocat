@@ -4,14 +4,32 @@ import { JsonObject, JsonProperty } from 'json2typescript';
 export class Coords {
 
     @JsonProperty('lat')
-    public lat: number;
+    protected _lat: number;
 
-    @JsonProperty('lng')
-    public lng: number;
-
-    constructor(lat: number = 0, lng: number = 0) {
-        this.lat = lat;
-        this.lng = lng;
+    public get lat(): number {
+        return this._lat;
     }
 
+    @JsonProperty('lng')
+    protected _lng: number;
+
+    public get lng(): number {
+        return this._lng;
+    }
+
+    constructor(lat: number = 0, lng: number = 0) {
+        this.setValue(lat, lng);
+    }
+
+    setValue(lat: number, lng: number) {
+        this._lat = lat;
+        this._lng = lng;
+    }
+
+    getLatLng(): {lat: number, lng: number} {
+        return {
+            lat: this._lat,
+            lng: this._lng
+        };
+    }
 }

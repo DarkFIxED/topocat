@@ -55,6 +55,7 @@
                 </button>
                 <button mat-button
                         color="primary"
+                        [disabled]="placeForm.invalid"
                         (click)="submit()">Ok
                 </button>
             </div>

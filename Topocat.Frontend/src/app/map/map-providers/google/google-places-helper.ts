@@ -48,7 +48,7 @@ export class GooglePlacesHelper {
         let marker = new google.maps.Marker({
             label: place.title,
             opacity: isPhantom ? 0.4 : 1,
-            position: place.coords,
+            position: place.coords.getLatLng(),
             draggable: isPhantom,
             map: this.map
         });

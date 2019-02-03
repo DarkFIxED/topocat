@@ -23,6 +23,7 @@ export abstract class NameableMapObject extends MapObject {
 
     public set title(title: string) {
         this._title = title;
+        this.updateLastModifiedDate();
         this.emitObjectChanged();
     }
 
@@ -35,6 +36,7 @@ export abstract class NameableMapObject extends MapObject {
 
     public set description(description: string) {
         this._description = description;
+        this.updateLastModifiedDate();
         this.emitObjectChanged();
     }
 
