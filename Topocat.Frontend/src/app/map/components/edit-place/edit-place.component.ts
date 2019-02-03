@@ -65,6 +65,10 @@ export class EditPlaceComponent implements OnInit, OnDestroy {
     }
 
     dismiss() {
+        if (this.mapService.provider.isDrawingManually()) {
+            this.mapService.provider.cancelManualDrawing();
+        }
+
         this.close();
     }
 
@@ -88,7 +92,7 @@ export class EditPlaceComponent implements OnInit, OnDestroy {
     async draw() {
         this.mapService.provider.setPhantomsVisibility(false);
 
-        let coords = await this.mapService.provider.drawCoords();
+        let coords = await this.mapService.provider.drawCoordsManually();
         this.placeForm.patchValue({coords: coords.getLatLng()});
 
         this.mapService.provider.setPhantomsVisibility(true);

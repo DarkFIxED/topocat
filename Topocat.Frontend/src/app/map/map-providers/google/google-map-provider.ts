@@ -157,7 +157,7 @@ export class GoogleMapProvider implements OnDestroy, MapProvider {
         this.objectDrawer.hide(phantom);
     }
 
-    drawPath(): Promise<Coords[]> {
+    drawPathManually(): Promise<Coords[]> {
         return new Promise<Coords[]>((resolve) => {
             this.assertMapReady();
 
@@ -180,8 +180,8 @@ export class GoogleMapProvider implements OnDestroy, MapProvider {
         });
     }
 
-    drawCoords(): Promise<Coords> {
-        return new Promise<any>((resolve, reject) => {
+    drawCoordsManually(): Promise<Coords> {
+        return new Promise<any>((resolve) => {
             this.assertMapReady();
 
             this.drawingManager.setMap(this.map);
@@ -201,6 +201,15 @@ export class GoogleMapProvider implements OnDestroy, MapProvider {
 
             google.maps.event.addListener(this.drawingManager, 'markercomplete', onMarkerCompleteHandler(this));
         });
+    }
+
+    cancelManualDrawing() {
+        this.drawingManager.unbindAll();
+        this.drawingManager.setMap(null);
+    }
+
+    isDrawingManually(): boolean {
+        return this.drawingManager.getMap() != null;
     }
 
     centerTo(object: MapObject): void {

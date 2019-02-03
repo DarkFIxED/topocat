@@ -22,9 +22,13 @@ export interface MapProvider {
 
     deletePhantom(uuid: string);
 
-    drawCoords(): Promise<Coords>;
+    drawCoordsManually(): Promise<Coords>;
 
-    drawPath(): Promise<Coords[]>;
+    drawPathManually(): Promise<Coords[]>;
+
+    cancelManualDrawing();
+
+    isDrawingManually(): boolean;
 
     register();
 

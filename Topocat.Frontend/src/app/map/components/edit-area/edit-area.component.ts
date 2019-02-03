@@ -83,6 +83,10 @@ export class EditAreaComponent implements OnInit, OnDestroy {
     }
 
     dismiss() {
+        if (this.mapService.provider.isDrawingManually()) {
+            this.mapService.provider.cancelManualDrawing();
+        }
+
         this.close();
     }
 
@@ -119,7 +123,7 @@ export class EditAreaComponent implements OnInit, OnDestroy {
     async draw() {
         this.mapService.provider.setPhantomsVisibility(false);
 
-        let path = await this.mapService.provider.drawPath();
+        let path = await this.mapService.provider.drawPathManually();
         this.synchronizePaths(path);
 
         this.mapService.provider.setPhantomsVisibility(true);
