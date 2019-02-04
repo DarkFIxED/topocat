@@ -10,18 +10,19 @@ export class Path {
 
     @JsonProperty('coords', [Coords])
     protected readonly _coords: Coords[] = [];
+
+    constructor(coords?: Coords[]) {
+        if (coords) {
+            this.replaceValue(coords);
+        }
+    }
+
     public get coords(): ReadonlyArray<Coords> {
         return this._coords;
     }
 
     public get length(): number {
         return this._coords.length;
-    }
-
-    constructor(coords?: Coords[]) {
-        if (coords) {
-            this.replaceValue(coords);
-        }
     }
 
     append(coords: Coords): void {
@@ -46,6 +47,39 @@ export class Path {
 
     updateAt(coords: Coords, index: number) {
         this._coords[index].setValue(coords.lat, coords.lng);
+    }
+
+    getCenter(): Coords {
+        if (this.length === 0) {
+            throw new Error('No points');
+        }
+
+        if (this.length == -1) {
+            return new Coords(this.coords[0].lat, this.coords[0].lng);
+        }
+
+        let x = 0;
+        let y = 0;
+        let z = 0;
+
+        this.coords.forEach(coords => {
+            let latitude = coords.lat * Math.PI / 180;
+            let longitude = coords.lng * Math.PI / 180;
+
+            x += Math.cos(latitude) * Math.cos(longitude);
+            y += Math.cos(latitude) * Math.sin(longitude);
+            z += Math.sin(latitude);
+        });
+
+        x = x / this.length;
+        y = y / this.length;
+        z = z / this.length;
+
+        const centralLongitude = Math.atan2(y, x);
+        const centralSquareRoot = Math.sqrt(x * x + y * y);
+        const centralLatitude = Math.atan2(z, centralSquareRoot);
+
+        return new Coords(centralLatitude * 180 / Math.PI, centralLongitude * 180 / Math.PI);
     }
 
     protected replaceValue(coords: Coords[]) {

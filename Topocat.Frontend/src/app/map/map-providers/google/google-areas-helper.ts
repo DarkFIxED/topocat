@@ -40,17 +40,6 @@ export class GoogleAreasHelper {
         this.setPolygonPathListeners(drawnObject);
     }
 
-    getCenter(object: Area): Coords {
-        let bounds = new google.maps.LatLngBounds();
-        for (let i = 0; i < object.path.length; i++) {
-            bounds.extend(object.path[i]);
-        }
-
-        let center = bounds.getCenter();
-
-        return new Coords(center.lat(), center.lng());
-    }
-
     updateDrawnObject(drawnObject: GoogleMapDrawnObject, object: Area) {
         if (drawnObject.infoWindow) {
             drawnObject.infoWindow.setContent(`${object.title}: ${object.description}`);

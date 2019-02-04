@@ -42,4 +42,8 @@ export class Place extends NameableMapObject {
 
         this.emitObjectChanged();
     }
+
+    getCenter(): Coords {
+        return new Coords(this.coords.lat, this.coords.lng);
+    }
 }

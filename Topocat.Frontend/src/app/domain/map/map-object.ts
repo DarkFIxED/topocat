@@ -1,6 +1,7 @@
 import { DomainEntity } from '../../infrastructure/domain-entity';
 import { UUID } from 'angular2-uuid';
 import { JsonObject, JsonProperty } from 'json2typescript';
+import { Coords } from './coords';
 
 @JsonObject
 export abstract class MapObject extends DomainEntity {
@@ -24,5 +25,7 @@ export abstract class MapObject extends DomainEntity {
         this._lastModifiedTimeStamp = date.getTime();
     }
 
-    public abstract merge(otherObject: MapObject);
+    abstract merge(otherObject: MapObject);
+
+    abstract getCenter(): Coords;
 }

@@ -213,8 +213,8 @@ export class GoogleMapProvider implements OnDestroy, MapProvider {
     }
 
     centerTo(object: MapObject): void {
-        let center = this.objectDrawer.getCenter(object);
-        this.map.panTo(center);
+        let center = object.getCenter();
+        this.map.panTo(center.getLatLng());
     }
 
     panToCoords(coords: Coords): void {

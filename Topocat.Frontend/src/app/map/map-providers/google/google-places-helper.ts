@@ -1,6 +1,5 @@
 import { Place } from '../../../domain/map/place';
 import { GoogleMapDrawnObject } from './google-map-drawn-object';
-import { Coords } from '../../../domain/map/coords';
 import { PhantomPlaceCoordsChangedEventArgs } from '../../models/phantom-place-coords-changed-event-args';
 
 export class GooglePlacesHelper {
@@ -70,9 +69,5 @@ export class GooglePlacesHelper {
 
         return drawnObject;
     };
-
-    getCenter(object: Place): Coords {
-        return object.coords;
-    }
 }
 

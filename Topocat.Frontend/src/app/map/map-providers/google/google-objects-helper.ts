@@ -83,14 +83,4 @@ export class GoogleObjectsHelper {
             this.polygonDrawer.updatePhantom(drawnObject, object);
         }
     }
-
-    getCenter(object: MapObject): Coords {
-        if (object instanceof Place) {
-            return this.markerDrawer.getCenter(object);
-        }
-
-        if (object instanceof Area) {
-            return this.polygonDrawer.getCenter(object);
-        }
-    }
 }

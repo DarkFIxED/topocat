@@ -37,4 +37,8 @@ export class Area extends NameableMapObject {
         this.emitObjectChanged();
     }
 
+    getCenter(): Coords {
+        return this.path.getCenter();
+    }
+
 }
