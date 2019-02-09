@@ -19,8 +19,8 @@ import { filter } from 'rxjs/operators';
 })
 export class MapComponent implements OnInit, OnDestroy {
 
-    public MapType = MapType;
-    public activatedMap: MapType;
+    MapType = MapType;
+    activatedMap: MapType;
 
     private listeners = [];
 
@@ -55,7 +55,7 @@ export class MapComponent implements OnInit, OnDestroy {
         this.messageBus.stopListen(this.listeners);
     }
 
-    public onMapReady(map: any) {
+    onMapReady(map: any) {
         let zoom = this.mapStore.entity.zoom;
         let center = this.mapStore.entity.center;
 

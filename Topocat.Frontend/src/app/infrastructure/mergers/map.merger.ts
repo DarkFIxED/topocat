@@ -21,7 +21,7 @@ export class MapMerger {
     }
 
     private addNewObjects(oldMap: Map, newObjects: MapObject[]) {
-        newObjects.forEach(object => oldMap.addObject(object));
+        newObjects.forEach(object => oldMap.addOrUpdateObject(object));
     }
 
     private updateChangedObjects(oldMap: Map, changedObjects: MapObject[]) {

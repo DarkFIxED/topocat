@@ -16,14 +16,14 @@ import { Router } from '@angular/router';
 })
 export class ControlToolbarComponent implements OnInit {
 
-    public maxAllowedZoom = 0;
+    maxAllowedZoom = 0;
 
-    public centerForm: FormGroup = new FormGroup({
+    centerForm: FormGroup = new FormGroup({
         lat: new FormControl('', [Validators.required]),
         lng: new FormControl('', [Validators.required])
     });
 
-    public zoomForm: FormGroup = new FormGroup({
+    zoomForm: FormGroup = new FormGroup({
         zoom: new FormControl('', [Validators.required])
     });
 

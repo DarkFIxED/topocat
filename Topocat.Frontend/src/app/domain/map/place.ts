@@ -20,20 +20,11 @@ export class Place extends NameableMapObject {
     updateCoordsFromLatLng(lat: number, lng: number) {
         this.coords.setValue(lat, lng);
         this.updateLastModifiedDate();
+        this.emitObjectChanged();
     }
 
     updateCoords(newCoords: Coords) {
         this.updateCoordsFromLatLng(newCoords.lat, newCoords.lng);
-    }
-
-    copyFrom(anotherPlace: Place): void {
-        this.uuid = anotherPlace.uuid;
-        this.title = anotherPlace.title;
-        this.description = anotherPlace.description;
-        this.updateCoords(anotherPlace.coords);
-        this._lastModifiedTimeStamp = anotherPlace._lastModifiedTimeStamp;
-
-        this.emitObjectChanged();
     }
 
     merge(otherObject: Place) {
@@ -45,5 +36,15 @@ export class Place extends NameableMapObject {
 
     getCenter(): Coords {
         return new Coords(this.coords.lat, this.coords.lng);
+    }
+
+    copy(otherObject: Place) {
+        this.uuid = otherObject.uuid;
+        this.title = otherObject.title;
+        this.description = otherObject.description;
+        this.updateCoords(otherObject.coords);
+        this._lastModifiedTimeStamp = otherObject._lastModifiedTimeStamp;
+
+        this.emitObjectChanged();
     }
 }

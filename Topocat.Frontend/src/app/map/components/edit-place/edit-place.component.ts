@@ -19,11 +19,11 @@ import { ConfirmationDialogService } from '../../../infrastructure/dialogs/confi
 })
 export class EditPlaceComponent implements OnInit, OnDestroy {
 
-    public place: Place;
+    place: Place;
 
-    public caption = '';
+    caption = '';
 
-    public placeForm = new FormGroup({
+    placeForm = new FormGroup({
         uuid: new FormControl('', [Validators.required]),
         title: new FormControl('', [Validators.required]),
         description: new FormControl('', []),
@@ -33,7 +33,7 @@ export class EditPlaceComponent implements OnInit, OnDestroy {
         })
     });
 
-    public isNewPlace = false;
+    isNewPlace = false;
 
     private listeners = [];
 
@@ -73,8 +73,7 @@ export class EditPlaceComponent implements OnInit, OnDestroy {
     }
 
     submit() {
-        this.mapStore.entity.addOrUpdatePlace(this.place);
-
+        this.mapStore.entity.addOrUpdateObject(this.place);
         this.close();
     }
 
@@ -164,7 +163,7 @@ export class EditPlaceComponent implements OnInit, OnDestroy {
         }
 
         let place = new Place();
-        place.copyFrom(originPlace);
+        place.copy(originPlace);
 
         return place;
     }

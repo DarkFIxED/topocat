@@ -39,17 +39,17 @@ export class GoogleMapProvider implements OnDestroy, MapProvider {
 
     protected _map: google.maps.Map;
 
-    public get map(): google.maps.Map {
+    get map(): google.maps.Map {
         return this._map;
     }
 
     protected _mapReady: boolean = false;
 
-    public get mapReady(): boolean {
+    get mapReady(): boolean {
         return this._mapReady;
     }
 
-    public get maxZoom(): number {
+    get maxZoom(): number {
         return this.MaxGoogleZoom;
     }
 

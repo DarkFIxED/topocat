@@ -4,15 +4,15 @@ import { ControlPosition, MapTypeId, ZoomControlStyle } from '@agm/core/services
 
 export class GoogleMapConfigurationModel extends MapConfigurationModel {
 
-    public mapTypeControl: boolean;
-    public scaleControl: boolean;
-    public zoomControlOptions: {
+    mapTypeControl: boolean;
+    scaleControl: boolean;
+    zoomControlOptions: {
         style?: ZoomControlStyle,
         position?: ControlPosition
     };
-    public mapTypeId: MapTypeId;
+    mapTypeId: MapTypeId;
 
-    public constructor(//coord = new Coord(56, 84),
+    constructor(//coord = new Coord(56, 84),
                        zoomLevel = 10,
                        maxZoom = 25,
                        minZoom = 2,

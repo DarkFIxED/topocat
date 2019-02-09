@@ -7,9 +7,9 @@ import { Path } from './path';
 export class Area extends NameableMapObject {
 
     @JsonProperty('path', Path)
-    public readonly path: Path;
+    readonly path: Path;
 
-    public constructor(title?: string, description?: string, path?: Coords[]) {
+    constructor(title?: string, description?: string, path?: Coords[]) {
         super(title, description);
         this.path = new Path();
 
@@ -17,22 +17,15 @@ export class Area extends NameableMapObject {
             this.path.setValue(path);
         }
 
-        this.path.changed.subscribe(() => this.updateLastModifiedDate());
-    }
-
-    copyFrom(anotherArea: Area): any {
-        this.title = anotherArea.title;
-        this.description = anotherArea.description;
-        this.uuid = anotherArea.uuid;
-        this.path.setValue(anotherArea.path.coords.map(x=>new Coords(x.lat, x.lng)));
-        this._lastModifiedTimeStamp = anotherArea._lastModifiedTimeStamp;
-
-        this.emitObjectChanged();
+        this.path.changed.subscribe(() => {
+            this.updateLastModifiedDate();
+            this.emitObjectChanged();
+        });
     }
 
     merge(otherObject: Area) {
         super.merge(otherObject);
-        this.path.setValue(otherObject.path.coords.map(x=>new Coords(x.lat, x.lng)));
+        this.path.setValue(otherObject.path.coords.map(x => new Coords(x.lat, x.lng)));
 
         this.emitObjectChanged();
     }
@@ -41,4 +34,13 @@ export class Area extends NameableMapObject {
         return this.path.getCenter();
     }
 
+    copy(otherObject: Area) {
+        this.title = otherObject.title;
+        this.description = otherObject.description;
+        this.uuid = otherObject.uuid;
+        this.path.setValue(otherObject.path.coords.map(x => new Coords(x.lat, x.lng)));
+        this._lastModifiedTimeStamp = otherObject._lastModifiedTimeStamp;
+
+        this.emitObjectChanged();
+    }
 }

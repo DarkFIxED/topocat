@@ -7,7 +7,7 @@ export abstract class MapConfigurationModel {
         this.zoomLevel = zoomLevel;
     }
 
-    public zoomLevel: number;
-    public maxZoom: number;
-    public minZoom: number;
+    zoomLevel: number;
+    maxZoom: number;
+    minZoom: number;
 }

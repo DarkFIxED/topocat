@@ -6,14 +6,14 @@ export class Coords {
     @JsonProperty('lat')
     protected _lat: number;
 
-    public get lat(): number {
+    get lat(): number {
         return this._lat;
     }
 
     @JsonProperty('lng')
     protected _lng: number;
 
-    public get lng(): number {
+    get lng(): number {
         return this._lng;
     }
 

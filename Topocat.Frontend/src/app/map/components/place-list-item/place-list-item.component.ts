@@ -13,7 +13,7 @@ import { MessageNames } from '../../../infrastructure/message-names';
 export class PlaceListItemComponent implements OnInit {
 
     @Input()
-    public place: Place;
+    place: Place;
 
     constructor(
         private mapService: MapService,

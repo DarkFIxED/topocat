@@ -8,7 +8,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class MainCardComponent implements OnInit {
 
-    public links = [
+    links = [
         {
             title: 'Items',
             url: 'items',
@@ -26,7 +26,7 @@ export class MainCardComponent implements OnInit {
         }
     ];
 
-    public activeLink;
+    activeLink;
 
     constructor(public router: Router,
                 public route: ActivatedRoute) {

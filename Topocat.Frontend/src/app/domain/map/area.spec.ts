@@ -36,7 +36,7 @@ describe('Area', () => {
         });
 
         // Act.
-        area.copyFrom(anotherArea);
+        area.copy(anotherArea);
 
         // Assert.
         expect(area.title).toEqual(anotherArea.title);

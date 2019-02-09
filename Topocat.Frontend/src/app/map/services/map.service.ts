@@ -6,18 +6,18 @@ export class MapService {
 
     protected activatedProvider: MapProvider = undefined;
 
-    public get provider(): MapProvider {
+    get provider(): MapProvider {
         return this.activatedProvider;
     }
 
-    public get hasProvider(): boolean {
+    get hasProvider(): boolean {
         return !!this.activatedProvider;
     }
 
     constructor() {
     }
 
-    public register(provider: MapProvider): void {
+    register(provider: MapProvider): void {
         if (!!this.activatedProvider) {
             throw new Error('MapProvider already registered. Try to unregister first');
         }
@@ -25,7 +25,7 @@ export class MapService {
         this.activatedProvider = provider;
     }
 
-    public unregister(provider: MapProvider): void {
+    unregister(provider: MapProvider): void {
         if (this.activatedProvider !== provider) {
             throw new Error('MapProvider has not been registered.');
         }

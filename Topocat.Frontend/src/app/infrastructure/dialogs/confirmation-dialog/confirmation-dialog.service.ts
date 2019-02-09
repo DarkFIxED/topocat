@@ -7,10 +7,10 @@ import { map } from 'rxjs/operators';
 @Injectable()
 export class ConfirmationDialogService {
 
-    public constructor(private dialog: MatDialog) {
+    constructor(private dialog: MatDialog) {
     }
 
-    public call(title: string, content: string): Observable<boolean> {
+    call(title: string, content: string): Observable<boolean> {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.disableClose = true;
         dialogConfig.autoFocus = true;
