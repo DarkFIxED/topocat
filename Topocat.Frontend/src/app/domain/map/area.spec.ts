@@ -82,7 +82,7 @@ describe('Area', () => {
         expect(currentArea.title).toEqual(anotherArea.title);
         expect(currentArea.description).toEqual(anotherArea.description);
         expect(currentArea.uuid).not.toEqual(anotherArea.uuid);
-        expect(currentArea.lastModifiedDate).toEqual(anotherArea.lastModifiedDate);
+        expect(currentArea.lastModifiedDate.getTime()).toEqual(anotherArea.lastModifiedDate.getTime());
         expect(currentArea.path.coords.every((pathEl, index) => {
             return pathEl.lat === coords[index].lat && pathEl.lng === coords[index].lng;
         })).toBeTruthy();

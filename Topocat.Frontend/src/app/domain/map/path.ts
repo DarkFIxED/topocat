@@ -40,9 +40,12 @@ export class Path {
         this._changed.next();
     }
 
-    setValue(coords: Coords[]) {
+    setValue(coords: Coords[], emitChanged = true) {
         this.replaceValue(coords);
-        this._changed.next();
+
+        if (emitChanged) {
+            this._changed.next();
+        }
     }
 
     updateAt(coords: Coords, index: number) {
