@@ -28,7 +28,7 @@ export abstract class MapObject extends DomainEntity {
 
     abstract getCenter(): Coords;
 
-    abstract copy(otherObject: MapObject);
+    abstract copyFrom(otherObject: MapObject);
 
     protected updateLastModifiedDate() {
         let date = new Date();

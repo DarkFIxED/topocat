@@ -163,7 +163,7 @@ export class EditPlaceComponent implements OnInit, OnDestroy {
         }
 
         let place = new Place();
-        place.copy(originPlace);
+        place.copyFrom(originPlace);
 
         return place;
     }

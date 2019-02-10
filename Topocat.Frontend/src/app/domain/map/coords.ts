@@ -3,6 +3,10 @@ import { JsonObject, JsonProperty } from 'json2typescript';
 @JsonObject('coords')
 export class Coords {
 
+    static Copy(coords: Coords) {
+        return new Coords(coords.lat, coords.lng);
+    }
+
     @JsonProperty('lat')
     protected _lat: number;
 

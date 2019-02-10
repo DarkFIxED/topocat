@@ -71,7 +71,7 @@ export class Map extends AggregationRoot {
         if (!existingObject) {
            this.addObject(mapObject);
         } else {
-            existingObject.copy(mapObject);
+            existingObject.copyFrom(mapObject);
         }
     }
 

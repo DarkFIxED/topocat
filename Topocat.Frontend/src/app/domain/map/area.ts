@@ -34,7 +34,7 @@ export class Area extends NameableMapObject {
         return this.path.getCenter();
     }
 
-    copy(otherObject: Area) {
+    copyFrom(otherObject: Area) {
         this.title = otherObject.title;
         this.description = otherObject.description;
         this.uuid = otherObject.uuid;

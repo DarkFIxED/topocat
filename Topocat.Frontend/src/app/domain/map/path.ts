@@ -25,6 +25,10 @@ export class Path {
         return this._coords.length;
     }
 
+    get isEmpty(): boolean {
+        return this.length === 0;
+    }
+
     append(coords: Coords): void {
         this._coords.push(coords);
         this._changed.next();
@@ -53,11 +57,11 @@ export class Path {
     }
 
     getCenter(): Coords {
-        if (this.length === 0) {
+        if (this.isEmpty) {
             throw new Error('No points');
         }
 
-        if (this.length == -1) {
+        if (this.length == 1) {
             return new Coords(this.coords[0].lat, this.coords[0].lng);
         }
 

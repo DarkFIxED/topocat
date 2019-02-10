@@ -35,10 +35,10 @@ export class Place extends NameableMapObject {
     }
 
     getCenter(): Coords {
-        return new Coords(this.coords.lat, this.coords.lng);
+        return Coords.Copy(this.coords);
     }
 
-    copy(otherObject: Place) {
+    copyFrom(otherObject: Place) {
         this.uuid = otherObject.uuid;
         this.title = otherObject.title;
         this.description = otherObject.description;

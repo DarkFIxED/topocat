@@ -139,4 +139,80 @@ describe('Path', () => {
         })).toBeTruthy();
     });
 
+    it('getCenter() returns center of path', () => {
+
+        let accuracy = 0.0001;
+
+        let expetedValue = 0.5;
+
+        // Arrange.
+        let path = new Path();
+
+        let pathCoords = [
+            new Coords(0, 0),
+            new Coords(0, 1),
+            new Coords(1, 1),
+            new Coords(1, 0)
+        ];
+        path.setValue(pathCoords);
+
+        // Act.
+        let center = path.getCenter();
+
+        // Assert.
+        expect(Math.abs(center.lat - expetedValue)).toBeLessThanOrEqual(accuracy);
+        expect(Math.abs(center.lng - expetedValue)).toBeLessThanOrEqual(accuracy);
+    });
+
+    it('getCenter() throws error if there is no coords', () => {
+
+        // Arrange.
+        let path = new Path();
+
+        // Act and assert.
+        expect(() => path.getCenter()).toThrowError();
+    });
+
+    it('getCenter() returns value of once path coord', () => {
+
+        // Arrange.
+        let lat = 0.2345553;
+        let lng = 0.2313553;
+
+        let path = new Path();
+        path.append(new Coords(lat, lng));
+
+        // Act.
+        let center = path.getCenter();
+
+        // Assert.
+        expect(center.lat).toEqual(lat);
+        expect(center.lng).toEqual(lng);
+    });
+
+    it('isEmpty() returns true of there are no coords', () => {
+
+        // Arrange.
+        let path = new Path();
+
+        // Act.
+        let result = path.isEmpty;
+
+        // Assert.
+        expect(result).toBeTruthy();
+    });
+
+    it('isEmpty() returns false of there are any coords', () => {
+
+        // Arrange.
+        let path = new Path();
+        path.append(new Coords());
+
+        // Act.
+        let result = path.isEmpty;
+
+        // Assert.
+        expect(result).toBeFalsy();
+    });
+
 });

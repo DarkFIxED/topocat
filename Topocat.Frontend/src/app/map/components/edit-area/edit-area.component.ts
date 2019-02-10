@@ -172,7 +172,7 @@ export class EditAreaComponent implements OnInit, OnDestroy {
         }
 
         let area = new Area();
-        area.copy(originArea);
+        area.copyFrom(originArea);
 
         return area;
     }
