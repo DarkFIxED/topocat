@@ -16,14 +16,14 @@ import { Router } from '@angular/router';
 })
 export class ControlToolbarComponent implements OnInit {
 
-    public maxAllowedZoom = 0;
+    maxAllowedZoom = 0;
 
-    public centerForm: FormGroup = new FormGroup({
+    centerForm: FormGroup = new FormGroup({
         lat: new FormControl('', [Validators.required]),
         lng: new FormControl('', [Validators.required])
     });
 
-    public zoomForm: FormGroup = new FormGroup({
+    zoomForm: FormGroup = new FormGroup({
         zoom: new FormControl('', [Validators.required])
     });
 
@@ -31,11 +31,11 @@ export class ControlToolbarComponent implements OnInit {
                 private mapService: MapService,
                 private messageBus: MessageBusService,
                 private router: Router) {
-        this.mapStore.entity.centerChanged.subscribe(centerChangedEventArgs => {
+        this.mapStore.centerChanged.subscribe(centerChangedEventArgs => {
             this.centerForm.setValue(centerChangedEventArgs.center, {emitEvent: false});
         });
 
-        this.mapStore.entity.zoomChanged.subscribe(zoomChangedEventArgs => {
+        this.mapStore.zoomChanged.subscribe(zoomChangedEventArgs => {
             this.zoomForm.setValue({zoom: zoomChangedEventArgs.zoom}, {emitEvent: false});
         });
 

@@ -8,7 +8,7 @@ export class GoogleMapConfigurationStore {
 
     private readonly googleMapConfigKey = 'google-map-config';
 
-    public constructor() {
+    constructor() {
 
 
         // this.modelChanged$.pipe(

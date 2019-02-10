@@ -14,8 +14,8 @@ describe('Map', () => {
         const newValue = 15;
 
         map.zoomChanged.subscribe(zoomChangedEventArgs => {
-           expect(zoomChangedEventArgs.zoom).toBe(newValue);
-           expect(zoomChangedEventArgs.setFromMap).toBeFalsy();
+            expect(zoomChangedEventArgs.zoom).toBe(newValue);
+            expect(zoomChangedEventArgs.setFromMap).toBeFalsy();
         });
 
         map.setZoom(newValue);
@@ -62,33 +62,49 @@ describe('Map', () => {
         expect(map.center).toBe(newValue);
     });
 
-    it('addOrUpdatePlace() adds place value and emit placeAdded subject', () => {
-        const place =new Place(undefined, undefined, new Coords(32,23));
+    it('addOrUpdateObject() adds object value and emit objectAdded subject', () => {
+        const place = new Place(undefined, undefined, new Coords(32, 23));
 
         map.objectAdded.subscribe(addedPlace => {
             expect(addedPlace).toBe(place);
         });
 
-        map.addOrUpdatePlace(place);
+        map.addOrUpdateObject(place);
 
         expect(map.mapObjects).toContain(place);
     });
 
-    it('addObject() adds some places value and emit objectAdded subjects', () => {
-        const place1 = new Place(undefined, undefined, new Coords(32,23));
-        const place2 = new Place(undefined, undefined, new Coords(33,24));
+    it('addOrUpdateObject() updates object value and emit objectAdded subject', () => {
+        // Arrange.
+        const place = new Place(undefined, undefined, new Coords(32, 23));
 
-        let places = [place1, place2];
+        map.addOrUpdateObject(place);
 
-        map.objectAdded.subscribe(addedPlace => {
-            let has = places.some(x=>x.uuid === addedPlace.uuid);
-            expect(has).toBeTruthy();
+        map.objectChanged.subscribe(addedPlace => {
+            expect(addedPlace).toBe(place);
         });
 
-        map.addObject(place1);
-        map.addObject(place2);
+        // Act.
+        map.addOrUpdateObject(place);
 
-        expect(map.mapObjects).toContain(place1);
-        expect(map.mapObjects).toContain(place2);
+        // Assert.
+        expect(map.mapObjects).toContain(place);
+    });
+
+    it('deleteObject() deletes object value and emit objectDeleted subject', () => {
+        // Arrange.
+        const place = new Place(undefined, undefined, new Coords(32, 23));
+
+        map.addOrUpdateObject(place);
+
+        map.objectDeleted.subscribe(deletedPlace => {
+            expect(deletedPlace).toBe(place);
+        });
+
+        // Act.
+        map.deleteObject(place.uuid);
+
+        // Assert.
+        expect(map.mapObjects).not.toContain(place);
     });
 });

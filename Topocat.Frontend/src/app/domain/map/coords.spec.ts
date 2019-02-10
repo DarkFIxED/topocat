@@ -17,6 +17,21 @@ describe('Coords', () => {
         expect(coords.lng).toEqual(lng);
     });
 
+    it('Copy() returns copy of object', () => {
+
+        // Arrange.
+        let lat = 4.323;
+        let lng = 21.12312;
+        let coords = new Coords(lat, lng);
+
+        // Act.
+        let copy = Coords.Copy(coords);
+
+        // Assert.
+        expect(copy.lat).toEqual(lat);
+        expect(copy.lng).toEqual(lng);
+    });
+
     it('getLatLng() returns correct value', () => {
 
         // Arrange.

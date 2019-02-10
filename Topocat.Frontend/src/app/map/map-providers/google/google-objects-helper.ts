@@ -12,7 +12,7 @@ export class GoogleObjectsHelper {
     private markerDrawer = new GooglePlacesHelper();
     private polygonDrawer = new GoogleAreasHelper();
 
-    public setup(map: google.maps.Map) {
+    setup(map: google.maps.Map) {
         this.map = map;
         this.markerDrawer.setup(map);
         this.polygonDrawer.setup(map);

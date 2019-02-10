@@ -22,15 +22,15 @@ import { Path } from '../../../domain/map/path';
 })
 export class EditAreaComponent implements OnInit, OnDestroy {
 
-    public caption = '';
+    caption = '';
 
-    public areaForm = new FormGroup({
+    areaForm = new FormGroup({
         uuid: new FormControl('', [Validators.required]),
         title: new FormControl('', [Validators.required]),
         description: new FormControl('', []),
         path: new FormArray([])
     });
-    public isNewArea = false;
+    isNewArea = false;
     private area: Area;
 
     private listeners = [];
@@ -91,8 +91,7 @@ export class EditAreaComponent implements OnInit, OnDestroy {
     }
 
     submit() {
-        this.mapStore.entity.addOrUpdateArea(this.area);
-
+        this.mapStore.entity.addOrUpdateObject(this.area);
         this.close();
     }
 

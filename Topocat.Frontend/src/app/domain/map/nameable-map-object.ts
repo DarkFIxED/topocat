@@ -1,11 +1,8 @@
 import { MapObject } from './map-object';
-import { Subject } from 'rxjs';
 import { JsonObject, JsonProperty } from 'json2typescript';
 
 @JsonObject
 export abstract class NameableMapObject extends MapObject {
-
-    public changed: Subject<NameableMapObject> = new Subject<NameableMapObject>();
 
     protected constructor(title?: string, description?: string) {
         super();
@@ -17,11 +14,11 @@ export abstract class NameableMapObject extends MapObject {
     @JsonProperty('title')
     protected _title: string;
 
-    public get title(): string {
+    get title(): string {
         return this._title;
     }
 
-    public set title(title: string) {
+    set title(title: string) {
         this._title = title;
         this.updateLastModifiedDate();
         this.emitObjectChanged();
@@ -30,21 +27,17 @@ export abstract class NameableMapObject extends MapObject {
     @JsonProperty('description')
     protected _description: string;
 
-    public get description(): string {
+    get description(): string {
         return this._description;
     }
 
-    public set description(description: string) {
+    set description(description: string) {
         this._description = description;
         this.updateLastModifiedDate();
         this.emitObjectChanged();
     }
 
-    protected emitObjectChanged() {
-        this.changed.next(this);
-    }
-
-    public merge(otherObject: NameableMapObject) {
+    merge(otherObject: NameableMapObject) {
         if (otherObject._lastModifiedTimeStamp <= this._lastModifiedTimeStamp) {
             throw new Error('Current object newest that other.');
         }

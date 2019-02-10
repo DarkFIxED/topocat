@@ -14,9 +14,9 @@ import { MessageNames } from '../../../infrastructure/message-names';
 })
 export class MapObjectsListComponent implements OnInit {
 
-    public Place = Place;
+    Place = Place;
 
-    public entities: Array<MapObject> = [];
+    entities: Array<MapObject> = [];
 
     constructor(
         private mapStore: MapStore,

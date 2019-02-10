@@ -13,7 +13,7 @@ import { MessageNames } from '../../../infrastructure/message-names';
 export class AreaListItemComponent implements OnInit {
 
     @Input()
-    public area: Area;
+    area: Area;
 
     constructor(
         private mapService: MapService,

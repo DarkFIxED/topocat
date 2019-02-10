@@ -82,10 +82,35 @@ describe('Area', () => {
         expect(currentArea.title).toEqual(anotherArea.title);
         expect(currentArea.description).toEqual(anotherArea.description);
         expect(currentArea.uuid).not.toEqual(anotherArea.uuid);
-        expect(currentArea.lastModifiedDate).toEqual(anotherArea.lastModifiedDate);
+        expect(currentArea.lastModifiedDate.getTime()).toEqual(anotherArea.lastModifiedDate.getTime());
         expect(currentArea.path.coords.every((pathEl, index) => {
             return pathEl.lat === coords[index].lat && pathEl.lng === coords[index].lng;
         })).toBeTruthy();
+    });
+
+    it('getCenter() returns center of containing path', async () => {
+
+        let accuracy = 0.0001;
+
+        let expetedValue = 0.5;
+
+        // Arrange.
+        let area = new Area();
+
+        let pathCoords = [
+            new Coords(0, 0),
+            new Coords(0, 1),
+            new Coords(1, 1),
+            new Coords(1, 0)
+        ];
+        area.path.setValue(pathCoords);
+
+        // Act.
+        let center = area.getCenter();
+
+        // Assert.
+        expect(Math.abs(center.lat - expetedValue)).toBeLessThanOrEqual(accuracy);
+        expect(Math.abs(center.lng - expetedValue)).toBeLessThanOrEqual(accuracy);
     });
 
 });
