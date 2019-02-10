@@ -74,4 +74,37 @@ describe('Map', () => {
         expect(map.mapObjects).toContain(place);
     });
 
+    it('addOrUpdateObject() updates object value and emit objectAdded subject', () => {
+        // Arrange.
+        const place = new Place(undefined, undefined, new Coords(32, 23));
+
+        map.addOrUpdateObject(place);
+
+        map.objectChanged.subscribe(addedPlace => {
+            expect(addedPlace).toBe(place);
+        });
+
+        // Act.
+        map.addOrUpdateObject(place);
+
+        // Assert.
+        expect(map.mapObjects).toContain(place);
+    });
+
+    it('deleteObject() deletes object value and emit objectDeleted subject', () => {
+        // Arrange.
+        const place = new Place(undefined, undefined, new Coords(32, 23));
+
+        map.addOrUpdateObject(place);
+
+        map.objectDeleted.subscribe(deletedPlace => {
+            expect(deletedPlace).toBe(place);
+        });
+
+        // Act.
+        map.deleteObject(place.uuid);
+
+        // Assert.
+        expect(map.mapObjects).not.toContain(place);
+    });
 });

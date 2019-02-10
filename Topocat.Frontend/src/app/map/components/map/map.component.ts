@@ -32,13 +32,12 @@ export class MapComponent implements OnInit, OnDestroy {
                 private route: ActivatedRoute,
                 private router: Router,
                 private zone: NgZone) {
+
         this.queryParamsSubscription = this.route.queryParams.subscribe(queryParams => {
             this.handleQueryParams(queryParams);
         });
 
         this.mapStore.entityChanged.subscribe(newMap => {
-            this.setupStoreSubscriptions();
-
             this.mapProvider.deleteAll();
             this.mapProvider.drawMany(newMap.mapObjects);
         });
@@ -176,15 +175,15 @@ export class MapComponent implements OnInit, OnDestroy {
     }
 
     private setupStoreSubscriptions() {
-        this.mapStore.entity.objectAdded.subscribe(object => {
+        this.mapStore.objectAdded.subscribe(object => {
             this.mapProvider.draw(object);
         });
 
-        this.mapStore.entity.objectDeleted.subscribe(object => {
+        this.mapStore.objectDeleted.subscribe(object => {
             this.mapProvider.deleteObject(object.uuid);
         });
 
-        this.mapStore.entity.zoomChanged
+        this.mapStore.zoomChanged
             .pipe(
                 filter(x => !x.setFromMap)
             )
@@ -192,12 +191,16 @@ export class MapComponent implements OnInit, OnDestroy {
                 this.mapProvider.setZoom(args.zoom);
             });
 
-        this.mapStore.entity.centerChanged
+        this.mapStore.centerChanged
             .pipe(
                 filter(x => !x.setFromMap)
             )
             .subscribe(args => {
                 this.mapProvider.panToCoords(args.center);
             });
+
+        this.mapStore.objectChanged.subscribe(value => {
+            console.log(value);
+        });
     }
 }

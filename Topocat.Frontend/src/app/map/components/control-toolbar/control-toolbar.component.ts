@@ -31,11 +31,11 @@ export class ControlToolbarComponent implements OnInit {
                 private mapService: MapService,
                 private messageBus: MessageBusService,
                 private router: Router) {
-        this.mapStore.entity.centerChanged.subscribe(centerChangedEventArgs => {
+        this.mapStore.centerChanged.subscribe(centerChangedEventArgs => {
             this.centerForm.setValue(centerChangedEventArgs.center, {emitEvent: false});
         });
 
-        this.mapStore.entity.zoomChanged.subscribe(zoomChangedEventArgs => {
+        this.mapStore.zoomChanged.subscribe(zoomChangedEventArgs => {
             this.zoomForm.setValue({zoom: zoomChangedEventArgs.zoom}, {emitEvent: false});
         });
 

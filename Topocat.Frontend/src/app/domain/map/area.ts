@@ -35,10 +35,10 @@ export class Area extends NameableMapObject {
     }
 
     copyFrom(otherObject: Area) {
-        this.title = otherObject.title;
-        this.description = otherObject.description;
+        this._title = otherObject.title;
+        this._description = otherObject.description;
         this.uuid = otherObject.uuid;
-        this.path.setValue(otherObject.path.coords.map(x => new Coords(x.lat, x.lng)));
+        this.path.setValue(otherObject.path.coords.map(x => new Coords(x.lat, x.lng)), false);
         this._lastModifiedTimeStamp = otherObject._lastModifiedTimeStamp;
 
         this.emitObjectChanged();

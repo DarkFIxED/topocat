@@ -40,9 +40,9 @@ export class Place extends NameableMapObject {
 
     copyFrom(otherObject: Place) {
         this.uuid = otherObject.uuid;
-        this.title = otherObject.title;
-        this.description = otherObject.description;
-        this.updateCoords(otherObject.coords);
+        this._title = otherObject.title;
+        this._description = otherObject.description;
+        this.coords.setValue(otherObject.coords.lat, otherObject.coords.lng);
         this._lastModifiedTimeStamp = otherObject._lastModifiedTimeStamp;
 
         this.emitObjectChanged();
