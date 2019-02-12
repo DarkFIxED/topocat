@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Store } from '../../infrastructure/store';
-import { Map } from '../../domain/map/map'
+import { Map } from '../../domain/map/map';
 import { DataContainer } from '../../infrastructure/data-container';
 import { JsonSerializer } from '../../infrastructure/json-serializer.service';
 import { MapMerger } from '../../infrastructure/mergers/map.merger';
@@ -35,9 +35,6 @@ export class MapStore extends Store<Map> {
     constructor(private json: JsonSerializer,
                 private merger: MapMerger) {
         super();
-
-        // TODO: load or create new map.
-        this.entity = new Map();
     }
 
     get entity(): Map {

@@ -6,6 +6,14 @@ import { MapObject } from '../../domain/map/map-object';
 export class MapMerger {
     merge(oldMap: Map, newMap: Map): void {
 
+        if (!oldMap) {
+            throw new Error('Old map is not defined');
+        }
+
+        if (!newMap) {
+            throw new Error('New map is not defined');
+        }
+
         let obsoleteObjects = oldMap.mapObjects.filter(x => !newMap.mapObjects.some(y => y.uuid === x.uuid));
         let newObjects = newMap.mapObjects.filter(x => !oldMap.mapObjects.some(y => y.uuid === x.uuid));
         let changedObjects = newMap.mapObjects.filter(x => oldMap.mapObjects.some(y => y.uuid === x.uuid));

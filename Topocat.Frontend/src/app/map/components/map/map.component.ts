@@ -1,10 +1,10 @@
 import { Component, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { GoogleMapProvider } from '../../map-providers/google/google-map-provider';
-import { GoogleMapConfigurationStore } from '../../stores/google-map-configuration.store';
 import { MapType } from '../../models/map-type';
 import { MapStore } from '../../stores/map.store';
 import { Coords } from '../../../domain/map/coords';
+import { Map } from '../../../domain/map/map';
 import { MessageNames } from '../../../infrastructure/message-names';
 import { Observable, Subscription } from 'rxjs';
 import { Message, MessageBusService, SimpleMessage } from 'litebus';
@@ -15,7 +15,7 @@ import { filter } from 'rxjs/operators';
     selector: 'tc-map',
     templateUrl: './map.component.html',
     styleUrls: ['./map.component.scss'],
-    providers: [GoogleMapProvider, GoogleMapConfigurationStore]
+    providers: [GoogleMapProvider]
 })
 export class MapComponent implements OnInit, OnDestroy {
 
@@ -44,6 +44,8 @@ export class MapComponent implements OnInit, OnDestroy {
 
         this.setupListeners();
         this.setupStoreSubscriptions();
+
+        this.mapStore.entity = new Map();
     }
 
     ngOnInit(): void {
