@@ -54,6 +54,8 @@ describe('Place', () => {
     it('merge() copies all data except uuid from another object and fires changed observable', async () => {
 
         // Arrange.
+        let firesCount = 0;
+
         let currentPlace = new Place();
 
         await delay(10);
@@ -63,7 +65,7 @@ describe('Place', () => {
         let coords = new Coords();
         let anotherPlace = new Place(title, desc, coords);
         currentPlace.changed.subscribe(() => {
-            expect().nothing();
+            firesCount++;
         });
 
         // Act.
@@ -76,5 +78,52 @@ describe('Place', () => {
         expect(currentPlace.lastModifiedDate.getTime()).toEqual(anotherPlace.lastModifiedDate.getTime());
         expect(currentPlace.coords.lat).toEqual(anotherPlace.coords.lat);
         expect(currentPlace.coords.lng).toEqual(anotherPlace.coords.lng);
+        expect(firesCount).toEqual(1);
+    });
+
+    it('set title() sets new title value, updates lastModifiedDate and fires changed observable', async () => {
+
+        // Arrange.
+        let firesCount = 0;
+
+        let newTitle = 'new title';
+        let place = new Place('', '');
+        let initialLastModifiedDate = place.lastModifiedDate;
+        place.changed.subscribe(() => {
+            firesCount++;
+        });
+
+        await delay(10);
+
+        // Act.
+        place.title = newTitle;
+
+        // Assert.
+        expect(place.title).toEqual(newTitle);
+        expect(initialLastModifiedDate.getTime()).toBeLessThan(place.lastModifiedDate.getTime());
+        expect(firesCount).toEqual(1);
+    });
+
+    it('set description() sets new title value, updates lastModifiedDate and fires changed observable', async () => {
+
+        // Arrange.
+        let firesCount = 0;
+
+        let newDescription = 'new desc';
+        let place = new Place('', '');
+        let initialLastModifiedDate = place.lastModifiedDate;
+        place.changed.subscribe(() => {
+            firesCount++;
+        });
+
+        await delay(10);
+
+        // Act.
+        place.description = newDescription;
+
+        // Assert.
+        expect(place.description).toEqual(newDescription);
+        expect(initialLastModifiedDate.getTime()).toBeLessThan(place.lastModifiedDate.getTime());
+        expect(firesCount).toEqual(1);
     });
 });

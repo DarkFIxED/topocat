@@ -11,76 +11,93 @@ describe('Map', () => {
     });
 
     it('setZoom() sets zoom value and emit zoomChanged subject', () => {
+
+        // Arrange.
+        let firesCount = 0;
         const newValue = 15;
 
         map.zoomChanged.subscribe(zoomChangedEventArgs => {
+            firesCount++;
             expect(zoomChangedEventArgs.zoom).toBe(newValue);
             expect(zoomChangedEventArgs.setFromMap).toBeFalsy();
         });
 
+        // Act.
         map.setZoom(newValue);
 
+        // Assert.
         expect(map.zoom).toBe(newValue);
+        expect(firesCount).toEqual(1);
     });
 
     it('updateZoomFromMap() sets zoom value and emit zoomChanged subject', () => {
+
+        // Arrange.
+        let firesCount = 0;
         const newValue = 15;
 
         map.zoomChanged.subscribe(zoomChangedEventArgs => {
+            firesCount++;
             expect(zoomChangedEventArgs.zoom).toBe(newValue);
             expect(zoomChangedEventArgs.setFromMap).toBeTruthy();
         });
 
+        // Act.
         map.updateZoomFromMap(newValue);
 
+        // Assert.
         expect(map.zoom).toBe(newValue);
+        expect(firesCount).toEqual(1);
     });
 
     it('setCenter() sets center value and emit centerChanged subject', () => {
+
+        // Arrange.
+        let firesCount = 0;
         const newValue = new Coords(34, 42);
 
         map.centerChanged.subscribe(centerChangedEventArgs => {
+            firesCount++;
             expect(centerChangedEventArgs.center).toBe(newValue);
             expect(centerChangedEventArgs.setFromMap).toBeFalsy();
         });
 
+        // Act.
         map.setCenter(newValue);
 
+        // Assert.
         expect(map.center).toBe(newValue);
+        expect(firesCount).toEqual(1);
     });
 
     it('updateCenterFromMap() sets center value and emit centerChanged subject', () => {
+
+        // Arrange.
+        let firesCount = 0;
         const newValue = new Coords(34, 42);
 
         map.centerChanged.subscribe(centerChangedEventArgs => {
+            firesCount++;
             expect(centerChangedEventArgs.center).toBe(newValue);
             expect(centerChangedEventArgs.setFromMap).toBeTruthy();
         });
 
+        // Act.
         map.updateCenterFromMap(newValue);
 
+        // Assert.
         expect(map.center).toBe(newValue);
+        expect(firesCount).toEqual(1);
     });
 
     it('addOrUpdateObject() adds object value and emit objectAdded subject', () => {
-        const place = new Place(undefined, undefined, new Coords(32, 23));
+
+        // Arrange.
+        let firesCount = 0;
+        const place = new Place();
 
         map.objectAdded.subscribe(addedPlace => {
-            expect(addedPlace).toBe(place);
-        });
-
-        map.addOrUpdateObject(place);
-
-        expect(map.mapObjects).toContain(place);
-    });
-
-    it('addOrUpdateObject() updates object value and emit objectAdded subject', () => {
-        // Arrange.
-        const place = new Place(undefined, undefined, new Coords(32, 23));
-
-        map.addOrUpdateObject(place);
-
-        map.objectChanged.subscribe(addedPlace => {
+            firesCount++;
             expect(addedPlace).toBe(place);
         });
 
@@ -89,15 +106,40 @@ describe('Map', () => {
 
         // Assert.
         expect(map.mapObjects).toContain(place);
+        expect(firesCount).toEqual(1);
+    });
+
+    it('addOrUpdateObject() updates object value and emit objectAdded subject', () => {
+
+        // Arrange.
+        let firesCount = 0;
+        const place = new Place();
+
+        map.addOrUpdateObject(place);
+
+        map.objectChanged.subscribe(addedPlace => {
+            firesCount++;
+            expect(addedPlace).toBe(place);
+        });
+
+        // Act.
+        map.addOrUpdateObject(place);
+
+        // Assert.
+        expect(map.mapObjects).toContain(place);
+        expect(firesCount).toEqual(1);
     });
 
     it('deleteObject() deletes object value and emit objectDeleted subject', () => {
+
         // Arrange.
-        const place = new Place(undefined, undefined, new Coords(32, 23));
+        let firesCount = 0;
+        const place = new Place();
 
         map.addOrUpdateObject(place);
 
         map.objectDeleted.subscribe(deletedPlace => {
+            firesCount++;
             expect(deletedPlace).toBe(place);
         });
 
@@ -106,5 +148,6 @@ describe('Map', () => {
 
         // Assert.
         expect(map.mapObjects).not.toContain(place);
+        expect(firesCount).toEqual(1);
     });
 });

@@ -11,7 +11,6 @@ describe('Area', () => {
         // Arrange.
         let coords = [new Coords(1, 2), new Coords(2, 3), new Coords(3, 4)];
 
-
         // Act.
         let area = new Area('', '', coords);
 
@@ -25,6 +24,8 @@ describe('Area', () => {
     it('copyFrom() copies all fields and fires changed observable', () => {
 
         // Arrange.
+        let firesCount = 0;
+
         let title = 'test title';
         let desc = 'test desc';
         let coords = [new Coords(1, 2), new Coords(2, 3), new Coords(3, 4)];
@@ -32,7 +33,7 @@ describe('Area', () => {
 
         let area = new Area();
         area.changed.subscribe(() => {
-            expect().nothing();
+            firesCount++;
         });
 
         // Act.
@@ -46,6 +47,8 @@ describe('Area', () => {
         expect(area.path.coords.every((pathEl, index) => {
             return pathEl.lat === coords[index].lat && pathEl.lng === coords[index].lng;
         })).toBeTruthy();
+
+        expect(firesCount).toEqual(1);
     });
 
     it('merge() throws error when current object newest than another', async () => {
@@ -63,6 +66,8 @@ describe('Area', () => {
     it('merge() copies all data except uuid from another object and fires changed observable', async () => {
 
         // Arrange.
+        let firesCount = 0;
+
         let currentArea = new Area();
 
         await delay(10);
@@ -72,7 +77,7 @@ describe('Area', () => {
         let coords = [new Coords(), new Coords()];
         let anotherArea = new Area(title, desc, coords);
         currentArea.changed.subscribe(() => {
-            expect().nothing();
+            firesCount++;
         });
 
         // Act.
@@ -86,13 +91,15 @@ describe('Area', () => {
         expect(currentArea.path.coords.every((pathEl, index) => {
             return pathEl.lat === coords[index].lat && pathEl.lng === coords[index].lng;
         })).toBeTruthy();
+
+        expect(firesCount).toEqual(1);
     });
 
     it('getCenter() returns center of containing path', async () => {
 
         let accuracy = 0.0001;
 
-        let expetedValue = 0.5;
+        let expectedValue = 0.5;
 
         // Arrange.
         let area = new Area();
@@ -109,8 +116,8 @@ describe('Area', () => {
         let center = area.getCenter();
 
         // Assert.
-        expect(Math.abs(center.lat - expetedValue)).toBeLessThanOrEqual(accuracy);
-        expect(Math.abs(center.lng - expetedValue)).toBeLessThanOrEqual(accuracy);
+        expect(Math.abs(center.lat - expectedValue)).toBeLessThanOrEqual(accuracy);
+        expect(Math.abs(center.lng - expectedValue)).toBeLessThanOrEqual(accuracy);
     });
 
 });
