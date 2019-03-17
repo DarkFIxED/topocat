@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Topocat.Api.AppHelpers;
-using Topocat.BusinessLogic.User;
-using Topocat.BusinessLogic.User.Models;
+using Topocat.BusinessLogic.Services.User;
+using Topocat.BusinessLogic.Services.User.Models;
 
 namespace Topocat.Api.Controllers
 {
@@ -24,7 +24,7 @@ namespace Topocat.Api.Controllers
         {
             var currentUser = await _userService.GetCurrentUser(HttpContext.User);
 
-            return new JsonNetCamelCasedResult(AjaxResponse.Success(new
+            return new JsonResult(AjaxResponse.Success(new
             {
                 currentUser.Email,
                 currentUser.Login
@@ -33,20 +33,20 @@ namespace Topocat.Api.Controllers
 
         [HttpPost]
         [Route("sign-up")]
-        public async Task<IActionResult> Register(RegistrationModel model)
+        public async Task<IActionResult> SignUp(SignUpModel model)
         {
-            var token = await _userService.Register(model);
+            var token = await _userService.SignUp(model);
 
-            return new JsonNetCamelCasedResult(AjaxResponse.Success(token));
+            return new JsonResult(AjaxResponse.Success(token));
         }
 
         [HttpPost]
         [Route("sign-in")]
-        public async Task<IActionResult> Login(LoginModel model)
+        public async Task<IActionResult> SignIn(SignInModel model)
         {
-            var token = await _userService.Login(model);
+            var token = await _userService.SignIn(model);
 
-            return new JsonNetCamelCasedResult(AjaxResponse.Success(token));
+            return new JsonResult(AjaxResponse.Success(token));
         }
     }
 }

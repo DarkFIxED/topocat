@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Moq;
 using NUnit.Framework;
-using Topocat.BusinessLogic.User;
-using Topocat.BusinessLogic.User.Models;
+using Topocat.BusinessLogic.Services.User;
+using Topocat.BusinessLogic.Services.User.Models;
 using Topocat.Common.Settings;
 using Topocat.Domain;
 using Topocat.UnitTests.Common;
@@ -19,7 +19,7 @@ namespace Topocat.UnitTests
         [Test]
         public async Task Registration_ValidUser_UserWillBeCreatedAndAccessTokenWillBeReturned()
         {
-            var registrationModel = new RegistrationModel
+            var registrationModel = new SignUpModel
             {
                 Email = "test@mail.com",
                 Login = "test",
@@ -34,7 +34,7 @@ namespace Topocat.UnitTests
 
             var service = new UserService(userManager.Object, signInManager.Object, GetFakeJwtSettings());
 
-            var token = await service.Register(registrationModel);
+            var token = await service.SignUp(registrationModel);
 
             Assert.AreNotEqual(string.Empty, token);
         }
@@ -52,7 +52,7 @@ namespace Topocat.UnitTests
             };
             var queryableUsers = users.AsQueryable();
 
-            var loginModel = new LoginModel
+            var loginModel = new SignInModel
             {
                 Email = "test@mail.com",
                 Password = "pwd"
@@ -67,7 +67,7 @@ namespace Topocat.UnitTests
             signInManager.Setup(x => x.PasswordSignInAsync(It.IsAny<string>(), It.IsAny<string>(), false, false)).ReturnsAsync(SignInResult.Success);
             userManager.Setup(x => x.Users).Returns(queryableUsers);
 
-            var token = await service.Login(loginModel);
+            var token = await service.SignIn(loginModel);
 
             Assert.AreNotEqual(string.Empty, token);
         }

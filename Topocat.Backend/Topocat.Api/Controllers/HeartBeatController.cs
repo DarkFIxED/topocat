@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
+using Topocat.Api.AppHelpers;
 
 namespace Topocat.Api.Controllers
 {
@@ -11,7 +11,7 @@ namespace Topocat.Api.Controllers
         [Route("api/echo")]
         public ActionResult<DateTime> Echo()
         {
-            return DateTime.UtcNow;
+            return new JsonResult(AjaxResponse.Success(DateTime.UtcNow));
         }
     }
 }

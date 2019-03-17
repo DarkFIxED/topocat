@@ -1,6 +1,6 @@
-﻿namespace Topocat.BusinessLogic.User.Models
+﻿namespace Topocat.BusinessLogic.Services.User.Models
 {
-    public class RegistrationModel
+    public class SignUpModel
     {
         public string Email { get; set; }
 

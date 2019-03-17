@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using SimpleInjector;
-using Topocat.BusinessLogic.User;
+using Topocat.BusinessLogic.Services.User;
 
 namespace Topocat.Api.AppHelpers
 {
@@ -9,18 +9,8 @@ namespace Topocat.Api.AppHelpers
     {
         public static void Register(IApplicationBuilder app, Container container)
         {
-            RegisterDAL(container);
             RegisterServices(container);
             RegisterCommon(app, container);
-        }
-
-        private static void RegisterDAL(Container container)
-        {
-            //container.Register(() =>
-            //{
-            //    var options = new DbContextOptions<TopocatDbContext>();
-            //    return new TopocatDbContext(options);
-            //});
         }
 
         private static void RegisterServices(Container container)
