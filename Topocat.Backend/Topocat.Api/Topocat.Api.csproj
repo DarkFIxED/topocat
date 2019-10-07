@@ -2,28 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
-    <DockerDefaultTargetOS>Windows</DockerDefaultTargetOS>
-    <UserSecretsId>59b0ef4f-3739-46dd-87c5-b00c001a4a8f</UserSecretsId>
+    <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Folder Include="wwwroot\" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.0.2105168" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.0" />
-    <PackageReference Include="SimpleInjector.Integration.AspNetCore" Version="4.4.3" />
-    <PackageReference Include="SimpleInjector.Integration.AspNetCore.Mvc" Version="4.4.3" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Topocat.BusinessLogic\Topocat.BusinessLogic.csproj" />
-    <ProjectReference Include="..\Topocat.Common\Topocat.Common.csproj" />
-    <ProjectReference Include="..\Topocat.DAL\Topocat.DAL.csproj" />
-    <ProjectReference Include="..\Topocat.Domain\Topocat.Domain.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,6 +1,14 @@
-﻿using Microsoft.AspNetCore;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-namespace Topocat.Api
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+
+namespace Topocat.API
 {
     public class Program
     {
