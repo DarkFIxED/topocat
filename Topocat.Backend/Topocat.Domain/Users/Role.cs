@@ -3,7 +3,7 @@ using Topocat.Common;
 
 namespace Topocat.Domain.Users
 {
-    public class User : IdentityUser<string>, IHasIdentifier<string>
+    public class Role: IdentityRole<string>, IHasIdentifier<string>
     {
     }
 }

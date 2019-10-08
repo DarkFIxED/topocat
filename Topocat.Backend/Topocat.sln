@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Topocat.Common", "Topocat.C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Topocat.Domain", "Topocat.Domain\Topocat.Domain.csproj", "{0E711BEA-320D-47DD-A261-BCFD8F25A93C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Topocat.DB", "Topocat.DB\Topocat.DB.csproj", "{B17C1DE3-1265-4F81-B7CC-9E67137BE3CD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{0E711BEA-320D-47DD-A261-BCFD8F25A93C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0E711BEA-320D-47DD-A261-BCFD8F25A93C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0E711BEA-320D-47DD-A261-BCFD8F25A93C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B17C1DE3-1265-4F81-B7CC-9E67137BE3CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B17C1DE3-1265-4F81-B7CC-9E67137BE3CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B17C1DE3-1265-4F81-B7CC-9E67137BE3CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B17C1DE3-1265-4F81-B7CC-9E67137BE3CD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
