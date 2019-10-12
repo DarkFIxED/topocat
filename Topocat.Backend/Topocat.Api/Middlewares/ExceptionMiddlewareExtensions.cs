@@ -25,7 +25,7 @@ namespace Topocat.API.Middlewares
 
                     context.Response.StatusCode = (int) HttpStatusCode.OK;
                     context.Response.ContentType = "application/json";
-                    await context.Response.WriteAsync(JsonConvert.SerializeObject(ApiResponse.Fail(serviceException.Error)));
+                    await context.Response.WriteAsync(JsonConvert.SerializeObject(ApiResponse.Fail(serviceException.Message, serviceException.Error)));
                 });
             });
         }

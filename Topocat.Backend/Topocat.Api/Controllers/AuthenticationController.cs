@@ -1,19 +1,31 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Topocat.Domain.Users;
+using Topocat.API.Models;
+using Topocat.API.Models.Users;
+using Topocat.Services.Commands.Authentication;
 
 namespace Topocat.API.Controllers
 {
     [ApiController]
     public class AuthenticationController : ControllerBase
     {
-        private readonly UserManager<User> _userManager;
-
-        public AuthenticationController(UserManager<User> userManager)
+        private readonly AuthenticateUserCommand _authenticateUserCommand;
+        public AuthenticationController(AuthenticateUserCommand authenticateUserCommand)
         {
-            _userManager = userManager;
+            _authenticateUserCommand = authenticateUserCommand;
         }
 
-        
+        [Route("/authenticate")]
+        [HttpPost]
+        public async Task<ApiResponse> Authenticate(AuthenticateRequestModel model)
+        {
+            var token = await _authenticateUserCommand.Execute(new AuthenticateUserCommandArgs
+            {
+                Email = model.Email,
+                Password = model.Password
+            });
+
+            return ApiResponse.Success(token);
+        }
     }
 }
