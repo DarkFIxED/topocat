@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Linq;
+using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -12,9 +13,11 @@ using Microsoft.OpenApi.Models;
 using Topocat.API.Middlewares;
 using Topocat.DB;
 using Topocat.Domain.Users;
-using Topocat.Services.Commands.Authentication;
-using Topocat.Services.Commands.Users;
+using Topocat.Services.Commands.Authentication.AuthenticateUser;
+using Topocat.Services.Commands.Authentication.RenewAuthentication;
+using Topocat.Services.Commands.Users.SignUpUser;
 using Topocat.Services.Models;
+using Topocat.Services.Services;
 
 namespace Topocat.API
 {
@@ -44,7 +47,16 @@ namespace Topocat.API
                 .AddDefaultTokenProviders();
 
             var jwtOptions = AppConfiguration.GetSection("JWTOptions").Get<JWTOptions>();
-
+            var tokenValidationParams = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidAudience = jwtOptions.Audience,
+                ValidIssuer = jwtOptions.Issuer,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Key)),
+            };
+            
             services.AddAuthentication(options =>
                 {
                     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -55,15 +67,12 @@ namespace Topocat.API
                 {
                     options.SaveToken = true;
                     options.RequireHttpsMetadata = false;
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuer = true,
-                        ValidateAudience = true,
-                        ValidateLifetime = true,
-                        ValidAudience = jwtOptions.Audience,
-                        ValidIssuer = jwtOptions.Issuer,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Key)),
-                    };
+                    options.TokenValidationParameters = tokenValidationParams;
+
+                    var existingValidator = options.SecurityTokenValidators.First();
+                    var customValidator = new SecurityTokenTypeValidator(existingValidator);
+                    options.SecurityTokenValidators.Clear();
+                    options.SecurityTokenValidators.Add(customValidator);
                 });
 
             services.AddSwaggerGen(c =>
@@ -73,12 +82,38 @@ namespace Topocat.API
                     Title = "Topocat API Reference"
                 });
 
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey
+                });
+
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        new string[] {}
+                    }
+                });
             });
 
             services.Configure<JWTOptions>(AppConfiguration.GetSection("JWTOptions"));
+            services.AddSingleton(tokenValidationParams);
 
             services.AddScoped<SignUpUserCommand>();
             services.AddScoped<AuthenticateUserCommand>();
+            services.AddScoped<RenewAuthenticationCommand>();
+            services.AddScoped<ISecurityTokensFactory, SecurityTokensFactory>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

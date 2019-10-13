@@ -1,13 +1,12 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Topocat.Domain.Users;
 using Topocat.Services.Exceptions;
 
-namespace Topocat.Services.Commands.Users
+namespace Topocat.Services.Commands.Users.SignUpUser
 {
-    public class SignUpUserCommand : ICommand<(string Email, string Password)>
+    public class SignUpUserCommand : ICommand<SignUpUserCommandArgs>
     {
         private readonly UserManager<User> _userManager;
 
@@ -16,12 +15,10 @@ namespace Topocat.Services.Commands.Users
             _userManager = userManager;
         }
 
-        public async Task Execute((string Email, string Password) args)
+        public async Task Execute(SignUpUserCommandArgs args)
         {
-            var (email, password) = args;
-            email = email.Trim();
-            var user = new User(email);
-            var result = await _userManager.CreateAsync(user, password);
+            var user = new User(args.Email);
+            var result = await _userManager.CreateAsync(user, args.Password);
 
             if (!result.Succeeded)
                 throw new ServiceException(result.Errors.First().Description);

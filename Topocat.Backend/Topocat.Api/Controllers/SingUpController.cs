@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Topocat.API.Models;
 using Topocat.API.Models.Users;
-using Topocat.Services.Commands.Users;
+using Topocat.Services.Commands.Users.SignUpUser;
 
 namespace Topocat.API.Controllers
 {
@@ -20,7 +20,11 @@ namespace Topocat.API.Controllers
         [HttpPost]
         public async Task<ApiResponse> SignUp(SignUpRequestModel model)
         {
-            await _signUpUserCommand.Execute((model.Email, model.Password));
+            await _signUpUserCommand.Execute(new SignUpUserCommandArgs
+            {
+                Email = model.Email.Trim(),
+                Password = model.Password
+            });
 
             return ApiResponse.Success();
         }

@@ -12,6 +12,8 @@ namespace Topocat.Services.Models
 
         public string Key { get; set; }
 
-        public TimeSpan LifeTime { get; set; }
+        public TimeSpan AccessTokenLifeTime { get; set; }
+
+        public TimeSpan RefreshTokenLifeTime { get; set; }
     }
 }
