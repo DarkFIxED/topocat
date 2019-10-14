@@ -23,6 +23,7 @@ namespace Topocat.Services.Services
         {
             var authClaims = new[]
             {
+                new Claim(JwtRegisteredClaimNames.Sid, user.Id), 
                 new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
@@ -46,6 +47,7 @@ namespace Topocat.Services.Services
         {
             var authClaims = new[]
             {
+                new Claim(JwtRegisteredClaimNames.Sid, user.Id),
                 new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),

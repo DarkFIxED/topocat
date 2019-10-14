@@ -1,5 +1,4 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
@@ -29,8 +28,8 @@ namespace Topocat.Services.Commands.Authentication.RenewAuthentication
             var tokenHandler = new JwtSecurityTokenHandler();
 
             var principle = tokenHandler.ValidateToken(args.RefreshToken, _tokenValidationParameters, out _);
-            var email = principle.FindFirst(ClaimTypes.Email).Value;
-            var user = await _userManager.FindByEmailAsync(email);
+            var id = principle.FindFirst(JwtRegisteredClaimNames.Sid).Value;
+            var user = await _userManager.FindByIdAsync(id);
 
             return new RenewAuthenticationCommandResult
             {

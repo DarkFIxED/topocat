@@ -1,7 +1,9 @@
 ﻿using JetBrains.Annotations;
+using Microsoft.EntityFrameworkCore;
 
 namespace Topocat.Domain.Types
 {
+    [Owned]
     public class Coordinates
     {
         [UsedImplicitly]

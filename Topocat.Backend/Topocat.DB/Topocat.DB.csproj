@@ -5,6 +5,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20191014212745_AddMapObjects.cs" />
+    <Compile Remove="Migrations\20191014212745_AddMapObjects.Designer.cs" />
+    <Compile Remove="Migrations\20191014212939_AddMapObjects.cs" />
+    <Compile Remove="Migrations\20191014212939_AddMapObjects.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.0.0" />

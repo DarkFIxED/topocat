@@ -15,6 +15,7 @@ using Topocat.DB;
 using Topocat.Domain.Users;
 using Topocat.Services.Commands.Authentication.AuthenticateUser;
 using Topocat.Services.Commands.Authentication.RenewAuthentication;
+using Topocat.Services.Commands.Maps.CreateMap;
 using Topocat.Services.Commands.Users.SignUpUser;
 using Topocat.Services.Models;
 using Topocat.Services.Services;
@@ -113,6 +114,9 @@ namespace Topocat.API
             services.AddScoped<SignUpUserCommand>();
             services.AddScoped<AuthenticateUserCommand>();
             services.AddScoped<RenewAuthenticationCommand>();
+            services.AddScoped<CreateMapCommand>();
+
+            services.AddScoped<IRepository, Repository>();
             services.AddScoped<ISecurityTokensFactory, SecurityTokensFactory>();
         }
 
