@@ -17,7 +17,10 @@ namespace Topocat.Domain.Map
         public Map(User creator, string title)
         {
             Id = Guid.NewGuid().ToString("D");
+
             CreatedAt = DateTimeOffset.UtcNow;
+            LastModifiedAt = CreatedAt;
+
             CreatedBy = creator;
             CreatedById = creator.Id;
 
