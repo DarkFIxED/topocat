@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Topocat.Domain", "Topocat.D
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Topocat.DB", "Topocat.DB\Topocat.DB.csproj", "{B17C1DE3-1265-4F81-B7CC-9E67137BE3CD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Topocat.Services", "Topocat.Services\Topocat.Services.csproj", "{8BAF6A3A-1A2F-49FE-901D-A869702DD643}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Topocat.Services", "Topocat.Services\Topocat.Services.csproj", "{8BAF6A3A-1A2F-49FE-901D-A869702DD643}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Topocat.QueryExtensions", "Topocat.QueryExtensions\Topocat.QueryExtensions.csproj", "{A79A0C34-6E8F-4273-88AB-1811558A62A4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{8BAF6A3A-1A2F-49FE-901D-A869702DD643}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8BAF6A3A-1A2F-49FE-901D-A869702DD643}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8BAF6A3A-1A2F-49FE-901D-A869702DD643}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A79A0C34-6E8F-4273-88AB-1811558A62A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A79A0C34-6E8F-4273-88AB-1811558A62A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A79A0C34-6E8F-4273-88AB-1811558A62A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A79A0C34-6E8F-4273-88AB-1811558A62A4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

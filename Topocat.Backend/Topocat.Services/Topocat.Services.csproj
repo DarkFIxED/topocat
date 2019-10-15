@@ -12,6 +12,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Topocat.DB\Topocat.DB.csproj" />
     <ProjectReference Include="..\Topocat.Domain\Topocat.Domain.csproj" />
+    <ProjectReference Include="..\Topocat.QueryExtensions\Topocat.QueryExtensions.csproj" />
   </ItemGroup>
 
   <ItemGroup>

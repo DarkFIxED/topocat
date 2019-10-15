@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 using JetBrains.Annotations;
+using Microsoft.EntityFrameworkCore;
 using Topocat.Common;
 using Topocat.Domain.Users;
 
@@ -41,7 +43,7 @@ namespace Topocat.Domain.Map
 
         public DateTimeOffset LastModifiedAt { get; protected set; }
 
-        protected IList<MapObject> ObjectsList { get; set; }
+        protected internal IList<MapObject> ObjectsList { get; set; }
 
         public void Add(MapObject mapObject)
         {
@@ -57,5 +59,4 @@ namespace Topocat.Domain.Map
             LastModifiedAt = DateTimeOffset.UtcNow;
         }
     }
-
 }

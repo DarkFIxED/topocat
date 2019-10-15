@@ -5,6 +5,7 @@ using Topocat.API.Extensions;
 using Topocat.API.Models;
 using Topocat.API.Models.Maps;
 using Topocat.Services.Commands.Maps.CreateMap;
+using Topocat.Services.Commands.Maps.UpdateMapTitle;
 
 namespace Topocat.API.Controllers
 {
@@ -13,10 +14,12 @@ namespace Topocat.API.Controllers
     public class MapController : ControllerBase
     {
         private readonly CreateMapCommand _createMapCommand;
+        private readonly UpdateMapTitleCommand _updateMapTitleCommand;
 
-        public MapController(CreateMapCommand createMapCommand)
+        public MapController(CreateMapCommand createMapCommand, UpdateMapTitleCommand updateMapTitleCommand)
         {
             _createMapCommand = createMapCommand;
+            _updateMapTitleCommand = updateMapTitleCommand;
         }
 
         [Route("/map")]
@@ -30,6 +33,20 @@ namespace Topocat.API.Controllers
             });
 
             return ApiResponse.Success(result);
+        }
+
+        [Route("/map/{mapId}/title")]
+        [HttpPut]
+        public async Task<ApiResponse> UpdateMapTitle([FromQuery] string mapId, [FromBody] UpdateMapTitleRequestModel model)
+        {
+            await _updateMapTitleCommand.Execute(new UpdateMapTitleCommandArgs
+            {
+                NewTitle = model.Title,
+                MapId = mapId,
+                ActionExecutorId = HttpContext.User.GetUserId()
+            });
+
+            return ApiResponse.Success();
         }
     }
 }
