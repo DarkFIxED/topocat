@@ -8,8 +8,8 @@ using Topocat.DB;
 using Topocat.Domain.Entities.Map;
 using Topocat.Domain.Entities.Map.Objects;
 using Topocat.Domain.Entities.Users;
-using Topocat.QueryExtensions;
 using Topocat.Services.Exceptions;
+using Topocat.Services.QueryExtensions;
 
 namespace Topocat.Services.Commands.Maps.UpdatePoint
 {

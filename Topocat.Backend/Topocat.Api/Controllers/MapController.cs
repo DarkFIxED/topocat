@@ -11,6 +11,7 @@ using Topocat.Services.Commands.Maps.Create;
 using Topocat.Services.Commands.Maps.UpdateLine;
 using Topocat.Services.Commands.Maps.UpdatePoint;
 using Topocat.Services.Commands.Maps.UpdateTitle;
+using Topocat.Services.Queries.Map.GetMapQuery;
 
 namespace Topocat.API.Controllers
 {
@@ -19,10 +20,12 @@ namespace Topocat.API.Controllers
     public class MapController : ControllerBase
     {
         private readonly ICommandsFactory _commandsFactory;
+        private readonly IQueriesFactory _queriesFactory;
 
-        public MapController(ICommandsFactory commandsFactory)
+        public MapController(ICommandsFactory commandsFactory, IQueriesFactory queriesFactory)
         {
             _commandsFactory = commandsFactory;
+            _queriesFactory = queriesFactory;
         }
 
         [Route("/map")]
@@ -126,6 +129,21 @@ namespace Topocat.API.Controllers
             });
 
             return ApiResponse.Success();
+        }
+
+        [Route("/map/{mapId}")]
+        [HttpGet]
+        public async Task<ApiResponse> GetMap([FromRoute] string mapId)
+        {
+            var getMapQuery = _queriesFactory.Get<GetMapQuery>();
+
+            var result = await getMapQuery.Ask(new GetMapQueryArgs
+            {
+                MapId = mapId,
+                ActionExecutorId = HttpContext.User.GetUserId()
+            });
+
+            return ApiResponse.Success(result);
         }
     }
 }

@@ -9,23 +9,22 @@ namespace Topocat.API.Extensions
     {
         public static void RegisterServicesByAttributes(this IServiceCollection service)
         {
-            var allAssemblies = AppDomain.CurrentDomain.GetAssemblies();
-            var relevantAssemblies = allAssemblies
-                .Where(x => x.FullName.Contains("Topocat"));
-
-            var types = relevantAssemblies.SelectMany(x => x.GetTypesWithAttribute<RegisterScopedAttribute>());
-
-            foreach (var type in types)
-            {
-                var attributeInstance = type.GetCustomAttributes(typeof(RegisterScopedAttribute), false)
-                    .Cast<RegisterScopedAttribute>()
-                    .First();
-
-                if (attributeInstance.RegisteredToSelf)
-                    service.AddScoped(type);
-                else
-                    service.AddScoped(attributeInstance.AbstractionType, type);
-            }
+            AppDomain.CurrentDomain.GetAssemblies()
+                .Where(x => x.FullName.Contains("Topocat"))
+                .SelectMany(x => x.GetTypesWithAttribute<RegisterScopedAttribute>())
+                .ToList()
+                .ForEach(type =>
+                    type.GetCustomAttributes(typeof(RegisterScopedAttribute), false)
+                        .Cast<RegisterScopedAttribute>()
+                        .ToList()
+                        .ForEach(attributeInstance =>
+                        {
+                            if (attributeInstance.RegisteredToSelf)
+                                service.AddScoped(type);
+                            else
+                                service.AddScoped(attributeInstance.AbstractionType, type);
+                        })
+                );
         }
     }
 }

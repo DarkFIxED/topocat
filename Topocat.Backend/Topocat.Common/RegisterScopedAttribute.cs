@@ -2,7 +2,7 @@
 
 namespace Topocat.Common
 {
-    [AttributeUsage(AttributeTargets.Class, Inherited = false)]
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = false)]
     public class RegisterScopedAttribute : Attribute
     {
         public RegisterScopedAttribute()

@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using Topocat.Common;
 
-namespace Topocat.QueryExtensions
+namespace Topocat.Services.QueryExtensions
 {
     public static class HasIdentifierQueryExtensions
     {

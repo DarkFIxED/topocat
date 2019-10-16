@@ -5,16 +5,22 @@ using Topocat.Common;
 namespace Topocat.Services
 {
     [RegisterScoped(typeof(ICommandsFactory))]
-    public class CommandsFactory : ICommandsFactory
+    [RegisterScoped(typeof(IQueriesFactory))]
+    public class CommandsQueriesFactory : ICommandsFactory, IQueriesFactory
     {
         private readonly IServiceProvider _serviceProvider;
 
-        public CommandsFactory(IServiceProvider serviceProvider)
+        public CommandsQueriesFactory(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
         }
 
-        public T Get<T>() where T : ICommand
+        T IQueriesFactory.Get<T>()
+        {
+            return _serviceProvider.GetService<T>();
+        }
+
+        T ICommandsFactory.Get<T>()
         {
             return _serviceProvider.GetService<T>();
         }
