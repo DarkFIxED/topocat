@@ -10,21 +10,21 @@ using Topocat.Domain.Entities.Users;
 using Topocat.QueryExtensions;
 using Topocat.Services.Exceptions;
 
-namespace Topocat.Services.Commands.Maps.AddLine
+namespace Topocat.Services.Commands.Maps.AddPoint
 {
     [RegisterScoped]
-    public class AddLineCommand : ICommand<AddLineCommandArgs, AddLineCommandResult>
+    public class AddPointCommand : ICommand<AddPointCommandArgs, AddPointCommandResult>
     {
         private readonly UserManager<User> _userManager;
         private readonly IRepository _repository;
 
-        public AddLineCommand(UserManager<User> userManager, IRepository repository)
+        public AddPointCommand(UserManager<User> userManager, IRepository repository)
         {
             _userManager = userManager;
             _repository = repository;
         }
 
-        public async Task<AddLineCommandResult> Execute(AddLineCommandArgs args)
+        public async Task<AddPointCommandResult> Execute(AddPointCommandArgs args)
         {
             var actionExecutor = await _userManager.FindByIdAsync(args.ActionExecutorId);
             if (actionExecutor == null)
@@ -41,15 +41,15 @@ namespace Topocat.Services.Commands.Maps.AddLine
             if (!map.CanModify(actionExecutor))
                 throw new ServiceException("User has no access to modify map");
 
-            var newLine = new Line(map, args.Title, args.Start, args.End);
-            map.Add(newLine);
+            var newPoint = new Point(map, args.Title, args.Coordinates);
+            map.Add(newPoint);
 
             _repository.Update(map);
             await _repository.SaveAsync();
 
-            return new AddLineCommandResult
+            return new AddPointCommandResult
             {
-                LineId = newLine.Id
+                PointId = newPoint.Id
             };
         }
     }

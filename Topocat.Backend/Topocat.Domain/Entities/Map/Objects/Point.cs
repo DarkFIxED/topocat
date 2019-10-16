@@ -13,6 +13,11 @@ namespace Topocat.Domain.Entities.Map.Objects
             Coordinates = new Coordinates(latitude, longitude);
         }
 
+        public Point(Map map, string title, Coordinates coordinates) : base(map, title)
+        {
+            Coordinates = coordinates;
+        }
+
         public Coordinates Coordinates { get; protected set; }
 
     }

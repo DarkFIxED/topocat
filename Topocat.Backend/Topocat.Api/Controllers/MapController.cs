@@ -6,6 +6,7 @@ using Topocat.API.Models;
 using Topocat.API.Models.Maps;
 using Topocat.Services;
 using Topocat.Services.Commands.Maps.AddLine;
+using Topocat.Services.Commands.Maps.AddPoint;
 using Topocat.Services.Commands.Maps.Create;
 using Topocat.Services.Commands.Maps.UpdateLine;
 using Topocat.Services.Commands.Maps.UpdateTitle;
@@ -89,6 +90,23 @@ namespace Topocat.API.Controllers
             });
 
             return ApiResponse.Success();
+        }
+
+        [Route("/map/{mapId}/objects/point")]
+        [HttpPost]
+        public async Task<ApiResponse> AddPoint([FromRoute] string mapId, [FromBody] AddPointRequestModel model)
+        {
+            var addPointCommand = _commandsFactory.Get<AddPointCommand>();
+
+            var result = await addPointCommand.Execute(new AddPointCommandArgs
+            {
+                Title = model.Title,
+                MapId = mapId,
+                ActionExecutorId = HttpContext.User.GetUserId(),
+                Coordinates = model.Coordinates
+            });
+
+            return ApiResponse.Success(result);
         }
     }
 }
