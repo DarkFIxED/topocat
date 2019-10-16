@@ -7,6 +7,7 @@ using Topocat.API.Models.Maps;
 using Topocat.Services;
 using Topocat.Services.Commands.Maps.AddLine;
 using Topocat.Services.Commands.Maps.Create;
+using Topocat.Services.Commands.Maps.UpdateLine;
 using Topocat.Services.Commands.Maps.UpdateTitle;
 
 namespace Topocat.API.Controllers
@@ -69,6 +70,25 @@ namespace Topocat.API.Controllers
             });
 
             return ApiResponse.Success(result);
+        }
+
+        [Route("/map/{mapId}/objects/lines/{lineId}")]
+        [HttpPost]
+        public async Task<ApiResponse> AddLine([FromRoute] string mapId, [FromRoute] string lineId, [FromBody] UpdateLineRequestModel model)
+        {
+            var updateLineCommand = _commandsFactory.Get<UpdateLineCommand>();
+
+            await updateLineCommand.Execute(new UpdateLineCommandArgs
+            {
+                Title = model.Title,
+                MapId = mapId,
+                LineId = lineId,
+                ActionExecutorId = HttpContext.User.GetUserId(),
+                Start = model.Start,
+                End = model.End
+            });
+
+            return ApiResponse.Success();
         }
     }
 }

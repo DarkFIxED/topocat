@@ -1,4 +1,5 @@
-﻿using JetBrains.Annotations;
+﻿using System;
+using JetBrains.Annotations;
 using Topocat.Domain.Types;
 
 namespace Topocat.Domain.Entities.Map.Objects
@@ -23,5 +24,14 @@ namespace Topocat.Domain.Entities.Map.Objects
         public Coordinates Start { get; protected set; }
 
         public Coordinates End { get; protected set; }
+
+        public void Update(string title, Coordinates start, Coordinates end)
+        {
+            SetTitle(title);
+            Start = start;
+            End = end;
+
+            LastModifiedAt = DateTimeOffset.UtcNow;
+        }
     }
 }

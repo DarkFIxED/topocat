@@ -58,5 +58,10 @@ namespace Topocat.Domain.Entities.Map
 
             LastModifiedAt = DateTimeOffset.UtcNow;
         }
+
+        public bool CanModify(User actionExecutor)
+        {
+            return actionExecutor.Id == CreatedById;
+        }
     }
 }
