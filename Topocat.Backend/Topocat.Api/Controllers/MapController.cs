@@ -9,6 +9,7 @@ using Topocat.Services.Commands.Maps.AddLine;
 using Topocat.Services.Commands.Maps.AddPoint;
 using Topocat.Services.Commands.Maps.Create;
 using Topocat.Services.Commands.Maps.UpdateLine;
+using Topocat.Services.Commands.Maps.UpdatePoint;
 using Topocat.Services.Commands.Maps.UpdateTitle;
 
 namespace Topocat.API.Controllers
@@ -74,8 +75,8 @@ namespace Topocat.API.Controllers
         }
 
         [Route("/map/{mapId}/objects/lines/{lineId}")]
-        [HttpPost]
-        public async Task<ApiResponse> AddLine([FromRoute] string mapId, [FromRoute] string lineId, [FromBody] UpdateLineRequestModel model)
+        [HttpPut]
+        public async Task<ApiResponse> UpdateLine([FromRoute] string mapId, [FromRoute] string lineId, [FromBody] UpdateLineRequestModel model)
         {
             var updateLineCommand = _commandsFactory.Get<UpdateLineCommand>();
 
@@ -107,6 +108,24 @@ namespace Topocat.API.Controllers
             });
 
             return ApiResponse.Success(result);
+        }
+
+        [Route("/map/{mapId}/objects/points/{pointId}")]
+        [HttpPut]
+        public async Task<ApiResponse> UpdatePoint([FromRoute] string mapId, [FromRoute] string pointId, [FromBody] UpdatePointRequestModel model)
+        {
+            var updateLineCommand = _commandsFactory.Get<UpdatePointCommand>();
+
+            await updateLineCommand.Execute(new UpdatePointCommandArgs
+            {
+                Title = model.Title,
+                MapId = mapId,
+                PointId = pointId,
+                ActionExecutorId = HttpContext.User.GetUserId(),
+                Coordinates = model.Coordinates
+            });
+
+            return ApiResponse.Success();
         }
     }
 }
