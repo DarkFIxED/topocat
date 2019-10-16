@@ -2,14 +2,16 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Topocat.Common;
 using Topocat.DB;
-using Topocat.Domain.Map;
-using Topocat.Domain.Users;
+using Topocat.Domain.Entities.Map;
+using Topocat.Domain.Entities.Users;
 using Topocat.QueryExtensions;
 using Topocat.Services.Exceptions;
 
-namespace Topocat.Services.Commands.Maps.UpdateMapTitle
+namespace Topocat.Services.Commands.Maps.UpdateTitle
 {
+    [RegisterScoped]
     public class UpdateMapTitleCommand : ICommand<UpdateMapTitleCommandArgs>
     {
         private readonly UserManager<User> _userManager;

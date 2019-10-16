@@ -10,14 +10,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Topocat.API.Extensions;
 using Topocat.API.Middlewares;
 using Topocat.DB;
-using Topocat.Domain.Users;
-using Topocat.Services.Commands.Authentication.AuthenticateUser;
-using Topocat.Services.Commands.Authentication.RenewAuthentication;
-using Topocat.Services.Commands.Maps.CreateMap;
-using Topocat.Services.Commands.Maps.UpdateMapTitle;
-using Topocat.Services.Commands.Users.SignUpUser;
+using Topocat.Domain.Entities.Users;
 using Topocat.Services.Models;
 using Topocat.Services.Services;
 
@@ -109,17 +105,10 @@ namespace Topocat.API
                 });
             });
 
+            services.RegisterServicesByAttributes();
+
             services.Configure<JWTOptions>(AppConfiguration.GetSection("JWTOptions"));
             services.AddSingleton(tokenValidationParams);
-
-            services.AddScoped<SignUpUserCommand>();
-            services.AddScoped<AuthenticateUserCommand>();
-            services.AddScoped<RenewAuthenticationCommand>();
-            services.AddScoped<CreateMapCommand>();
-            services.AddScoped<UpdateMapTitleCommand>();
-
-            services.AddScoped<IRepository, Repository>();
-            services.AddScoped<ISecurityTokensFactory, SecurityTokensFactory>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

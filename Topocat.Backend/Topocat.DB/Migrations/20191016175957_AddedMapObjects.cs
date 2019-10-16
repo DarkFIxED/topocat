@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Topocat.DB.Migrations
 {
-    public partial class AddMapObjects : Migration
+    public partial class AddedMapObjects : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -36,8 +36,8 @@ namespace Topocat.DB.Migrations
                     Title = table.Column<string>(nullable: true),
                     LastModifiedAt = table.Column<DateTimeOffset>(nullable: false),
                     CreatedAt = table.Column<DateTimeOffset>(nullable: false),
-                    Discriminator = table.Column<string>(nullable: false),
                     MapId = table.Column<string>(nullable: true),
+                    Discriminator = table.Column<string>(nullable: false),
                     Start_Latitude = table.Column<double>(nullable: true),
                     Start_Longitude = table.Column<double>(nullable: true),
                     End_Latitude = table.Column<double>(nullable: true),

@@ -9,6 +9,11 @@ namespace Topocat.Services.Exceptions
             Error = error;
         }
 
+        public ServiceException(string message, object error = null): base(message)
+        {
+            Error = error;
+        }
+
         public object Error { get; protected set; }
     }
 }

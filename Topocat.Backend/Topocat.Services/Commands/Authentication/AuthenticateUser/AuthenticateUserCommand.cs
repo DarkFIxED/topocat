@@ -1,12 +1,14 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
-using Topocat.Domain.Users;
+using Topocat.Common;
+using Topocat.Domain.Entities.Users;
 using Topocat.Services.Exceptions;
 using Topocat.Services.Services;
 
 namespace Topocat.Services.Commands.Authentication.AuthenticateUser
 {
+    [RegisterScoped]
     public class AuthenticateUserCommand : ICommand<AuthenticateUserCommandArgs, AuthenticateUserCommandResult>
     {
         private readonly UserManager<User> _userManager;

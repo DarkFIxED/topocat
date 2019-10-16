@@ -9,6 +9,10 @@
     <Compile Remove="Migrations\20191014212745_AddMapObjects.Designer.cs" />
     <Compile Remove="Migrations\20191014212939_AddMapObjects.cs" />
     <Compile Remove="Migrations\20191014212939_AddMapObjects.Designer.cs" />
+    <Compile Remove="Migrations\20191014213306_AddMapObjects.cs" />
+    <Compile Remove="Migrations\20191014213306_AddMapObjects.Designer.cs" />
+    <Compile Remove="Migrations\20191016175517_AddedMapObjects.cs" />
+    <Compile Remove="Migrations\20191016175517_AddedMapObjects.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

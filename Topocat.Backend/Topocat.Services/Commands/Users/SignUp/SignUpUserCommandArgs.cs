@@ -1,4 +1,4 @@
-﻿namespace Topocat.Services.Commands.Users.SignUpUser
+﻿namespace Topocat.Services.Commands.Users.SignUp
 {
     public class SignUpUserCommandArgs
     {

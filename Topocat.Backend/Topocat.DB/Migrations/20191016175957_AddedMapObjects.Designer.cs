@@ -10,8 +10,8 @@ using Topocat.DB;
 namespace Topocat.DB.Migrations
 {
     [DbContext(typeof(TopocatContext))]
-    [Migration("20191014213306_AddMapObjects")]
-    partial class AddMapObjects
+    [Migration("20191016175957_AddedMapObjects")]
+    partial class AddedMapObjects
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -345,8 +345,8 @@ namespace Topocat.DB.Migrations
 
             modelBuilder.Entity("Topocat.Domain.Map.MapObject", b =>
                 {
-                    b.HasOne("Topocat.Domain.Map.Map", null)
-                        .WithMany("Objects")
+                    b.HasOne("Topocat.Domain.Map.Map", "Map")
+                        .WithMany("ObjectsList")
                         .HasForeignKey("MapId");
                 });
 

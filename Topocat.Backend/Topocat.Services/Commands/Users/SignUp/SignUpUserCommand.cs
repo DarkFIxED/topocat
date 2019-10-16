@@ -1,11 +1,13 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
-using Topocat.Domain.Users;
+using Topocat.Common;
+using Topocat.Domain.Entities.Users;
 using Topocat.Services.Exceptions;
 
-namespace Topocat.Services.Commands.Users.SignUpUser
+namespace Topocat.Services.Commands.Users.SignUp
 {
+    [RegisterScoped]
     public class SignUpUserCommand : ICommand<SignUpUserCommandArgs>
     {
         private readonly UserManager<User> _userManager;

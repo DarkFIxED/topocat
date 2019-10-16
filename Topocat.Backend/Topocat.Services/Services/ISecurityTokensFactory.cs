@@ -1,5 +1,5 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
-using Topocat.Domain.Users;
+using Topocat.Domain.Entities.Users;
 
 namespace Topocat.Services.Services
 {

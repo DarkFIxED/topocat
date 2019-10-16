@@ -2,11 +2,13 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
-using Topocat.Domain.Users;
+using Topocat.Common;
+using Topocat.Domain.Entities.Users;
 using Topocat.Services.Services;
 
 namespace Topocat.Services.Commands.Authentication.RenewAuthentication
 {
+    [RegisterScoped]
     public class RenewAuthenticationCommand : ICommand<RenewAuthenticationCommandArgs, RenewAuthenticationCommandResult>
     {
         private readonly TokenValidationParameters _tokenValidationParameters;

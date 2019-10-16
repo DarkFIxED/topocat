@@ -343,8 +343,8 @@ namespace Topocat.DB.Migrations
 
             modelBuilder.Entity("Topocat.Domain.Map.MapObject", b =>
                 {
-                    b.HasOne("Topocat.Domain.Map.Map", null)
-                        .WithMany("Objects")
+                    b.HasOne("Topocat.Domain.Map.Map", "Map")
+                        .WithMany("ObjectsList")
                         .HasForeignKey("MapId");
                 });
 

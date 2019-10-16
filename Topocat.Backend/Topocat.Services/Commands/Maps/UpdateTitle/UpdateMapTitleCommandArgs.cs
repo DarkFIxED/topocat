@@ -1,4 +1,4 @@
-﻿namespace Topocat.Services.Commands.Maps.UpdateMapTitle
+﻿namespace Topocat.Services.Commands.Maps.UpdateTitle
 {
     public class UpdateMapTitleCommandArgs
     {

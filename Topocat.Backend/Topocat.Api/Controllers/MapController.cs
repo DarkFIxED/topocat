@@ -4,8 +4,10 @@ using Microsoft.AspNetCore.Mvc;
 using Topocat.API.Extensions;
 using Topocat.API.Models;
 using Topocat.API.Models.Maps;
-using Topocat.Services.Commands.Maps.CreateMap;
-using Topocat.Services.Commands.Maps.UpdateMapTitle;
+using Topocat.Services;
+using Topocat.Services.Commands.Maps.AddLine;
+using Topocat.Services.Commands.Maps.Create;
+using Topocat.Services.Commands.Maps.UpdateTitle;
 
 namespace Topocat.API.Controllers
 {
@@ -13,20 +15,20 @@ namespace Topocat.API.Controllers
     [Authorize]
     public class MapController : ControllerBase
     {
-        private readonly CreateMapCommand _createMapCommand;
-        private readonly UpdateMapTitleCommand _updateMapTitleCommand;
+        private readonly ICommandsFactory _commandsFactory;
 
-        public MapController(CreateMapCommand createMapCommand, UpdateMapTitleCommand updateMapTitleCommand)
+        public MapController(ICommandsFactory commandsFactory)
         {
-            _createMapCommand = createMapCommand;
-            _updateMapTitleCommand = updateMapTitleCommand;
+            _commandsFactory = commandsFactory;
         }
 
         [Route("/map")]
         [HttpPost]
         public async Task<ApiResponse> CreateMap(CreateMapRequestModel model)
         {
-            var result = await _createMapCommand.Execute(new CreateMapCommandArgs
+            var createMapCommand = _commandsFactory.Get<CreateMapCommand>();
+
+            var result = await createMapCommand.Execute(new CreateMapCommandArgs
             {
                 Title = model.Title,
                 ActionExecutorId = HttpContext.User.GetUserId()
@@ -37,9 +39,11 @@ namespace Topocat.API.Controllers
 
         [Route("/map/{mapId}/title")]
         [HttpPut]
-        public async Task<ApiResponse> UpdateMapTitle([FromQuery] string mapId, [FromBody] UpdateMapTitleRequestModel model)
+        public async Task<ApiResponse> UpdateMapTitle([FromRoute] string mapId, [FromBody] UpdateMapTitleRequestModel model)
         {
-            await _updateMapTitleCommand.Execute(new UpdateMapTitleCommandArgs
+            var updateMapTitleCommand = _commandsFactory.Get<UpdateMapTitleCommand>();
+
+            await updateMapTitleCommand.Execute(new UpdateMapTitleCommandArgs
             {
                 NewTitle = model.Title,
                 MapId = mapId,
@@ -47,6 +51,24 @@ namespace Topocat.API.Controllers
             });
 
             return ApiResponse.Success();
+        }
+
+        [Route("/map/{mapId}/objects/lines")]
+        [HttpPost]
+        public async Task<ApiResponse> AddLine([FromRoute] string mapId, [FromBody] AddLineRequestModel model)
+        {
+            var addLineCommand = _commandsFactory.Get<AddLineCommand>();
+
+            var result = await addLineCommand.Execute(new AddLineCommandArgs
+            {
+                Title = model.Title,
+                MapId = mapId,
+                ActionExecutorId = HttpContext.User.GetUserId(),
+                Start = model.Start,
+                End = model.End
+            });
+
+            return ApiResponse.Success(result);
         }
     }
 }

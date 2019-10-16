@@ -1,18 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
 using JetBrains.Annotations;
-using Microsoft.EntityFrameworkCore;
 using Topocat.Common;
-using Topocat.Domain.Users;
+using Topocat.Domain.Entities.Users;
+using Topocat.Domain.Exceptions;
 
-namespace Topocat.Domain.Map
+namespace Topocat.Domain.Entities.Map
 {
     public class Map : DomainEntity, IHasIdentifier<string>, ICreatedAt, ILastModifiedAt, IAggregationRoot
     {
-        public IEnumerable<MapObject> Objects => ObjectsList;
-
         [UsedImplicitly]
         protected Map() { }
 
@@ -43,7 +40,7 @@ namespace Topocat.Domain.Map
 
         public DateTimeOffset LastModifiedAt { get; protected set; }
 
-        protected internal IList<MapObject> ObjectsList { get; set; }
+        public List<MapObject> ObjectsList { get; set; }
 
         public void Add(MapObject mapObject)
         {
@@ -54,6 +51,9 @@ namespace Topocat.Domain.Map
 
         public void SetTitle(string newTitle)
         {
+            if (string.IsNullOrWhiteSpace(newTitle))
+                throw new DomainException("Map title can not be empty");
+
             Title = newTitle;
 
             LastModifiedAt = DateTimeOffset.UtcNow;

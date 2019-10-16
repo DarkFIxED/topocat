@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Topocat.API.Models;
 using Topocat.API.Models.Users;
-using Topocat.Services.Commands.Users.SignUpUser;
+using Topocat.Services.Commands.Users.SignUp;
 
 namespace Topocat.API.Controllers
 {

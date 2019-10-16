@@ -7,7 +7,7 @@ namespace Topocat.Domain.Types
     public class Coordinates
     {
         [UsedImplicitly]
-        protected Coordinates() {}
+        public Coordinates() {}
 
         public Coordinates(double latitude, double longitude)
         {
@@ -15,8 +15,8 @@ namespace Topocat.Domain.Types
             Longitude = longitude;
         }
 
-        public double Latitude { get; protected set; }
+        public double Latitude { get; set; }
 
-        public double Longitude { get; protected set; }
+        public double Longitude { get; set; }
     }
 }

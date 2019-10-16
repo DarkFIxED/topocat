@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using Microsoft.EntityFrameworkCore;
-using Topocat.Domain.Map;
+using Topocat.Domain.Entities.Map;
 
 namespace Topocat.QueryExtensions
 {

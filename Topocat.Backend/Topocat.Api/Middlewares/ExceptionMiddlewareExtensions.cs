@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using Topocat.API.Models;
+using Topocat.Domain.Exceptions;
 using Topocat.Services.Exceptions;
 
 namespace Topocat.API.Middlewares
@@ -18,14 +19,19 @@ namespace Topocat.API.Middlewares
                 {
                     var contextFeature = context.Features.Get<IExceptionHandlerFeature>();
 
-                    if (!(contextFeature?.Error is ServiceException))
-                        return;
+                    if (contextFeature?.Error is ServiceException serviceException)
+                    {
+                        context.Response.StatusCode = (int) HttpStatusCode.OK;
+                        context.Response.ContentType = "application/json";
+                        await context.Response.WriteAsync(JsonConvert.SerializeObject(ApiResponse.Fail(serviceException.Message, serviceException.Error)));
+                    }
 
-                    var serviceException = (ServiceException)contextFeature.Error;
-
-                    context.Response.StatusCode = (int) HttpStatusCode.OK;
-                    context.Response.ContentType = "application/json";
-                    await context.Response.WriteAsync(JsonConvert.SerializeObject(ApiResponse.Fail(serviceException.Message, serviceException.Error)));
+                    if (contextFeature?.Error is DomainException domainException)
+                    {
+                        context.Response.StatusCode = (int)HttpStatusCode.OK;
+                        context.Response.ContentType = "application/json";
+                        await context.Response.WriteAsync(JsonConvert.SerializeObject(ApiResponse.Fail(domainException.Message)));
+                    }
                 });
             });
         }

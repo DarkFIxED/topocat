@@ -4,12 +4,14 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using Topocat.Domain.Users;
+using Topocat.Common;
+using Topocat.Domain.Entities.Users;
 using Topocat.Services.Models;
 using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames;
 
 namespace Topocat.Services.Services
 {
+    [RegisterScoped(typeof(ISecurityTokensFactory))]
     public class SecurityTokensFactory : ISecurityTokensFactory
     {
         private readonly JWTOptions _jwtOptions;

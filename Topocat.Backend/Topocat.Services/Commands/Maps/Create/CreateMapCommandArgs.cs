@@ -1,4 +1,4 @@
-﻿namespace Topocat.Services.Commands.Maps.CreateMap
+﻿namespace Topocat.Services.Commands.Maps.Create
 {
     public class CreateMapCommandArgs
     {

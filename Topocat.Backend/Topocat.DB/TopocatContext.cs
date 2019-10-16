@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Topocat.Domain.Map;
-using Topocat.Domain.Map.Objects;
-using Topocat.Domain.Users;
+using Topocat.Domain.Entities.Map;
+using Topocat.Domain.Entities.Map.Objects;
+using Topocat.Domain.Entities.Users;
 
 namespace Topocat.DB
 {
