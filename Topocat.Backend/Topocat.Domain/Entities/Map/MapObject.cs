@@ -1,25 +1,24 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
 using JetBrains.Annotations;
+using NetTopologySuite.Geometries;
 using Topocat.Common;
 
 namespace Topocat.Domain.Entities.Map
 {
-    public abstract class MapObject : DomainEntity, IHasIdentifier<string>, ILastModifiedAt, ICreatedAt
+    public class MapObject : DomainEntity, IHasIdentifier<string>, ILastModifiedAt, ICreatedAt
     {
         [UsedImplicitly]
         protected MapObject() { }
 
-        protected MapObject(Map map, string title)
+        public MapObject(Map map, string title, Geometry geometry)
         {
             Map = map;
             MapId = map.Id;
             
             Id = Guid.NewGuid().ToString("D");
             CreatedAt = DateTimeOffset.UtcNow;
-            LastModifiedAt = DateTimeOffset.UtcNow;
-
-            Title = title;
+            Update(title, geometry);
         }
 
         public string Id { get; protected set; }
@@ -35,9 +34,12 @@ namespace Topocat.Domain.Entities.Map
         [ForeignKey(nameof(MapId))]
         public Map Map { get; protected set; }
 
-        public void SetTitle(string newTitle)
+        public Geometry Geometry { get; protected set; }
+
+        public void Update(string title, Geometry geometry)
         {
-            Title = newTitle;
+            Title = title;
+            Geometry = geometry;
             LastModifiedAt = DateTimeOffset.UtcNow;
         }
     }

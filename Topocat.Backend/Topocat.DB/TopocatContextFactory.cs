@@ -15,7 +15,7 @@ namespace Topocat.DB
             var config = configBuilder.Build();
 
             var optionsBuilder = new DbContextOptionsBuilder<TopocatContext>();
-            optionsBuilder.UseSqlServer(config.GetConnectionString("Database"));
+            optionsBuilder.UseSqlServer(config.GetConnectionString("Database"), x => x.UseNetTopologySuite());
 
             return new TopocatContext(optionsBuilder.Options);
         }

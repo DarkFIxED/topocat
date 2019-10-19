@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Topocat.Domain.Entities.Map;
 using Topocat.Services.Models;
@@ -26,7 +25,14 @@ namespace Topocat.Services.QueryExtensions
                 Title = x.Title,
                 CreatedAt = x.CreatedAt,
                 LastModifiedAt = x.LastModifiedAt,
-                Objects = new List<MapObjectModel>()
+                Objects = x.ObjectsList.Select(o => new MapObjectModel
+                {
+                    Title = o.Title,
+                    Id = o.Id,
+                    LastModifiedAt = o.LastModifiedAt,
+                    CreatedAt = o.CreatedAt,
+                    GeoJson = o.Geometry.AsText()
+                }).ToList()
             });
         }
     }

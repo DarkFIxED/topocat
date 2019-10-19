@@ -5,26 +5,30 @@ using Microsoft.EntityFrameworkCore;
 using Topocat.Common;
 using Topocat.DB;
 using Topocat.Domain.Entities.Map;
-using Topocat.Domain.Entities.Map.Objects;
 using Topocat.Domain.Entities.Users;
 using Topocat.Services.Exceptions;
 using Topocat.Services.QueryExtensions;
+using Topocat.Services.Services;
 
-namespace Topocat.Services.Commands.Maps.AddPoint
+namespace Topocat.Services.Commands.Maps.AddObject
 {
     [RegisterScoped]
-    public class AddPointCommand : ICommand<AddPointCommandArgs, AddPointCommandResult>
+    public class AddObjectCommand : ICommand<AddObjectCommandArgs, AddObjectCommandResult>
     {
         private readonly UserManager<User> _userManager;
         private readonly IRepository _repository;
+        private readonly IGeometryConverter _geometryConverter;
 
-        public AddPointCommand(UserManager<User> userManager, IRepository repository)
+        public AddObjectCommand(UserManager<User> userManager,
+            IRepository repository, 
+            IGeometryConverter geometryConverter)
         {
             _userManager = userManager;
             _repository = repository;
+            _geometryConverter = geometryConverter;
         }
 
-        public async Task<AddPointCommandResult> Execute(AddPointCommandArgs args)
+        public async Task<AddObjectCommandResult> Execute(AddObjectCommandArgs args)
         {
             var actionExecutor = await _userManager.FindByIdAsync(args.ActionExecutorId);
             if (actionExecutor == null)
@@ -41,15 +45,17 @@ namespace Topocat.Services.Commands.Maps.AddPoint
             if (!map.CanModify(actionExecutor))
                 throw new ServiceException("User has no access to modify map");
 
-            var newPoint = new Point(map, args.Title, args.Coordinates);
+            var geometry = _geometryConverter.FromWktString(args.WktString);
+
+            var newPoint = new MapObject(map, args.Title, geometry);
             map.Add(newPoint);
 
             _repository.Update(map);
             await _repository.SaveAsync();
 
-            return new AddPointCommandResult
+            return new AddObjectCommandResult
             {
-                PointId = newPoint.Id
+                ObjectId = newPoint.Id
             };
         }
     }

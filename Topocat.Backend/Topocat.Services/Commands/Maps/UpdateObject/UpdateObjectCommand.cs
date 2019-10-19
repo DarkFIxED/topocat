@@ -6,26 +6,30 @@ using Microsoft.EntityFrameworkCore;
 using Topocat.Common;
 using Topocat.DB;
 using Topocat.Domain.Entities.Map;
-using Topocat.Domain.Entities.Map.Objects;
 using Topocat.Domain.Entities.Users;
 using Topocat.Services.Exceptions;
 using Topocat.Services.QueryExtensions;
+using Topocat.Services.Services;
 
-namespace Topocat.Services.Commands.Maps.UpdatePoint
+namespace Topocat.Services.Commands.Maps.UpdateObject
 {
     [RegisterScoped]
-    public class UpdatePointCommand : ICommand<UpdatePointCommandArgs>
+    public class UpdateObjectCommand : ICommand<UpdateObjectCommandArgs>
     {
         private readonly UserManager<User> _userManager;
         private readonly IRepository _repository;
+        private readonly IGeometryConverter _geometryConverter;
 
-        public UpdatePointCommand(UserManager<User> userManager, IRepository repository)
+        public UpdateObjectCommand(UserManager<User> userManager, 
+            IRepository repository,
+            IGeometryConverter geometryConverter)
         {
             _userManager = userManager;
             _repository = repository;
+            _geometryConverter = geometryConverter;
         }
 
-        public async Task Execute(UpdatePointCommandArgs args)
+        public async Task Execute(UpdateObjectCommandArgs args)
         {
             var actionExecutor = await _userManager.FindByIdAsync(args.ActionExecutorId);
 
@@ -43,16 +47,17 @@ namespace Topocat.Services.Commands.Maps.UpdatePoint
             if (!map.CanModify(actionExecutor))
                 throw new ServiceException("User has no access to modify map");
 
-            var point = map.ObjectsList
-                .OfType<Point>()
-                .FirstOrDefault(x => x.Id == args.PointId);
+            var mapObject = map.ObjectsList
+                .FirstOrDefault(x => x.Id == args.ObjectId);
 
-            if (point == null)
-                throw new ServiceException("Point not found");
+            if (mapObject == null)
+                throw new ServiceException("Object not found");
 
-            point.Update(args.Title, args.Coordinates);
+            var geometry = _geometryConverter.FromWktString(args.WktString);
 
-            _repository.Update(point);
+            mapObject.Update(args.Title, geometry);
+
+            _repository.Update(mapObject);
 
             await _repository.SaveAsync();
         }

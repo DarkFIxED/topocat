@@ -5,11 +5,9 @@ using Topocat.API.Extensions;
 using Topocat.API.Models;
 using Topocat.API.Models.Maps;
 using Topocat.Services;
-using Topocat.Services.Commands.Maps.AddLine;
-using Topocat.Services.Commands.Maps.AddPoint;
+using Topocat.Services.Commands.Maps.AddObject;
 using Topocat.Services.Commands.Maps.Create;
-using Topocat.Services.Commands.Maps.UpdateLine;
-using Topocat.Services.Commands.Maps.UpdatePoint;
+using Topocat.Services.Commands.Maps.UpdateObject;
 using Topocat.Services.Commands.Maps.UpdateTitle;
 using Topocat.Services.Queries.Map.GetMapQuery;
 
@@ -59,73 +57,36 @@ namespace Topocat.API.Controllers
             return ApiResponse.Success();
         }
 
-        [Route("/map/{mapId}/objects/lines")]
+        [Route("/map/{mapId}/objects")]
         [HttpPost]
-        public async Task<ApiResponse> AddLine([FromRoute] string mapId, [FromBody] AddLineRequestModel model)
+        public async Task<ApiResponse> AddPoint([FromRoute] string mapId, [FromBody] AddFeatureRequestModel model)
         {
-            var addLineCommand = _commandsFactory.Get<AddLineCommand>();
+            var addPointCommand = _commandsFactory.Get<AddObjectCommand>();
 
-            var result = await addLineCommand.Execute(new AddLineCommandArgs
+            var result = await addPointCommand.Execute(new AddObjectCommandArgs
             {
                 Title = model.Title,
                 MapId = mapId,
+                WktString = model.WktString,
                 ActionExecutorId = HttpContext.User.GetUserId(),
-                Start = model.Start,
-                End = model.End
             });
 
             return ApiResponse.Success(result);
         }
 
-        [Route("/map/{mapId}/objects/lines/{lineId}")]
+        [Route("/map/{mapId}/objects/{objectId}")]
         [HttpPut]
-        public async Task<ApiResponse> UpdateLine([FromRoute] string mapId, [FromRoute] string lineId, [FromBody] UpdateLineRequestModel model)
+        public async Task<ApiResponse> UpdatePoint([FromRoute] string mapId, [FromRoute] string objectId, [FromBody] UpdateObjectRequestModel model)
         {
-            var updateLineCommand = _commandsFactory.Get<UpdateLineCommand>();
+            var updateLineCommand = _commandsFactory.Get<UpdateObjectCommand>();
 
-            await updateLineCommand.Execute(new UpdateLineCommandArgs
+            await updateLineCommand.Execute(new UpdateObjectCommandArgs
             {
                 Title = model.Title,
                 MapId = mapId,
-                LineId = lineId,
+                ObjectId = objectId,
                 ActionExecutorId = HttpContext.User.GetUserId(),
-                Start = model.Start,
-                End = model.End
-            });
-
-            return ApiResponse.Success();
-        }
-
-        [Route("/map/{mapId}/objects/point")]
-        [HttpPost]
-        public async Task<ApiResponse> AddPoint([FromRoute] string mapId, [FromBody] AddPointRequestModel model)
-        {
-            var addPointCommand = _commandsFactory.Get<AddPointCommand>();
-
-            var result = await addPointCommand.Execute(new AddPointCommandArgs
-            {
-                Title = model.Title,
-                MapId = mapId,
-                ActionExecutorId = HttpContext.User.GetUserId(),
-                Coordinates = model.Coordinates
-            });
-
-            return ApiResponse.Success(result);
-        }
-
-        [Route("/map/{mapId}/objects/points/{pointId}")]
-        [HttpPut]
-        public async Task<ApiResponse> UpdatePoint([FromRoute] string mapId, [FromRoute] string pointId, [FromBody] UpdatePointRequestModel model)
-        {
-            var updateLineCommand = _commandsFactory.Get<UpdatePointCommand>();
-
-            await updateLineCommand.Execute(new UpdatePointCommandArgs
-            {
-                Title = model.Title,
-                MapId = mapId,
-                PointId = pointId,
-                ActionExecutorId = HttpContext.User.GetUserId(),
-                Coordinates = model.Coordinates
+                WktString = model.WktString
             });
 
             return ApiResponse.Success();

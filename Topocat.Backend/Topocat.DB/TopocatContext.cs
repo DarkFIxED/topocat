@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Topocat.Domain.Entities.Map;
-using Topocat.Domain.Entities.Map.Objects;
 using Topocat.Domain.Entities.Users;
 
 namespace Topocat.DB
@@ -14,8 +13,6 @@ namespace Topocat.DB
 
         public DbSet<Map> Maps { get; set; }
 
-        public DbSet<Line> Lines { get; set; }
-
-        public DbSet<Point> Points { get; set; }
+        public DbSet<MapObject> MapObjects { get; set; }
     }
 }
