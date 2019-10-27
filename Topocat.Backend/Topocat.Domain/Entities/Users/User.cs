@@ -6,7 +6,7 @@ using Topocat.Common;
 
 namespace Topocat.Domain.Entities.Users
 {
-    public class User : IdentityUser<string>, IHasIdentifier<string>
+    public class User : IdentityUser<string>, IHasIdentifier<string>, IDomainEntity
     {
         [UsedImplicitly]
         protected User()

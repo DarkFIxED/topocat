@@ -16,22 +16,22 @@ namespace Topocat.DB
             _context = context;
         }
 
-        public void Update<T>(T entity) where T : DomainEntity
+        public void Update<T>(T entity) where T : class, IDomainEntity
         {
             _context.Set<T>().Update(entity);
         }
 
-        public void Create<T>(T entity) where T : DomainEntity
+        public void Create<T>(T entity) where T : class, IDomainEntity
         {
             _context.Set<T>().Add(entity);
         }
 
-        public void Delete<T>(T entity) where T : DomainEntity
+        public void Delete<T>(T entity) where T : class, IDomainEntity
         {
             _context.Entry(entity).State = EntityState.Deleted;
         }
 
-        public IQueryable<T> AsQueryable<T>() where T : DomainEntity
+        public IQueryable<T> AsQueryable<T>() where T : class, IDomainEntity
         {
             return _context.Set<T>().AsQueryable();
         }

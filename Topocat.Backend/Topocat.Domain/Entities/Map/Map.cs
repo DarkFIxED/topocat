@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 using JetBrains.Annotations;
 using Topocat.Common;
 using Topocat.Domain.Entities.Users;
@@ -25,6 +26,11 @@ namespace Topocat.Domain.Entities.Map
 
             Title = title;
             ObjectsList = new List<MapObject>();
+
+            Memberships = new List<MapMembership>
+            {
+                MapMembership.CreateOwnerMembership(this)
+            };
         }
 
         public string Id { get; protected set; }
@@ -40,7 +46,9 @@ namespace Topocat.Domain.Entities.Map
 
         public DateTimeOffset LastModifiedAt { get; protected set; }
 
-        public List<MapObject> ObjectsList { get; set; }
+        public List<MapObject> ObjectsList { get; protected set; }
+
+        public List<MapMembership> Memberships { get; protected set; }
 
         public void Add(MapObject mapObject)
         {
@@ -62,6 +70,18 @@ namespace Topocat.Domain.Entities.Map
         public bool CanModify(User actionExecutor)
         {
             return actionExecutor.Id == CreatedById;
+        }
+
+        public void Invite(User actionExecutor, User invitedUser)
+        {
+            if (!CanModify(actionExecutor))
+                throw new DomainException("Only creator can invite members");
+
+            if (Memberships.Any(x=>x.InvitedId == invitedUser.Id))
+                throw new DomainException("Can not invite twice.");
+
+            var membership = new MapMembership(actionExecutor, this, invitedUser);
+            Memberships.Add(membership);
         }
     }
 }
