@@ -2,6 +2,7 @@
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Identity;
 using Topocat.Common;
+// ReSharper disable VirtualMemberCallInConstructor
 
 namespace Topocat.Domain.Entities.Users
 {
@@ -18,6 +19,9 @@ namespace Topocat.Domain.Entities.Users
 
             Email = email;
             EmailConfirmed = false;
+            NotificationSettings = new UserNotificationSettings(this);
         }
+
+        public UserNotificationSettings NotificationSettings { get; protected set; }
     }
 }
