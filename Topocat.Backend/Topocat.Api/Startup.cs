@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Text;
+using DalSoft.Hosting.BackgroundQueue.DependencyInjection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -105,9 +106,12 @@ namespace Topocat.API
                 });
             });
 
+            services.AddBackgroundQueue(exc => {});
+
             services.RegisterServicesByAttributes();
 
             services.Configure<JWTOptions>(AppConfiguration.GetSection("JWTOptions"));
+            services.Configure<SendGridOptions>(AppConfiguration.GetSection("SendGridOptions"));
             services.AddSingleton(tokenValidationParams);
         }
 
