@@ -36,14 +36,12 @@ namespace Topocat.Services.Commands.Maps.AddObject
 
             var map = await _repository.AsQueryable<Map>()
                 .WithId(args.MapId)
+                .WithAccessOf(actionExecutor.Id)
                 .LoadAggregate()
                 .FirstOrDefaultAsync();
 
             if (map == null)
                 throw new ServiceException("Map not found");
-
-            if (!map.CanModify(actionExecutor))
-                throw new ServiceException("User has no access to modify map");
 
             var geometry = _geometryConverter.FromWktString(args.WktString);
 

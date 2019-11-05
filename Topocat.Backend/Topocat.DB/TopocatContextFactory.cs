@@ -12,6 +12,7 @@ namespace Topocat.DB
         {
             var configBuilder = new ConfigurationBuilder();
             configBuilder.AddJsonFile("appsettings.json", true, true);
+            configBuilder.AddUserSecrets("f9d94ab4-1878-461c-b642-9c884dadb5aa");
             var config = configBuilder.Build();
 
             var optionsBuilder = new DbContextOptionsBuilder<TopocatContext>();

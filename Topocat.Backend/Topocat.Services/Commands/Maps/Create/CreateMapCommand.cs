@@ -26,6 +26,7 @@ namespace Topocat.Services.Commands.Maps.Create
         public async Task<CreateMapCommandResult> Execute(CreateMapCommandArgs args)
         {
             var actionExecutor = await _userManager.FindByIdAsync(args.ActionExecutorId);
+
             if (actionExecutor == null)
                 throw new ArgumentException("User not found", nameof(actionExecutor));
 

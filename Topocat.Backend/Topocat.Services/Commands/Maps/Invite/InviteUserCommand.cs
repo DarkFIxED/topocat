@@ -1,14 +1,17 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Topocat.Common;
 using Topocat.DB;
 using Topocat.Domain.Entities.Map;
 using Topocat.Domain.Entities.Users;
+using Topocat.Services.Exceptions;
 using Topocat.Services.QueryExtensions;
 using Topocat.Services.Services;
 
 namespace Topocat.Services.Commands.Maps.Invite
 {
+    [RegisterScoped]
     public class InviteUserCommand : ICommand<InviteUserCommandArgs>
     {
         private readonly IRepository _repository;
@@ -27,10 +30,13 @@ namespace Topocat.Services.Commands.Maps.Invite
             var actionExecutor = await _userManager.FindByIdAsync(args.ActionExecutorId);
 
             var map = await _repository.AsQueryable<Map>()
-                .Include(x => x.Memberships)
-                .Include(x => x.CreatedBy)
+                .WithAdminPermissions(actionExecutor.Id)
                 .WithId(args.MapId)
-                .FirstAsync();
+                .LoadAggregate()
+                .FirstOrDefaultAsync();
+
+            if (map == null)
+                throw new ServiceException("Map not found");
 
             var invitedUser = await _userManager.FindByEmailAsync(args.InvitedEmail);
             if (invitedUser == null)
@@ -46,7 +52,7 @@ namespace Topocat.Services.Commands.Maps.Invite
             await _repository.SaveAsync();
 
             // TODO: create emails factory
-            _emailService.SendEmail(invitedUser.Email, string.Empty);
+            _emailService.SendEmail(null);
         }
     }
 }

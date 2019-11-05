@@ -37,7 +37,7 @@ namespace Topocat.API
 
             services.AddDbContext<TopocatContext>(builder =>
             {
-                builder.UseSqlServer(AppConfiguration.GetConnectionString("Database"), x=>x.UseNetTopologySuite());
+                builder.UseSqlServer(AppConfiguration.GetConnectionString("Database"), x => x.UseNetTopologySuite());
             });
 
             services.AddIdentity<User, Role>()

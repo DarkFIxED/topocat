@@ -7,7 +7,7 @@ using Topocat.Domain.Exceptions;
 
 namespace Topocat.Domain.Entities.Map
 {
-    public class MapMembership : IHasIdentifier<string>, ICreatedAt
+    public class MapMembership : IDomainEntity, IHasIdentifier<string>, ICreatedAt
     {
         public static MapMembership CreateOwnerMembership(Map map)
         {

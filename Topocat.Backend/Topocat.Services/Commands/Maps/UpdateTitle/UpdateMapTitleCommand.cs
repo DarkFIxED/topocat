@@ -32,6 +32,7 @@ namespace Topocat.Services.Commands.Maps.UpdateTitle
 
             var map = await _repository.AsQueryable<Map>()
                 .WithId(args.MapId)
+                .WithAdminPermissions(actionExecutor.Id)
                 .LoadAggregate()
                 .FirstOrDefaultAsync();
 

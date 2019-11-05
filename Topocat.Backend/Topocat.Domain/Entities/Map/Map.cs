@@ -67,14 +67,9 @@ namespace Topocat.Domain.Entities.Map
             LastModifiedAt = DateTimeOffset.UtcNow;
         }
 
-        public bool CanModify(User actionExecutor)
-        {
-            return actionExecutor.Id == CreatedById;
-        }
-
         public void Invite(User actionExecutor, User invitedUser)
         {
-            if (!CanModify(actionExecutor))
+            if (actionExecutor.Id != CreatedById)
                 throw new DomainException("Only creator can invite members");
 
             if (Memberships.Any(x=>x.InvitedId == invitedUser.Id))

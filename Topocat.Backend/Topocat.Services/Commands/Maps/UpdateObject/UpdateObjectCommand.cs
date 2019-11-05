@@ -38,15 +38,13 @@ namespace Topocat.Services.Commands.Maps.UpdateObject
 
             var map = await _repository.AsQueryable<Map>()
                 .WithId(args.MapId)
+                .WithAccessOf(actionExecutor.Id)
                 .LoadAggregate()
                 .FirstOrDefaultAsync();
 
             if (map == null)
                 throw new ServiceException("Map not found");
-
-            if (!map.CanModify(actionExecutor))
-                throw new ServiceException("User has no access to modify map");
-
+            
             var mapObject = map.ObjectsList
                 .FirstOrDefault(x => x.Id == args.ObjectId);
 
