@@ -4,7 +4,7 @@ using JetBrains.Annotations;
 
 namespace Topocat.Domain.Entities.Users
 {
-    public class UserNotificationSettings
+    public class UserNotificationSettings : IDomainEntity
     {
         [UsedImplicitly]
         protected UserNotificationSettings() { }

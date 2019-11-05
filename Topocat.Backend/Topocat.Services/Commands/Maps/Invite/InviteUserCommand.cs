@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Topocat.Common;
@@ -44,7 +45,11 @@ namespace Topocat.Services.Commands.Maps.Invite
                 invitedUser = new User(args.InvitedEmail);
                 await _userManager.CreateAsync(invitedUser);
             }
-            
+
+            var notificationSettings = await _repository.AsQueryable<UserNotificationSettings>()
+                .Where(x => x.UserId == invitedUser.Id)
+                .FirstAsync();
+
             map.Invite(actionExecutor, invitedUser);
 
             _repository.Update(map);
@@ -52,7 +57,8 @@ namespace Topocat.Services.Commands.Maps.Invite
             await _repository.SaveAsync();
 
             // TODO: create emails factory
-            _emailService.SendEmail(null);
+            if (notificationSettings.NotifyAboutNewInvites)
+                _emailService.SendEmail(null);
         }
     }
 }
