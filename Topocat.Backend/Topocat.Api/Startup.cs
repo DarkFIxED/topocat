@@ -37,6 +37,8 @@ namespace Topocat.API
             services.AddControllers()
                 .AddNewtonsoftJson();
 
+            services.AddCors();
+
             services.AddDbContext<TopocatContext>(builder =>
             {
                 builder.UseSqlServer(AppConfiguration.GetConnectionString("Database"), x => x.UseNetTopologySuite());
@@ -126,6 +128,12 @@ namespace Topocat.API
             }
 
             app.ConfigureExceptionHandler();
+
+            app.UseCors(builder => builder
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+            );
 
             app.UseHttpsRedirection();
             app.UseRouting();

@@ -1,34 +1,20 @@
-import { BrowserModule, HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
-import { GestureConfig } from '@angular/material';
-import { NgModule } from '@angular/core';
-import { AppComponent } from './app.component';
-import { RouterModule, Routes } from '@angular/router';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { InfrastructureModule } from './infrastructure/infrastructure.module';
-import { MessageBusService } from 'litebus';
+import {BrowserModule} from '@angular/platform-browser';
+import {NgModule} from '@angular/core';
 
-const routes: Routes = [
-    {
-        path: '',
-        loadChildren: './authorized/authorized.module#AuthorizedModule'
-    }
-];
+import {AppRoutingModule} from './app-routing.module';
+import {AppComponent} from './app.component';
+import {CoreModule} from './core/core.module';
 
 @NgModule({
     declarations: [
-        AppComponent,
+        AppComponent
     ],
     imports: [
         BrowserModule,
-        BrowserAnimationsModule,
-        RouterModule.forRoot(routes),
-
-        InfrastructureModule,
+        AppRoutingModule,
+        CoreModule
     ],
-    providers: [
-        { provide: HAMMER_GESTURE_CONFIG, useClass: GestureConfig },
-        MessageBusService,
-    ],
+    providers: [],
     bootstrap: [AppComponent]
 })
 export class AppModule {
