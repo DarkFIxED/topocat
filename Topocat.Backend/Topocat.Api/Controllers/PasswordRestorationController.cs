@@ -54,7 +54,7 @@ namespace Topocat.API.Controllers
             {
                 Email = requestModel.Email,
                 Token = requestModel.Token,
-                Password = requestModel.Token
+                Password = requestModel.Password
             };
 
             await command.Execute(args);
