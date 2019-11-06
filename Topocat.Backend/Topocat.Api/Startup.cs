@@ -15,6 +15,7 @@ using Topocat.API.Extensions;
 using Topocat.API.Middlewares;
 using Topocat.DB;
 using Topocat.Domain.Entities.Users;
+using Topocat.Services.Hubs;
 using Topocat.Services.Models;
 using Topocat.Services.Services;
 
@@ -107,6 +108,7 @@ namespace Topocat.API
             });
 
             services.AddBackgroundQueue(exc => {});
+            services.AddSignalR();
 
             services.RegisterServicesByAttributes();
 
@@ -133,6 +135,7 @@ namespace Topocat.API
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<MapHub>("/mapHub");
             });
 
             app.UseSwagger();
