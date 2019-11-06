@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Topocat.Common;
-using Topocat.Domain;
+using Topocat.Common.DomainEventsDispatcher;
 
 namespace Topocat.DB
 {
@@ -10,10 +10,12 @@ namespace Topocat.DB
     public class Repository : IRepository
     {
         private readonly TopocatContext _context;
+        private readonly IDomainEventsDispatcher _domainEventsDispatcher;
 
-        public Repository(TopocatContext context)
+        public Repository(TopocatContext context, IDomainEventsDispatcher domainEventsDispatcher)
         {
             _context = context;
+            _domainEventsDispatcher = domainEventsDispatcher;
         }
 
         public void Update<T>(T entity) where T : class, IDomainEntity
@@ -38,7 +40,16 @@ namespace Topocat.DB
 
         public async Task<int> SaveAsync()
         {
-            return await _context.SaveChangesAsync();
+            var domainEvents = _context.GetDomainEvents();
+
+            var result = await _context.SaveChangesAsync();
+
+            foreach (var domainEvent in domainEvents)
+            {
+                _domainEventsDispatcher.Dispatch(domainEvent);
+            }
+
+            return result;
         }
     }
 }

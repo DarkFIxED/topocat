@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using JetBrains.Annotations;
 using NetTopologySuite.Geometries;
 using Topocat.Common;
+using Topocat.Domain.Entities.Map.Events;
 
 namespace Topocat.Domain.Entities.Map
 {
@@ -19,6 +20,8 @@ namespace Topocat.Domain.Entities.Map
             Id = Guid.NewGuid().ToString("D");
             CreatedAt = DateTimeOffset.UtcNow;
             Update(title, geometry);
+
+            AddEvent(new MapObjectAdded(this));
         }
 
         public string Id { get; protected set; }
@@ -41,6 +44,9 @@ namespace Topocat.Domain.Entities.Map
             Title = title;
             Geometry = geometry;
             LastModifiedAt = DateTimeOffset.UtcNow;
+
+            if (!HasEventsOfType<MapObjectAdded>())
+                AddOrReplaceEvent(new MapObjectUpdated(this));
         }
     }
 }
