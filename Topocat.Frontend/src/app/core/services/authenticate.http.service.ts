@@ -15,4 +15,8 @@ export class AuthenticateHttpService {
     public login(authData: {email: string, password: string}): Observable<ApiResponse<TokenPair>> {
         return this.baseHttpService.post<ApiResponse<TokenPair>>('authenticate', authData);
     }
+
+    public restorePasswordRequest(data: {email: string}): Observable<ApiResponse<any>> {
+        return this.baseHttpService.post<ApiResponse<any>>('restore-password-request', data);
+    }
 }

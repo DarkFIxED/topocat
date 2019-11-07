@@ -6,6 +6,7 @@ import {MatButtonModule, MatCardModule, MatInputModule, MatToolbarModule} from '
 import {RouterModule, Routes} from '@angular/router';
 import {LoginComponent} from './components/login/login.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
 
 const routes: Routes = [
     {
@@ -15,13 +16,17 @@ const routes: Routes = [
             {
                 path: 'login',
                 component: LoginComponent
+            },
+            {
+                path: 'forgot-password',
+                component: ForgotPasswordComponent
             }
         ]
     }
 ];
 
 @NgModule({
-    declarations: [UnauthorizedLayoutComponent, LoginComponent],
+    declarations: [UnauthorizedLayoutComponent, LoginComponent, ForgotPasswordComponent],
     imports: [
         CommonModule,
         HttpClientModule,
