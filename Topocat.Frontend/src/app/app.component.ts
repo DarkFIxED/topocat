@@ -14,6 +14,6 @@ export class AppComponent implements OnInit {
     title = 'topocat';
 
     ngOnInit(): void {
-        this.authHttpService.get<ApiResponse<any>>('map/ae94f6e5-76ec-4ed5-ba5b-36f36a148318').subscribe(result => console.log(result));
+        //this.authHttpService.get<ApiResponse<any>>('map/ae94f6e5-76ec-4ed5-ba5b-36f36a148318').subscribe(result => console.log(result));
     }
 }
