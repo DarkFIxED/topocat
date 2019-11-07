@@ -2,6 +2,7 @@
     <mat-card class="login-card">
         <mat-card-content>
             <div>
+                <h5>Login to Topocat</h5>
                 <form [formGroup]="loginForm">
                     <mat-form-field class="w-100">
                         <input matInput
@@ -18,6 +19,7 @@
                     <mat-form-field class="w-100">
                         <input matInput
                                required
+                               type="password"
                                formControlName="password"
                                placeholder="Password">
                         <mat-error *ngIf="loginForm.controls['password'].hasError('required')">

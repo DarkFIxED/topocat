@@ -36,10 +36,7 @@ namespace Topocat.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers()
-                .AddNewtonsoftJson(options =>
-                {
-                    options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-                });
+                .AddNewtonsoftJson();
 
             services.AddCors();
 

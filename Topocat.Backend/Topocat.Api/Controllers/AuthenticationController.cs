@@ -8,7 +8,6 @@ using Topocat.Services.Commands.Authentication.RenewAuthentication;
 namespace Topocat.API.Controllers
 {
     [ApiController]
-    [Produces("application/json")]
     public class AuthenticationController : ControllerBase
     {
         private readonly AuthenticateUserCommand _authenticateUserCommand;
