@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
+using Topocat.Services.Models;
 
-namespace Topocat.Services.Models
+namespace Topocat.Services.Queries.Map.GetMapsListQuery
 {
-    public class MapModel
+    public class GetMapsListResultItem 
     {
         public string Id { get; set; }
 
@@ -13,6 +13,6 @@ namespace Topocat.Services.Models
 
         public DateTimeOffset LastModifiedAt { get; set; }
 
-        public List<MapObjectModel> Objects { get; set; }
+        public UserModel CreatedBy { get; set; }
     }
 }

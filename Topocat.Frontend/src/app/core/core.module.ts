@@ -8,9 +8,15 @@ import {LoginComponent} from './components/login/login.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
 import {DomSanitizer} from '@angular/platform-browser';
+import {AuthHttpService} from './services/auth.http.service';
+import {BaseHttpService} from './services/base.http.service';
 
 @NgModule({
-    declarations: [UnauthorizedLayoutComponent, LoginComponent, ForgotPasswordComponent],
+    declarations: [
+        UnauthorizedLayoutComponent,
+        LoginComponent,
+        ForgotPasswordComponent
+    ],
     imports: [
         CommonModule,
         HttpClientModule,
