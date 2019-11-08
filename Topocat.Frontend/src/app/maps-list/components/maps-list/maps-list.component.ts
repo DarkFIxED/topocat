@@ -12,6 +12,7 @@ export class MapsListComponent implements OnInit {
 
     loading = false;
 
+    displayedColumns: string[] = ['title', 'email', 'management'];
     maps: MapModel[] = [];
 
     constructor(private mapsListHttpService: MapsListHttpService) {

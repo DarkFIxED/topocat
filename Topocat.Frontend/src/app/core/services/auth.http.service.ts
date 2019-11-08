@@ -41,7 +41,13 @@ export class AuthHttpService {
         }
 
         const tokenPair = this.credentialsStore.tokenPair;
-        if (!tokenPair || !this.tokensService.isTokenExpired(tokenPair.accessToken)) {
+        if (!tokenPair) {
+            // TODO: redirect to login
+            throw new Error();
+        }
+
+        if (!this.tokensService.isTokenExpired(tokenPair.accessToken)) {
+            headers = headers.set(this.AuthHeader, `Bearer ${tokenPair.accessToken}`);
             return func(relativeUrl, body, headers);
         }
 
