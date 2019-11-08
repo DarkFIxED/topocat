@@ -7,6 +7,7 @@
                     <form [formGroup]="loginForm">
                         <mat-form-field class="w-100">
                             <input matInput
+                                   tabindex="1"
                                    required
                                    formControlName="email"
                                    placeholder="Email">
@@ -19,6 +20,7 @@
                         </mat-form-field>
                         <mat-form-field class="w-100">
                             <input matInput
+                                   tabindex="2"
                                    required
                                    type="password"
                                    formControlName="password"
@@ -34,11 +36,17 @@
 
                         <div class="w-100">
                             <button mat-stroked-button
+                                    tabindex="4"
+                                    type="button"
                                     class="float-left mr-auto"
-                                    routerLink="/forgot-password">Forgot password?</button>
+                                    routerLink="/forgot-password">
+                                Forgot password?
+                            </button>
 
                             <button color="primary"
-                                    [disabled]="loginForm.invalid || loading"
+                                    tabindex="3"
+                                    type="submit"
+                                    [disabled]="loading"
                                     class="float-right ml-auto"
                                     mat-raised-button
                                     (click)="onFormSubmit()">

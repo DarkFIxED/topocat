@@ -22,6 +22,10 @@ export class CredentialsStore {
         this.currentTokenPair = tokenPair;
     }
 
+    clear() {
+        localStorage.removeItem(this.storageKey);
+    }
+
     private save(tokenPair: TokenPair) {
         localStorage.setItem(this.storageKey, JSON.stringify(tokenPair));
     }

@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {AuthenticateHttpService} from '../../services/authenticate.http.service';
 import {CredentialsStore} from '../../stores/credentials.store';
+import {Router} from '@angular/router';
 
 @Component({
     selector: 'app-login',
@@ -18,7 +19,8 @@ export class LoginComponent implements OnInit {
     loading = false;
 
     constructor(private authenticateHttpService: AuthenticateHttpService,
-                private credentialsStore: CredentialsStore) {
+                private credentialsStore: CredentialsStore,
+                private router: Router) {
     }
 
     ngOnInit() {
@@ -43,6 +45,7 @@ export class LoginComponent implements OnInit {
             }
 
             this.credentialsStore.updateTokenPair(result.data);
+            this.router.navigateByUrl('/maps-list');
         });
     }
 }
