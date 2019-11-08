@@ -1,0 +1,25 @@
+<h1 mat-dialog-title>New map</h1>
+<div mat-dialog-content>
+    <form [formGroup]="newMapForm">
+        <mat-form-field class="w-100">
+            <input matInput formControlName="title" placeholder="Title" tabindex="1">
+            <mat-error *ngIf="newMapForm.controls['title'].hasError('required')">
+                Please enter title
+            </mat-error>
+        </mat-form-field>
+        <div class="d-flex w-100 pb-1">
+            <button class="float-left mr-auto"
+                    type="button"
+                    mat-raised-button
+                    (click)="onNoClick()"
+                    tabindex="3">Cancel</button>
+            <button class="float-right"
+                    type="submit"
+                    mat-raised-button
+                    color="primary"
+                    tabindex="2"
+                    cdkFocusInitial
+                    (click)="onOkClick()">Ok</button>
+        </div>
+    </form>
+</div>
