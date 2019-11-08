@@ -5,3 +5,10 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .h-100vh {
     height: 100vh;
 }
+
+a:focus,
+button:focus,
+input:focus,
+textarea:focus {
+    outline: none;
+}
