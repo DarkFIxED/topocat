@@ -8,8 +8,11 @@ import {MatButtonModule, MatCardModule, MatDialogModule, MatFormFieldModule, Mat
 import {CoreModule} from '../core/core.module';
 import {MapsListHttpService} from './services/maps-list.http.service';
 import {HttpClientModule} from '@angular/common/http';
-import { NewMapComponent } from './components/new-map/new-map.component';
+import {NewMapComponent} from './components/new-map/new-map.component';
 import {ReactiveFormsModule} from '@angular/forms';
+import {MembershipListComponent} from './components/membership-list/membership-list.component';
+import {MapMembershipsHttpService} from './services/map-memberships.http.service';
+import {NewInviteComponent} from './components/new-invite/new-invite.component';
 
 
 const routes: Routes = [
@@ -18,15 +21,25 @@ const routes: Routes = [
         component: AuthorizedLayoutComponent,
         children: [
             {
+                path: ':id/memberships',
+                component: MembershipListComponent
+            },
+            {
                 path: '',
                 component: MapsListComponent
-            }
+            },
+
         ]
     }
 ];
 
 @NgModule({
-    declarations: [MapsListComponent, NewMapComponent],
+    declarations: [
+        MapsListComponent,
+        NewMapComponent,
+        MembershipListComponent,
+        NewInviteComponent
+    ],
     imports: [
         CoreModule,
         AuthCoreModule,
@@ -44,8 +57,8 @@ const routes: Routes = [
         MatDialogModule,
         MatInputModule
     ],
-    entryComponents: [NewMapComponent],
-    providers: [MapsListHttpService],
+    entryComponents: [NewMapComponent, NewInviteComponent],
+    providers: [MapsListHttpService, MapMembershipsHttpService],
     exports: [RouterModule]
 })
 export class MapsListModule {

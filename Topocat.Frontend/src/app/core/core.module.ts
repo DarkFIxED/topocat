@@ -10,12 +10,14 @@ import { ForgotPasswordComponent } from './components/forgot-password/forgot-pas
 import {DomSanitizer} from '@angular/platform-browser';
 import {AuthHttpService} from './services/auth.http.service';
 import {BaseHttpService} from './services/base.http.service';
+import { IndexComponent } from './components/index/index.component';
 
 @NgModule({
     declarations: [
         UnauthorizedLayoutComponent,
         LoginComponent,
-        ForgotPasswordComponent
+        ForgotPasswordComponent,
+        IndexComponent
     ],
     imports: [
         CommonModule,

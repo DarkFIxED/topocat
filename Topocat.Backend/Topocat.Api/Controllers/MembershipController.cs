@@ -7,19 +7,39 @@ using Topocat.API.Models.Invite;
 using Topocat.Services;
 using Topocat.Services.Commands.Maps.Invite;
 using Topocat.Services.Commands.Maps.SetInviteDecision;
+using Topocat.Services.Queries.Map.GetMapMemberships;
 
 namespace Topocat.API.Controllers
 {
     [ApiController]
     [Authorize]
-    public class InviteController : ControllerBase
+    public class MembershipController : ControllerBase
     {
 
         private readonly ICommandsFactory _commandsFactory;
+        private readonly IQueriesFactory _queriesFactory;
 
-        public InviteController(ICommandsFactory commandsFactory)
+        public MembershipController(ICommandsFactory commandsFactory, IQueriesFactory queriesFactory)
         {
             _commandsFactory = commandsFactory;
+            _queriesFactory = queriesFactory;
+        }
+
+        [HttpGet]
+        [Route("/map/{mapId}/memberships")]
+        public async Task<ApiResponse> GetMapMemberships([FromRoute] string mapId)
+        {
+            var query = _queriesFactory.Get<GetMapMembershipsQuery>();
+
+            var args = new GetMapMembershipsQueryArgs
+            {
+                MapId = mapId,
+                ActionExecutorId = HttpContext.User.GetUserId()
+            };
+
+            var result = await query.Ask(args);
+
+            return ApiResponse.Success(result);
         }
 
         [HttpPost]

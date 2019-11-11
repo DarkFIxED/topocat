@@ -7,6 +7,7 @@ using Topocat.DB;
 using Topocat.Domain.Entities.Map;
 using Topocat.Domain.Entities.Users;
 using Topocat.Services.Exceptions;
+using Topocat.Services.Models;
 using Topocat.Services.QueryExtensions;
 using Topocat.Services.Services;
 
@@ -58,7 +59,15 @@ namespace Topocat.Services.Commands.Maps.Invite
 
             // TODO: create emails factory
             if (notificationSettings.NotifyAboutNewInvites)
-                _emailService.SendEmail(null);
+                _emailService.SendEmail(new EmailMessage
+                {
+                    Subject = "Invite",
+                    Body = "You invited to map",
+                    Addresses = new []
+                    {
+                        invitedUser.Email
+                    }
+                });
         }
     }
 }

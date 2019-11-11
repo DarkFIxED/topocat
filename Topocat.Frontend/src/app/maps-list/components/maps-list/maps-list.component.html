@@ -21,7 +21,7 @@
                 <th mat-header-cell *matHeaderCellDef></th>
                 <td mat-cell *matCellDef="let element">
                     <mat-menu #appMenu="matMenu">
-                        <button mat-menu-item>Manage membership</button>
+                        <button mat-menu-item routerLink="{{element.id}}/memberships">Manage membership</button>
                     </mat-menu>
 
                     <button mat-button [matMenuTriggerFor]="appMenu">

@@ -1,0 +1,38 @@
+<mat-card class="h-100 w-100">
+    <mat-card-header>
+        Maps list
+    </mat-card-header>
+    <mat-card-content>
+        <table mat-table
+               [dataSource]="memberships"
+               class="mat-elevation-z8 w-100 mt-2">
+
+            <ng-container matColumnDef="email">
+                <th mat-header-cell *matHeaderCellDef>Title</th>
+                <td mat-cell *matCellDef="let element">
+                    <span class="mdi"
+                          [class.mdi-account-question]="element.status === MapMembershipStatus.DecisionNotMade"
+                          [class.mdi-account-minus]="element.status === MapMembershipStatus.Declined"
+                          [class.mdi-account-plus]="element.status === MapMembershipStatus.Accepted">
+                    </span>
+                    {{element.invitedEmail}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="createdAt">
+                <th mat-header-cell *matHeaderCellDef>Created at</th>
+                <td mat-cell *matCellDef="let element"> {{element.createdAt | date: 'hh:mm dd-MM-yyyy'}} </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+
+        <button mat-fab color="primary"
+                class="add-button"
+                (click)="openInviteDialog()">
+            <span class="mdi mdi-24px mdi-plus"></span>
+        </button>
+    </mat-card-content>
+</mat-card>
+
+
