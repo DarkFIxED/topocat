@@ -66,7 +66,7 @@ export class RestorePasswordComponent implements OnInit {
                 }
 
                 this.showSuccessMessage = true;
-                setInterval(() => {
+                setTimeout(() => {
                     this.router.navigateByUrl('/login');
                 }, 5000);
             });

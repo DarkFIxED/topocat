@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Identity;
 using Topocat.Common;
 using Topocat.Domain.Entities.Users;
+using Topocat.Services.Emails;
 using Topocat.Services.Exceptions;
-using Topocat.Services.Models;
 using Topocat.Services.Services;
 
 namespace Topocat.Services.Commands.Users.RestorePasswordRequest
@@ -13,11 +13,13 @@ namespace Topocat.Services.Commands.Users.RestorePasswordRequest
     {
         private readonly UserManager<User> _userManager;
         private readonly IEmailService _emailService;
+        private readonly EmailMessageFactory _emailMessageFactory;
 
-        public RestorePasswordRequestCommand(UserManager<User> userManager, IEmailService emailService)
+        public RestorePasswordRequestCommand(UserManager<User> userManager, IEmailService emailService, EmailMessageFactory emailMessageFactory)
         {
             _userManager = userManager;
             _emailService = emailService;
+            _emailMessageFactory = emailMessageFactory;
         }
 
         public async Task Execute(RestorePasswordRequestCommandArgs args)
@@ -28,12 +30,15 @@ namespace Topocat.Services.Commands.Users.RestorePasswordRequest
 
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
 
-            _emailService.SendEmail(new EmailMessage
+            var emailTemplateArgs = new ResetPasswordEmailTemplateArgs
             {
-                Subject = "Password restoration",
-                Body = $"Token: {token}, email: {args.Email}",
-                Addresses = new []{user.Email}
-            });
+                Token = token,
+                Address = user.Email
+            };
+
+            var message = _emailMessageFactory.Get<ResetPasswordEmailTemplate, ResetPasswordEmailTemplateArgs>(emailTemplateArgs);
+
+            _emailService.SendEmail(message);
         }
     }
 }

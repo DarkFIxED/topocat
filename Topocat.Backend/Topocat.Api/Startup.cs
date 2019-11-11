@@ -117,6 +117,8 @@ namespace Topocat.API
 
             services.Configure<JWTOptions>(AppConfiguration.GetSection("JWTOptions"));
             services.Configure<SendGridOptions>(AppConfiguration.GetSection("SendGridOptions"));
+            services.Configure<FrontendUrls>(AppConfiguration.GetSection("FrontendUrls"));
+
             services.AddSingleton(tokenValidationParams);
         }
 
