@@ -5,6 +5,7 @@ import {UnauthorizedLayoutComponent} from './core/components/unauthorized-layout
 import {LoginComponent} from './core/components/login/login.component';
 import {ForgotPasswordComponent} from './core/components/forgot-password/forgot-password.component';
 import {IndexComponent} from './core/components/index/index.component';
+import {RestorePasswordComponent} from './core/components/restore-password/restore-password.component';
 
 
 const routes: Routes = [
@@ -19,6 +20,10 @@ const routes: Routes = [
             {
                 path: 'forgot-password',
                 component: ForgotPasswordComponent
+            },
+            {
+                path: 'restore-password',
+                component: RestorePasswordComponent
             },
             {
                 path: '',
