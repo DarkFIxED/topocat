@@ -9,6 +9,7 @@ using Topocat.Services.Commands.Maps.AddObject;
 using Topocat.Services.Commands.Maps.Create;
 using Topocat.Services.Commands.Maps.UpdateObject;
 using Topocat.Services.Commands.Maps.UpdateTitle;
+using Topocat.Services.Queries.Map.GetMapObjects;
 using Topocat.Services.Queries.Map.GetMapQuery;
 using Topocat.Services.Queries.Map.GetMapsListQuery;
 
@@ -72,6 +73,23 @@ namespace Topocat.API.Controllers
             });
 
             return ApiResponse.Success();
+        }
+
+        [Route("/maps/{mapId}/objects")]
+        [HttpGet]
+        public async Task<ApiResponse> GetMapObjects([FromRoute] string mapId)
+        {
+            var query = _queriesFactory.Get<GetMapObjectsQuery>();
+
+            var args = new GetMapObjectsQueryArgs
+            {
+                ActionExecutorId = HttpContext.User.GetUserId(),
+                MapId = mapId
+            };
+
+            var result = await query.Ask(args);
+
+            return ApiResponse.Success(result);
         }
 
         [Route("/maps/{mapId}/objects")]

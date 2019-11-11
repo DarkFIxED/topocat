@@ -27,6 +27,9 @@
                     <button mat-button [matMenuTriggerFor]="appMenu">
                         <span class="mdi mdi-dots-vertical"></span>
                     </button>
+                    <button mat-button (click)="redirectToMap(element.id)">
+                        <span class="mdi mdi-map"></span>
+                    </button>
                 </td>
             </ng-container>
 

@@ -13,6 +13,14 @@
 
 .sidenav-row {
     display: table-row;
+
+    button {
+        width: 100% !important;
+
+        ::ng-deep.mat-button-wrapper {
+            float: left !important;
+        }
+    }
 }
 
 .active {

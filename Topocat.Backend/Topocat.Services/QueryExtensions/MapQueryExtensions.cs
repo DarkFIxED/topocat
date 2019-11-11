@@ -32,14 +32,6 @@ namespace Topocat.Services.QueryExtensions
                 Title = x.Title,
                 CreatedAt = x.CreatedAt,
                 LastModifiedAt = x.LastModifiedAt,
-                Objects = x.ObjectsList.Select(o => new MapObjectModel
-                {
-                    Title = o.Title,
-                    Id = o.Id,
-                    LastModifiedAt = o.LastModifiedAt,
-                    CreatedAt = o.CreatedAt,
-                    GeoJson = o.Geometry.AsText()
-                }).ToList()
             });
         }
     }

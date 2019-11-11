@@ -36,6 +36,12 @@ const routes: Routes = [
         loadChildren: './maps-list/maps-list.module#MapsListModule',
         canLoad: [AuthorizedGuard],
         canActivate: [AuthorizedGuard]
+    },
+    {
+        path: 'maps',
+        loadChildren: './maps/maps.module#MapsModule',
+        canLoad: [AuthorizedGuard],
+        canActivate: [AuthorizedGuard]
     }
 ];
 

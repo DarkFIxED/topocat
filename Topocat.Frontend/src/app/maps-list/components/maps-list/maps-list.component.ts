@@ -4,6 +4,7 @@ import {filter, switchMap, tap} from 'rxjs/operators';
 import {MapModel} from '../../models/map.model';
 import {MatDialog} from '@angular/material';
 import {NewMapComponent} from '../new-map/new-map.component';
+import {Router} from '@angular/router';
 
 @Component({
     selector: 'app-maps-list',
@@ -18,7 +19,8 @@ export class MapsListComponent implements OnInit {
     maps: MapModel[] = [];
 
     constructor(private mapsListHttpService: MapsListHttpService,
-                private dialog: MatDialog) {
+                private dialog: MatDialog,
+                private router: Router) {
     }
 
     ngOnInit() {
@@ -60,5 +62,9 @@ export class MapsListComponent implements OnInit {
                     // TODO: handle error
                     throw new Error();
             });
+    }
+
+    redirectToMap(id: string) {
+        this.router.navigateByUrl(`/maps/${id}`);
     }
 }

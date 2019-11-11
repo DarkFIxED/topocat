@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace Topocat.Services.Models
 {
@@ -13,6 +12,5 @@ namespace Topocat.Services.Models
 
         public DateTimeOffset LastModifiedAt { get; set; }
 
-        public List<MapObjectModel> Objects { get; set; }
     }
 }
