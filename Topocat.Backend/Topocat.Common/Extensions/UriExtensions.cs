@@ -16,7 +16,7 @@ namespace Topocat.Common.Extensions
         {
             var uriBuilder = new UriBuilder(url);
             var query = HttpUtility.ParseQueryString(uriBuilder.Query);
-            query[paramName] = HttpUtility.UrlEncode(paramValue);
+            query[paramName] = paramValue;
             uriBuilder.Query = query.ToString();
 
             return uriBuilder.Uri;
