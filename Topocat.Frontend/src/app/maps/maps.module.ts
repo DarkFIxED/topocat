@@ -13,6 +13,7 @@ import {MapService} from './services/map.service';
 import {MapsHttpService} from './services/maps.http.service';
 import {AgmCoreModule} from '@agm/core';
 import {secrets} from '../../environments/secrets';
+import {MapObjectsQuery} from './queries/map-objects.query';
 
 const routes: Routes = [
     {
@@ -36,9 +37,9 @@ const routes: Routes = [
         RouterModule.forChild(routes),
         AgmCoreModule.forRoot({
             apiKey: secrets.googleMapsApi
-        })
+        }),
     ],
-    providers: [MapObjectsStore, MapStore, MapService, MapsHttpService]
+    providers: [MapObjectsStore, MapStore, MapService, MapsHttpService, MapObjectsQuery]
 })
 export class MapsModule {
 }

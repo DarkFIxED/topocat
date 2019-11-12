@@ -7,7 +7,7 @@ export interface MapState extends EntityState<MapModel> {
 
 function initialState(): Partial<MapState> {
     return {
-        loading: false
+        loading: false,
     };
 }
 
@@ -18,5 +18,4 @@ export class MapStore extends EntityStore<MapState, MapModel> {
     constructor() {
         super(initialState());
     }
-
 }

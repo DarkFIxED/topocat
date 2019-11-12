@@ -4,6 +4,7 @@ import {MapObjectsStore} from '../stores/map-objects.store';
 import {MapsHttpService} from './maps.http.service';
 import {forkJoin} from 'rxjs';
 import {tap} from 'rxjs/operators';
+import {MapObjectModel} from '../models/map-object.model';
 
 @Injectable()
 export class MapService {
@@ -34,5 +35,9 @@ export class MapService {
                     this.mapStore.set([results[0].data]);
                     this.mapObjectsStore.set(results[1].data.mapObjects);
             });
+    }
+
+    addObject(object: MapObjectModel) {
+        this.mapObjectsStore.add(object);
     }
 }
