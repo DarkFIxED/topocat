@@ -5,6 +5,7 @@ import {MapsHttpService} from './maps.http.service';
 import {forkJoin} from 'rxjs';
 import {tap} from 'rxjs/operators';
 import {MapObjectModel} from '../models/map-object.model';
+import {ID} from '@datorama/akita';
 
 @Injectable()
 export class MapService {
@@ -39,5 +40,13 @@ export class MapService {
 
     addObject(object: MapObjectModel) {
         this.mapObjectsStore.add(object);
+    }
+
+    setActive(objectId: ID) {
+        this.mapObjectsStore.setActive(objectId);
+    }
+
+    clearActive() {
+        this.mapObjectsStore.setActive(null);
     }
 }
