@@ -1,0 +1,24 @@
+<mat-card class="objects-list-card p-0">
+    <mat-card-content>
+        <div class="pl-3 pr-3 pt-2">
+            <mat-form-field class="w-100">
+                <input matInput
+                       placeholder="Search map objects..."
+                       autocomplete="off"
+                       (keyup)="emitValue()"
+                       [(ngModel)]="searchString">
+            </mat-form-field>
+        </div>
+        <mat-divider [inset]="true"></mat-divider>
+        <mat-list class="objects-list p-0">
+            <mat-list-item *ngFor="let object of objects$ | async; last as last"
+                           class="list-item">
+                <app-objects-list-item class="h-100 w-100"
+                                       [class.active]="(activeId$ | async) == object.id"
+                                       [object]="object">
+                </app-objects-list-item>
+                <mat-divider [inset]="true" *ngIf="!last"></mat-divider>
+            </mat-list-item>
+        </mat-list>
+    </mat-card-content>
+</mat-card>

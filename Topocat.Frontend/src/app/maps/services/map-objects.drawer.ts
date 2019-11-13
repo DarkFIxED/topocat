@@ -19,10 +19,9 @@ export class MapObjectsDrawer {
     private mapInstance$: Subject<google.maps.Map> = new Subject<google.maps.Map>();
     private infoWindowInstance$: Subject<google.maps.InfoWindow> = new Subject<google.maps.InfoWindow>();
 
-    private unifiedMapObjectsFactory: UnifiedMapObjectsFactory = new UnifiedMapObjectsFactory();
-
     constructor(private mapObjectsQuery: MapObjectsQuery,
-                private mapService: MapService) {
+                private mapService: MapService,
+                private unifiedMapObjectsFactory: UnifiedMapObjectsFactory) {
         this.drawSetObjects();
         this.drawAddedObjects();
         this.redrawUpdatedObjects();

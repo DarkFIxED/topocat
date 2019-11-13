@@ -5,9 +5,11 @@ import * as WKT from 'terraformer-wkt-parser';
 import * as Terraformer from 'terraformer';
 import {Line} from './line';
 import {Polygon} from './polygon';
+import {Injectable} from '@angular/core';
 
-
+@Injectable()
 export class UnifiedMapObjectsFactory {
+
     build(map: google.maps.Map, mapObject: MapObjectModel): UnifiedMapObject {
         const primitive = WKT.parse(mapObject.wktString);
 
@@ -17,7 +19,6 @@ export class UnifiedMapObjectsFactory {
                 return new Point(mapObject.id, {
                     map,
                     position: new google.maps.LatLng(point.coordinates[0], point.coordinates[1]),
-                    label: mapObject.title
                 });
 
             case 'LineString':

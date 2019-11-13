@@ -1,0 +1,13 @@
+<div class="d-flex h-100 w-100 lh-40px">
+    <div class="p-0 icon-wrapper">
+        <span class="{{iconString}}"></span>
+    </div>
+
+    <div class="p-0 mr-auto title">
+        <span [title]="object.title">{{object.title}}</span>
+    </div>
+
+    <div mat-ripple class="p-0 icon-wrapper float-right visible-on-hover" (click)="onCenterClick()">
+        <span class="mdi mdi-crosshairs-gps"></span>
+    </div>
+</div>

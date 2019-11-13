@@ -14,6 +14,12 @@ import {MapsHttpService} from './services/maps.http.service';
 import {AgmCoreModule} from '@agm/core';
 import {secrets} from '../../environments/secrets';
 import {MapObjectsQuery} from './queries/map-objects.query';
+import { ObjectsListComponent } from './components/objects-list/objects-list.component';
+import {MatButtonModule, MatCardModule, MatInputModule, MatListModule, MatRippleModule} from '@angular/material';
+import { ObjectsListItemComponent } from './components/objects-list-item/objects-list-item.component';
+import {WktService} from './services/wkt.service';
+import {UnifiedMapObjectsFactory} from './models/unified-map-objects.factory';
+import {FormsModule} from '@angular/forms';
 
 const routes: Routes = [
     {
@@ -29,7 +35,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-    declarations: [MapComponent],
+    declarations: [MapComponent, ObjectsListComponent, ObjectsListItemComponent],
     imports: [
         CommonModule,
         AuthCoreModule,
@@ -38,8 +44,14 @@ const routes: Routes = [
         AgmCoreModule.forRoot({
             apiKey: secrets.googleMapsApi
         }),
+        MatCardModule,
+        MatListModule,
+        MatButtonModule,
+        MatRippleModule,
+        MatInputModule,
+        FormsModule,
     ],
-    providers: [MapObjectsStore, MapStore, MapService, MapsHttpService, MapObjectsQuery]
+    providers: [MapObjectsStore, MapStore, MapService, MapsHttpService, MapObjectsQuery, WktService, UnifiedMapObjectsFactory]
 })
 export class MapsModule {
 }

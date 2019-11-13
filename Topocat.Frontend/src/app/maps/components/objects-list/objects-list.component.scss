@@ -1,0 +1,25 @@
+.objects-list-card {
+    position: absolute;
+    top: 30px;
+    left: 30px;
+}
+.objects-list {
+    max-height: calc(100vh - 161px);
+    overflow: auto;
+}
+
+.list-item {
+    height: 40px !important;
+    min-width: 250px;
+    max-width: 250px;
+}
+
+::ng-deep {
+    .mat-list-item-content {
+        padding: 0 !important;
+    }
+}
+
+app-objects-list-item.active {
+    background-color: #EEE;
+}
