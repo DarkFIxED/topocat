@@ -49,4 +49,24 @@ export class MapService {
     clearActive() {
         this.mapObjectsStore.setActive(null);
     }
+
+    editMapObject(mapObjectId: ID) {
+        this.mapObjectsStore.update({
+            ui: {
+                editingObjectId: mapObjectId
+            }
+        });
+    }
+
+    resetEditingMapObject() {
+        this.mapObjectsStore.update({
+            ui: {
+                editingObjectId: undefined
+            }
+        });
+    }
+
+    updateObject(model: MapObjectModel) {
+        this.mapObjectsStore.upsert(model.id, model);
+    }
 }

@@ -10,44 +10,24 @@ import {WktService} from '../../services/wkt.service';
 })
 export class ObjectsListItemComponent implements OnInit {
 
+    type = '';
+
     @Input()
     object: MapObjectModel;
-
-    iconString = '';
 
     constructor(private mapService: MapService,
                 private wktService: WktService) {
     }
 
     ngOnInit() {
-        this.iconString = this.selectIconString();
+        this.type = this.wktService.getWktType(this.object.wktString);
     }
 
     onCenterClick() {
         this.mapService.setActive(this.object.id);
     }
 
-    private selectIconString() {
-        let icon = 'mdi mdi-';
-        const objectType = this.wktService.getWktType(this.object.wktString);
-
-        switch (objectType) {
-            case 'Point':
-                icon = icon + 'map-marker-outline';
-                break;
-
-            case 'LineString':
-                icon = icon + 'vector-polyline';
-                break;
-
-            case 'Polygon':
-                icon = icon + 'vector-polygon';
-                break;
-
-            default:
-                throw new Error();
-        }
-
-        return icon;
+    onEditClick() {
+        this.mapService.editMapObject(this.object.id);
     }
 }

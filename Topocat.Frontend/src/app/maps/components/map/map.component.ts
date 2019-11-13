@@ -3,7 +3,12 @@ import {MapService} from '../../services/map.service';
 import {ActivatedRoute} from '@angular/router';
 import {MapObjectsDrawer} from '../../services/map-objects.drawer';
 import {MapsSignalRService} from '../../services/maps.signal-r.service';
-import {filter, tap} from 'rxjs/operators';
+import {filter, flatMap, map, switchMap, tap} from 'rxjs/operators';
+import {MapObjectsQuery} from '../../queries/map-objects.query';
+import {MatDialog} from '@angular/material';
+import {EditMapObjectComponent} from '../../dialogs/edit-map-object/edit-map-object.component';
+import {MapsHttpService} from '../../services/maps.http.service';
+import {Observable, of} from 'rxjs';
 
 @Component({
     selector: 'app-map',
@@ -13,29 +18,58 @@ import {filter, tap} from 'rxjs/operators';
 })
 export class MapComponent implements OnInit {
 
+    private mapId: string = undefined;
+
     constructor(private mapService: MapService,
                 private route: ActivatedRoute,
                 private mapObjectsDrawer: MapObjectsDrawer,
-                private mapsSignalRService: MapsSignalRService) {
+                private mapObjectsQuery: MapObjectsQuery,
+                private mapsSignalRService: MapsSignalRService,
+                private matDialog: MatDialog,
+                private mapsHttpService: MapsHttpService) {
     }
 
     ngOnInit() {
         this.route.params.subscribe(params => {
-            const mapId = params.id;
+            this.mapId = params.id;
 
-            if (!mapId) {
+            if (!this.mapId) {
                 throw new Error();
             }
 
-            this.mapService.load(mapId);
+            this.mapService.load(this.mapId);
             this.mapsSignalRService.isConnected$.pipe(
                 filter(isConnected => !!isConnected),
-                tap(() => this.mapsSignalRService.initialize(mapId))
+                tap(() => this.mapsSignalRService.initialize(this.mapId))
             ).subscribe();
         });
+
+        this.initializeObjectsEdit();
     }
 
     onMapReady(mapInstance: google.maps.Map) {
         this.mapObjectsDrawer.setMap(mapInstance);
+    }
+
+    private initializeObjectsEdit() {
+        this.mapObjectsQuery.select(state => state.ui.editingObjectId)
+            .pipe(
+                filter(id => !!id),
+                map(id => this.mapObjectsQuery.getEntity(id)),
+                switchMap(model => this.matDialog.open(EditMapObjectComponent, {
+                    width: '250px',
+                    hasBackdrop: true,
+                    data: model
+                }).afterClosed()),
+                tap(() => this.mapService.resetEditingMapObject()),
+                filter(result => !!result),
+                switchMap(result => this.mapsHttpService.updateMapObject(this.mapId, result))
+            )
+            .subscribe();
+
+        this.mapsSignalRService.objectUpdated$.pipe(
+            tap(model => this.mapService.updateObject(model))
+        )
+        .subscribe();
     }
 }

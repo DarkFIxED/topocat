@@ -145,7 +145,7 @@ export class MapObjectsDrawer {
 
     private removeObjectsFromDrawnAndRemoveSubs(id: ID) {
         const subs = this.drawnObjectsSubscriptions.find(x => x.id === id);
-        if (!!subs) {
+        if (!subs) {
             throw new Error();
         }
 

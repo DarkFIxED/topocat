@@ -15,12 +15,13 @@ import {AgmCoreModule} from '@agm/core';
 import {secrets} from '../../environments/secrets';
 import {MapObjectsQuery} from './queries/map-objects.query';
 import { ObjectsListComponent } from './components/objects-list/objects-list.component';
-import {MatButtonModule, MatCardModule, MatInputModule, MatListModule, MatRippleModule} from '@angular/material';
+import {MatButtonModule, MatCardModule, MatDialogModule, MatInputModule, MatListModule, MatRippleModule} from '@angular/material';
 import { ObjectsListItemComponent } from './components/objects-list-item/objects-list-item.component';
 import {WktService} from './services/wkt.service';
 import {UnifiedMapObjectsFactory} from './models/unified-map-objects.factory';
-import {FormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MapsSignalRService} from './services/maps.signal-r.service';
+import { EditMapObjectComponent } from './dialogs/edit-map-object/edit-map-object.component';
 
 const routes: Routes = [
     {
@@ -39,7 +40,8 @@ const routes: Routes = [
     declarations: [
         MapComponent,
         ObjectsListComponent,
-        ObjectsListItemComponent
+        ObjectsListItemComponent,
+        EditMapObjectComponent
     ],
     imports: [
         CommonModule,
@@ -55,6 +57,11 @@ const routes: Routes = [
         MatRippleModule,
         MatInputModule,
         FormsModule,
+        MatDialogModule,
+        ReactiveFormsModule,
+    ],
+    entryComponents: [
+        EditMapObjectComponent
     ],
     providers: [
         MapObjectsStore,

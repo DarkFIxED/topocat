@@ -1,11 +1,15 @@
 import * as signalR from '@aspnet/signalr';
 import {environment} from '../../../environments/environment';
-import {BehaviorSubject} from 'rxjs';
+import {BehaviorSubject, Subject} from 'rxjs';
+import {MapObjectModel} from '../models/map-object.model';
 
 export class MapsSignalRService {
 
     private isConnected = new BehaviorSubject<boolean>(false);
     isConnected$ = this.isConnected.asObservable();
+
+    private objectUpdated = new Subject<MapObjectModel>();
+    objectUpdated$ = this.objectUpdated.asObservable();
 
     private hubConnection: signalR.HubConnection;
 
@@ -30,14 +34,14 @@ export class MapsSignalRService {
 
         this.hubConnection.on('objectUpdated', (data) => {
             console.log(data);
+            this.objectUpdated.next(data);
         });
     }
 
     initialize(mapId: string) {
         this.hubConnection.send('Initialize', mapId)
             .then()
-            .catch(catchError)
-        ;
+            .catch(catchError);
     }
 }
 
