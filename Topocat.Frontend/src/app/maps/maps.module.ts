@@ -20,6 +20,7 @@ import { ObjectsListItemComponent } from './components/objects-list-item/objects
 import {WktService} from './services/wkt.service';
 import {UnifiedMapObjectsFactory} from './models/unified-map-objects.factory';
 import {FormsModule} from '@angular/forms';
+import {MapsSignalRService} from './services/maps.signal-r.service';
 
 const routes: Routes = [
     {
@@ -35,7 +36,11 @@ const routes: Routes = [
 ];
 
 @NgModule({
-    declarations: [MapComponent, ObjectsListComponent, ObjectsListItemComponent],
+    declarations: [
+        MapComponent,
+        ObjectsListComponent,
+        ObjectsListItemComponent
+    ],
     imports: [
         CommonModule,
         AuthCoreModule,
@@ -51,7 +56,19 @@ const routes: Routes = [
         MatInputModule,
         FormsModule,
     ],
-    providers: [MapObjectsStore, MapStore, MapService, MapsHttpService, MapObjectsQuery, WktService, UnifiedMapObjectsFactory]
+    providers: [
+        MapObjectsStore,
+        MapStore,
+        MapService,
+        MapsHttpService,
+        MapObjectsQuery,
+        WktService,
+        UnifiedMapObjectsFactory,
+        MapsSignalRService,
+    ]
 })
 export class MapsModule {
+    constructor(private signalRService: MapsSignalRService) {
+        this.signalRService.startConnection();
+    }
 }

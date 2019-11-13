@@ -18,6 +18,7 @@ using Topocat.Domain.Entities.Users;
 using Topocat.Services.Hubs;
 using Topocat.Services.Models;
 using Topocat.Services.Services;
+using Topocat.Services.Services.Background;
 
 namespace Topocat.API
 {
@@ -119,6 +120,8 @@ namespace Topocat.API
             services.Configure<FrontendUrls>(AppConfiguration.GetSection("FrontendUrls"));
 
             services.AddSingleton(tokenValidationParams);
+            services.AddHostedService<QueuedHostedService>();
+            services.AddSingleton<IBackgroundTaskQueue, BackgroundTaskQueue>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -131,10 +134,13 @@ namespace Topocat.API
 
             app.ConfigureExceptionHandler();
 
+            var frontendUrls = AppConfiguration.GetSection("FrontendUrls").Get<FrontendUrls>();
+
             app.UseCors(builder => builder
-                .AllowAnyOrigin()
+                .WithOrigins(frontendUrls.BaseUrl)
                 .AllowAnyMethod()
                 .AllowAnyHeader()
+                .AllowCredentials()
             );
 
             app.UseHttpsRedirection();

@@ -5,7 +5,7 @@ using Topocat.DB;
 
 namespace Topocat.Services.Hubs
 {
-    public class MapHub : Hub<IMapClient>
+    public class MapHub : Hub
     {
         private readonly IRepository _repository;
 
@@ -16,7 +16,7 @@ namespace Topocat.Services.Hubs
 
         public async Task Initialize(string mapId)
         {
-            throw new NotImplementedException();
+            await Groups.AddToGroupAsync(Context.ConnectionId, mapId);
         }
     }
 }
