@@ -3,12 +3,12 @@ import {MapService} from '../../services/map.service';
 import {ActivatedRoute} from '@angular/router';
 import {MapObjectsDrawer} from '../../services/map-objects.drawer';
 import {MapsSignalRService} from '../../services/maps.signal-r.service';
-import {filter, flatMap, map, switchMap, tap} from 'rxjs/operators';
+import {filter, map, switchMap, takeUntil, tap} from 'rxjs/operators';
 import {MapObjectsQuery} from '../../queries/map-objects.query';
 import {MatDialog} from '@angular/material';
 import {EditMapObjectComponent} from '../../dialogs/edit-map-object/edit-map-object.component';
 import {MapsHttpService} from '../../services/maps.http.service';
-import {Observable, of} from 'rxjs';
+import {BaseComponent} from '../../../core/components/base.component';
 
 @Component({
     selector: 'app-map',
@@ -16,7 +16,7 @@ import {Observable, of} from 'rxjs';
     styleUrls: ['./map.component.scss'],
     providers: [MapObjectsDrawer]
 })
-export class MapComponent implements OnInit {
+export class MapComponent extends BaseComponent implements OnInit {
 
     private mapId: string = undefined;
 
@@ -27,6 +27,7 @@ export class MapComponent implements OnInit {
                 private mapsSignalRService: MapsSignalRService,
                 private matDialog: MatDialog,
                 private mapsHttpService: MapsHttpService) {
+        super();
     }
 
     ngOnInit() {
@@ -63,12 +64,14 @@ export class MapComponent implements OnInit {
                 }).afterClosed()),
                 tap(() => this.mapService.resetEditingMapObject()),
                 filter(result => !!result),
-                switchMap(result => this.mapsHttpService.updateMapObject(this.mapId, result))
+                switchMap(result => this.mapsHttpService.updateMapObject(this.mapId, result)),
+                takeUntil(this.componentAlive$)
             )
             .subscribe();
 
         this.mapsSignalRService.objectUpdated$.pipe(
-            tap(model => this.mapService.updateObject(model))
+            tap(model => this.mapService.updateObject(model)),
+            takeUntil(this.componentAlive$)
         )
         .subscribe();
     }
