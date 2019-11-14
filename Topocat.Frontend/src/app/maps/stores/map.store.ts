@@ -12,7 +12,6 @@ function initialState(): Partial<MapState> {
 }
 
 @Injectable()
-
 @StoreConfig({ name: 'map' })
 export class MapStore extends EntityStore<MapState, MapModel> {
     constructor() {

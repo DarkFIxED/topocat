@@ -14,13 +14,17 @@ export class MapsSignalRService {
     private hubConnection: signalR.HubConnection;
 
     constructor() {
-    }
-
-    startConnection() {
         this.hubConnection = new signalR.HubConnectionBuilder()
             .withUrl(`${environment.serverUrl}mapHub`)
             .build();
 
+
+        this.hubConnection.onclose(error => {
+            setTimeout(() => this.startConnection(), 5000);
+        });
+    }
+
+    startConnection() {
         this.hubConnection
             .start()
             .then(() => {

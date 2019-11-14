@@ -14,14 +14,16 @@ import {MapsHttpService} from './services/maps.http.service';
 import {AgmCoreModule} from '@agm/core';
 import {secrets} from '../../environments/secrets';
 import {MapObjectsQuery} from './queries/map-objects.query';
-import { ObjectsListComponent } from './components/objects-list/objects-list.component';
+import {ObjectsListComponent} from './components/objects-list/objects-list.component';
 import {MatButtonModule, MatCardModule, MatDialogModule, MatInputModule, MatListModule, MatRippleModule} from '@angular/material';
-import { ObjectsListItemComponent } from './components/objects-list-item/objects-list-item.component';
+import {ObjectsListItemComponent} from './components/objects-list-item/objects-list-item.component';
 import {WktService} from './services/wkt.service';
 import {UnifiedMapObjectsFactory} from './models/unified-map-objects.factory';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MapsSignalRService} from './services/maps.signal-r.service';
-import { EditMapObjectComponent } from './dialogs/edit-map-object/edit-map-object.component';
+import {EditMapObjectComponent} from './dialogs/edit-map-object/edit-map-object.component';
+import {NewMapObjectsDrawer} from './services/new-map-objects.drawer';
+import {MapQuery} from './queries/map.query';
 
 const routes: Routes = [
     {
@@ -49,7 +51,10 @@ const routes: Routes = [
         CoreModule,
         RouterModule.forChild(routes),
         AgmCoreModule.forRoot({
-            apiKey: secrets.googleMapsApi
+            apiKey: secrets.googleMapsApi,
+            libraries: [
+                'drawing'
+            ]
         }),
         MatCardModule,
         MatListModule,
@@ -72,6 +77,7 @@ const routes: Routes = [
         WktService,
         UnifiedMapObjectsFactory,
         MapsSignalRService,
+        MapQuery
     ]
 })
 export class MapsModule {

@@ -9,12 +9,15 @@ import {MatDialog} from '@angular/material';
 import {EditMapObjectComponent} from '../../dialogs/edit-map-object/edit-map-object.component';
 import {MapsHttpService} from '../../services/maps.http.service';
 import {BaseComponent} from '../../../core/components/base.component';
+import {NewMapObjectsDrawer} from '../../services/new-map-objects.drawer';
+import {BehaviorSubject} from 'rxjs';
+import {MapInstanceService} from '../../services/map-instance.service';
 
 @Component({
     selector: 'app-map',
     templateUrl: './map.component.html',
     styleUrls: ['./map.component.scss'],
-    providers: [MapObjectsDrawer]
+    providers: [MapObjectsDrawer, NewMapObjectsDrawer, MapInstanceService]
 })
 export class MapComponent extends BaseComponent implements OnInit {
 
@@ -26,7 +29,9 @@ export class MapComponent extends BaseComponent implements OnInit {
                 private mapObjectsQuery: MapObjectsQuery,
                 private mapsSignalRService: MapsSignalRService,
                 private matDialog: MatDialog,
-                private mapsHttpService: MapsHttpService) {
+                private mapsHttpService: MapsHttpService,
+                private newMapObjectsDrawer: NewMapObjectsDrawer,
+                private mapInstanceService: MapInstanceService) {
         super();
     }
 
@@ -49,7 +54,7 @@ export class MapComponent extends BaseComponent implements OnInit {
     }
 
     onMapReady(mapInstance: google.maps.Map) {
-        this.mapObjectsDrawer.setMap(mapInstance);
+        this.mapInstanceService.setInstance(mapInstance);
     }
 
     private initializeObjectsEdit() {

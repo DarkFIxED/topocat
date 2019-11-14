@@ -2,13 +2,14 @@ import {Injectable} from '@angular/core';
 import {google} from 'google-maps';
 import {MapObjectsQuery} from '../queries/map-objects.query';
 import {EntityActions, ID} from '@datorama/akita';
-import {combineLatest, Subject, Subscription} from 'rxjs';
+import {combineLatest, Observable, Subject, Subscription} from 'rxjs';
 import {filter, switchMap, tap} from 'rxjs/operators';
 import {MapObjectModel} from '../models/map-object.model';
 import {UnifiedMapObjectsFactory} from '../models/unified-map-objects.factory';
 import {UnifiedMapObject} from '../models/unified-map-object';
 import {MapService} from './map.service';
 import {formatDate} from '@angular/common';
+import {MapInstanceService} from './map-instance.service';
 
 @Injectable()
 export class MapObjectsDrawer {
@@ -16,24 +17,32 @@ export class MapObjectsDrawer {
     private drawnObjects: UnifiedMapObject[] = [];
     private drawnObjectsSubscriptions: { id: ID, subscriptions: Subscription[] }[] = [];
 
-    private mapInstance$: Subject<google.maps.Map> = new Subject<google.maps.Map>();
+    private map$: Observable<google.maps.Map>;
     private infoWindowInstance$: Subject<google.maps.InfoWindow> = new Subject<google.maps.InfoWindow>();
 
     constructor(private mapObjectsQuery: MapObjectsQuery,
                 private mapService: MapService,
-                private unifiedMapObjectsFactory: UnifiedMapObjectsFactory) {
+                private unifiedMapObjectsFactory: UnifiedMapObjectsFactory,
+                private mapInstanceService: MapInstanceService) {
+        this.initialize();
         this.drawSetObjects();
         this.drawAddedObjects();
         this.redrawUpdatedObjects();
         this.drawInfoWindow();
     }
 
-    setMap(mapInstance: google.maps.Map) {
-        this.mapInstance$.next(mapInstance);
+    private initialize() {
+        this.map$ = this.mapInstanceService.mapInstance$.pipe(
+            filter(instance => !!instance)
+        );
 
-        const infoWindow = new google.maps.InfoWindow();
-        infoWindow.addListener('closeclick', () => this.mapService.clearActive());
-        this.infoWindowInstance$.next(infoWindow);
+        this.map$.pipe(
+            tap(() => {
+                const infoWindow = new google.maps.InfoWindow();
+                infoWindow.addListener('closeclick', () => this.mapService.clearActive());
+                this.infoWindowInstance$.next(infoWindow);
+            })
+        ).subscribe();
     }
 
     private drawSetObjects() {
@@ -42,7 +51,7 @@ export class MapObjectsDrawer {
                 switchMap(ids => this.mapObjectsQuery.selectMany(ids))
             );
 
-        combineLatest(this.mapInstance$, setEntities$)
+        combineLatest(this.map$, setEntities$)
             .pipe(
                 tap(() => this.clearAll()),
                 tap(results => this.drawMany(results[0], results[1]))
@@ -56,7 +65,7 @@ export class MapObjectsDrawer {
                 switchMap(ids => this.mapObjectsQuery.selectMany(ids))
             );
 
-        combineLatest(this.mapInstance$, addedEntities$)
+        combineLatest(this.map$, addedEntities$)
             .pipe(
                 tap(results => this.drawMany(results[0], results[1]))
             )
@@ -69,7 +78,7 @@ export class MapObjectsDrawer {
                 switchMap(ids => this.mapObjectsQuery.selectMany(ids))
             );
 
-        combineLatest(this.mapInstance$, updatedEntities$)
+        combineLatest(this.map$, updatedEntities$)
             .pipe(
                 tap(results => this.updateMany(results[1]))
             )
@@ -81,7 +90,7 @@ export class MapObjectsDrawer {
             switchMap(id => this.mapObjectsQuery.selectEntity(id))
         );
 
-        combineLatest(this.mapInstance$, this.infoWindowInstance$, active$)
+        combineLatest(this.map$, this.infoWindowInstance$, active$)
             .pipe(
                 filter(results => !!results[2]),
                 tap(results => this.showInfoWindow(results[0], results[1], results[2]))
