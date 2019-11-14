@@ -5,7 +5,10 @@ import {Subject} from 'rxjs';
 
 export interface MapObjectsState extends EntityState<MapObjectModel> {
     ui: {
-        editingObjectId: ID
+        editingObject?: {
+            id: ID,
+            drawing: boolean
+        }
     };
 }
 
@@ -13,7 +16,7 @@ function initialState(): Partial<MapObjectsState> {
     return {
         loading: false,
         ui: {
-            editingObjectId: undefined
+            editingObject: undefined
         }
     };
 }

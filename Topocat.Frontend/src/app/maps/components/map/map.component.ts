@@ -58,12 +58,13 @@ export class MapComponent extends BaseComponent implements OnInit {
     }
 
     private initializeObjectsEdit() {
-        this.mapObjectsQuery.select(state => state.ui.editingObjectId)
+        this.mapObjectsQuery.select(state => state.ui.editingObject)
             .pipe(
-                filter(id => !!id),
+                filter(object => !!object),
+                map(object => object.id),
                 map(id => this.mapObjectsQuery.getEntity(id)),
                 switchMap(model => this.matDialog.open(EditMapObjectComponent, {
-                    width: '250px',
+                    width: '450px',
                     hasBackdrop: true,
                     data: model
                 }).afterClosed()),

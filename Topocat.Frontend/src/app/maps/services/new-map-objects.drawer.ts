@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {filter, tap} from 'rxjs/operators';
 import {MapInstanceService} from './map-instance.service';
+import {MapObjectsQuery} from '../queries/map-objects.query';
 
 @Injectable()
 export class NewMapObjectsDrawer {
@@ -11,7 +12,8 @@ export class NewMapObjectsDrawer {
 
     private map$: Observable<google.maps.Map>;
 
-    constructor(private mapInstanceService: MapInstanceService) {
+    constructor(private mapInstanceService: MapInstanceService,
+                private mapObjectsQuery: MapObjectsQuery) {
         this.initialize();
     }
 

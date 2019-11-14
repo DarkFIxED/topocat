@@ -2,6 +2,7 @@ import {Component, Inject} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
 import {MapObjectModel} from '../../models/map-object.model';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {MapService} from '../../services/map.service';
 
 @Component({
   selector: 'app-edit-map-object',
@@ -18,7 +19,8 @@ export class EditMapObjectComponent  {
 
     constructor(
         public dialogRef: MatDialogRef<EditMapObjectComponent>,
-        @Inject(MAT_DIALOG_DATA) public data: MapObjectModel) {
+        @Inject(MAT_DIALOG_DATA) public data: MapObjectModel,
+        private mapService: MapService) {
 
         this.mapObjectForm.patchValue({
             id: data.id,
@@ -36,5 +38,9 @@ export class EditMapObjectComponent  {
             return;
 
         this.dialogRef.close(this.mapObjectForm.value);
+    }
+
+    onDrawClick() {
+        this.mapService.editMapObject(this.data.id, true);
     }
 }

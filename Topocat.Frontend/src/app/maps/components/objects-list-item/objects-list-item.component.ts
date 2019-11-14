@@ -28,6 +28,6 @@ export class ObjectsListItemComponent implements OnInit {
     }
 
     onEditClick() {
-        this.mapService.editMapObject(this.object.id);
+        this.mapService.editMapObject(this.object.id, false);
     }
 }

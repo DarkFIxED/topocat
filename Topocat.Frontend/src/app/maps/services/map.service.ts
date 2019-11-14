@@ -50,10 +50,13 @@ export class MapService {
         this.mapObjectsStore.setActive(null);
     }
 
-    editMapObject(mapObjectId: ID) {
+    editMapObject(mapObjectId: ID, drawing: boolean) {
         this.mapObjectsStore.update({
             ui: {
-                editingObjectId: mapObjectId
+                editingObject: {
+                    id: mapObjectId,
+                    drawing
+                }
             }
         });
     }
@@ -61,7 +64,7 @@ export class MapService {
     resetEditingMapObject() {
         this.mapObjectsStore.update({
             ui: {
-                editingObjectId: undefined
+                editingObject: undefined
             }
         });
     }
