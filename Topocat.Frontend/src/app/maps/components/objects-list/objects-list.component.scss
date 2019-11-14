@@ -2,16 +2,19 @@
     position: absolute;
     top: 30px;
     left: 30px;
+    min-height: calc(100vh - 124px);
 }
+
 .objects-list {
     max-height: calc(100vh - 188px);
     overflow: auto;
+    min-width: 350px;
+    width: 350px;
 }
 
 .list-item {
     height: 40px !important;
-    min-width: 350px;
-    max-width: 350px;
+    width: 100%;
 }
 
 ::ng-deep {

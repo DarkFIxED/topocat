@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {MapObjectsQuery} from '../../queries/map-objects.query';
 import {debounceTime, map} from 'rxjs/operators';
-import {combineLatest, Subject} from 'rxjs';
+import {BehaviorSubject, combineLatest, Subject} from 'rxjs';
 
 @Component({
     selector: 'app-objects-list',
@@ -11,7 +11,7 @@ import {combineLatest, Subject} from 'rxjs';
 export class ObjectsListComponent implements OnInit {
 
     searchString: string = undefined;
-    searchSubject = new Subject<string>();
+    searchSubject = new BehaviorSubject<string>(undefined);
     search$ = this.searchSubject.asObservable().pipe(
         debounceTime(200)
     );
@@ -33,9 +33,6 @@ export class ObjectsListComponent implements OnInit {
     }
 
     ngOnInit() {
-        setTimeout(() => {
-            this.emitValue();
-        });
     }
 
     emitValue() {

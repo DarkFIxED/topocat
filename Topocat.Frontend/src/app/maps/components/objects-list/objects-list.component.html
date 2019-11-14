@@ -20,5 +20,8 @@
                 <mat-divider [inset]="true" *ngIf="!last"></mat-divider>
             </mat-list-item>
         </mat-list>
+        <div *ngIf="(objects$ | async)?.length === 0" class="p-3">
+            No items found...
+        </div>
     </mat-card-content>
 </mat-card>
