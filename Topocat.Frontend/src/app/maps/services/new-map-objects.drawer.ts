@@ -37,36 +37,44 @@ export class NewMapObjectsDrawer {
         ).subscribe();
     }
 
-    async redrawFigure(mapObject: MapObjectModel): Promise<MapObjectModel> {
+    redrawFigure(mapObject: MapObjectModel): Promise<MapObjectModel> {
+        return new Promise<MapObjectModel>((resolve => {
+            const drawingManager = this.drawingManager.getValue();
+            const objectType = this.wktService.getWktType(mapObject.wktString);
 
-        const drawingManager = this.drawingManager.getValue();
-        const objectType = this.wktService.getWktType(mapObject.wktString);
+            switch (objectType) {
+                case 'Point':
+                    drawingManager.setOptions({
+                        drawingControl: false,
+                        drawingMode: google.maps.drawing.OverlayType.MARKER,
+                        map: this.map
+                    });
 
-        const self = this;
+                    const listener = drawingManager.addListener('markercomplete', (marker: google.maps.Marker) => {
+                        listener.remove();
+                        drawingManager.setMap(null);
+                        marker.setMap(null);
 
-        switch (objectType) {
-            case 'Point':
-                drawingManager.setOptions({
-                    drawingControl: false,
-                    drawingMode: google.maps.drawing.OverlayType.MARKER,
-                    map: this.map
-                });
+                        const position = marker.getPosition();
+                        const wktString = this.wktService.getPoint(position.lat(), position.lng());
 
-                const listener = drawingManager.addListener('markercomplete', function(marker: google.maps.Marker) {
-                    listener.remove();
+                        resolve ({
+                            id: mapObject.id,
+                            createdAt: mapObject.createdAt,
+                            lastModifiedAt: mapObject.lastModifiedAt,
+                            title: mapObject.title,
+                            wktString
+                        });
+                    });
+                    break;
 
-                    const position = marker.getPosition();
-                    mapObject.wktString = self.wktService.getPoint(position.lat(), position.lng());
-
+                case 'LineString':
                     return mapObject;
-                });
-                break;
 
-            case 'LineString':
-                return mapObject;
+                default:
+                    throw new Error();
 
-            default:
-                throw new Error();
-        }
+            }
+        }));
     }
 }

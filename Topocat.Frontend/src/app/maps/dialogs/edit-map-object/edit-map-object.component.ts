@@ -40,6 +40,6 @@ export class EditMapObjectComponent  {
     }
 
     onDrawClick() {
-        this.mapService.editMapObject(this.data, true);
+        this.mapService.setDrawingMode();
     }
 }

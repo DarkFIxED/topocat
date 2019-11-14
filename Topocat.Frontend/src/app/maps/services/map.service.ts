@@ -33,8 +33,8 @@ export class MapService {
                 })
             )
             .subscribe(results => {
-                    this.mapStore.set([results[0].data.map]);
-                    this.mapObjectsStore.set(results[1].data.mapObjects);
+                this.mapStore.set([results[0].data.map]);
+                this.mapObjectsStore.set(results[1].data.mapObjects);
             });
     }
 
@@ -50,23 +50,29 @@ export class MapService {
         this.mapObjectsStore.setActive(null);
     }
 
-    editMapObject(mapObject: MapObjectModel, drawing: boolean) {
+    editMapObject(mapObject: MapObjectModel) {
         this.mapObjectsStore.update({
-            ui: {
-                editingObject: {
-                    model: mapObject,
-                    drawing,
-                    isNew: false
-                }
+            editing: {
+                mapObjectId: mapObject.id
             }
+        });
+    }
+
+    setDrawingMode() {
+        this.mapObjectsStore.update({
+            drawing: true
+        });
+    }
+
+    resetDrawingMode() {
+        this.mapObjectsStore.update({
+            drawing: false
         });
     }
 
     resetEditingMapObject() {
         this.mapObjectsStore.update({
-            ui: {
-                editingObject: undefined
-            }
+            editing: undefined
         });
     }
 

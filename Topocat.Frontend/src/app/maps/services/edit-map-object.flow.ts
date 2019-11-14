@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {distinctUntilKeyChanged, filter, map, switchMap, takeUntil, tap} from 'rxjs/operators';
+import {filter, map, switchMap, takeUntil, tap} from 'rxjs/operators';
 import {EditMapObjectComponent} from '../dialogs/edit-map-object/edit-map-object.component';
 import {MapObjectsQuery} from '../queries/map-objects.query';
 import {MatDialog, MatDialogRef} from '@angular/material';
@@ -10,7 +10,7 @@ import {BaseDestroyable} from '../../core/services/base-destroyable';
 import {MapsSignalRService} from './maps.signal-r.service';
 import {MapObjectModel} from '../models/map-object.model';
 import {DialogResult} from '../../core/models/dialog-result';
-import {combineLatest, iif, of} from 'rxjs';
+import {iif, of} from 'rxjs';
 import {NewMapObjectsDrawer} from './new-map-objects.drawer';
 
 @Injectable()
@@ -30,12 +30,12 @@ export class EditMapObjectFlow extends BaseDestroyable {
 
     setUp() {
 
-        this.mapObjectsQuery.select(state => state.ui.editingObject)
+        this.mapObjectsQuery.select(state => state.editing)
             .pipe(
-                filter(object => !!object),
-                filter(object => !object.isNew),
-                filter(object => !object.drawing),
-                map(object => object.model),
+                filter(editing => !!editing),
+                map(editing => editing.mapObjectId),
+                filter(x => !!x),
+                map(objectId => this.mapObjectsQuery.getEntity(objectId)),
                 map(model => this.openDialog(model)),
                 switchMap(dialog => dialog.afterClosed()),
                 filter(dialogResult => !dialogResult.isInterrupted),
@@ -47,15 +47,16 @@ export class EditMapObjectFlow extends BaseDestroyable {
             )
             .subscribe();
 
-        this.mapObjectsQuery.select(state => state.ui.editingObject)
+        this.mapObjectsQuery.select(state => state.drawing)
             .pipe(
-                filter(object => !!object),
-                filter(object => !object.isNew),
-                filter(object => object.drawing),
-                map(object => object.model),
+                filter(value => !!value),
+                map(() => this.mapObjectsQuery.getValue().editing.mapObjectId),
+                map(objectId => this.mapObjectsQuery.getEntity(objectId)),
                 tap(() => this.openedEditDialog.close(DialogResult.Interrupt<MapObjectModel>())),
                 switchMap(model => this.newMapObjectsDrawer.redrawFigure(model)),
-                tap(model => this.mapService.editMapObject(model, false))
+                tap(() => this.mapService.resetDrawingMode()),
+                tap(model => this.mapService.updateObject(model)),
+                tap(model => this.mapService.editMapObject(model))
             )
             .subscribe();
 
@@ -63,14 +64,15 @@ export class EditMapObjectFlow extends BaseDestroyable {
             tap(model => this.mapService.updateObject(model)),
             takeUntil(this.componentAlive$)
         )
-        .subscribe();
+            .subscribe();
     }
 
     private openDialog(model: MapObjectModel): MatDialogRef<EditMapObjectComponent, DialogResult<MapObjectModel>> {
         this.openedEditDialog = this.matDialog.open(EditMapObjectComponent, {
             width: '450px',
             hasBackdrop: true,
-            data: model
+            data: model,
+            disableClose: true
         });
 
         return this.openedEditDialog;
