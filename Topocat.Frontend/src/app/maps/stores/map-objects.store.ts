@@ -1,13 +1,13 @@
-import {AddEntitiesOptions, EntityState, EntityStore, getIDType, ID, OrArray, StoreConfig} from '@datorama/akita';
+import {ActiveState, EntityState, EntityStore, StoreConfig} from '@datorama/akita';
 import {MapObjectModel} from '../models/map-object.model';
 import {Injectable} from '@angular/core';
-import {Subject} from 'rxjs';
 
-export interface MapObjectsState extends EntityState<MapObjectModel> {
+export interface MapObjectsState extends EntityState<MapObjectModel>, ActiveState {
     ui: {
         editingObject?: {
-            id: ID,
-            drawing: boolean
+            model: MapObjectModel,
+            drawing: boolean,
+            isNew: boolean
         }
     };
 }

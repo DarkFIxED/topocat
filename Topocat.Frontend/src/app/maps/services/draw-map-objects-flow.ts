@@ -12,7 +12,7 @@ import {formatDate} from '@angular/common';
 import {MapInstanceService} from './map-instance.service';
 
 @Injectable()
-export class MapObjectsDrawer {
+export class DrawMapObjectsFlow {
 
     private drawnObjects: UnifiedMapObject[] = [];
     private drawnObjectsSubscriptions: { id: ID, subscriptions: Subscription[] }[] = [];

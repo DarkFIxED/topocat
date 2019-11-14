@@ -33,7 +33,7 @@ export class MapService {
                 })
             )
             .subscribe(results => {
-                    this.mapStore.set([results[0].data]);
+                    this.mapStore.set([results[0].data.map]);
                     this.mapObjectsStore.set(results[1].data.mapObjects);
             });
     }
@@ -50,12 +50,13 @@ export class MapService {
         this.mapObjectsStore.setActive(null);
     }
 
-    editMapObject(mapObjectId: ID, drawing: boolean) {
+    editMapObject(mapObject: MapObjectModel, drawing: boolean) {
         this.mapObjectsStore.update({
             ui: {
                 editingObject: {
-                    id: mapObjectId,
-                    drawing
+                    model: mapObject,
+                    drawing,
+                    isNew: false
                 }
             }
         });

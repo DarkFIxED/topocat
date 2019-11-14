@@ -6,6 +6,7 @@
         "curly": false,
         "array-type": false,
         "arrow-parens": false,
+        "only-arrow-functions": false,
         "deprecation": {
             "severity": "warning"
         },

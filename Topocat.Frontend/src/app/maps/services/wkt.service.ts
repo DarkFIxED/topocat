@@ -8,4 +8,11 @@ export class WktService {
 
         return primitive.type;
     }
+
+    getPoint(lat: number, lng: number): string {
+        return WKT.convert({
+            type: 'Point',
+            coordinates: [lat, lng]
+        });
+    }
 }

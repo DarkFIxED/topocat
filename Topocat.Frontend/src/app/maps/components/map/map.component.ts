@@ -1,38 +1,33 @@
 import {Component, OnInit} from '@angular/core';
 import {MapService} from '../../services/map.service';
 import {ActivatedRoute} from '@angular/router';
-import {MapObjectsDrawer} from '../../services/map-objects.drawer';
+import {DrawMapObjectsFlow} from '../../services/draw-map-objects-flow';
 import {MapsSignalRService} from '../../services/maps.signal-r.service';
-import {filter, map, switchMap, takeUntil, tap} from 'rxjs/operators';
-import {MapObjectsQuery} from '../../queries/map-objects.query';
-import {MatDialog} from '@angular/material';
-import {EditMapObjectComponent} from '../../dialogs/edit-map-object/edit-map-object.component';
-import {MapsHttpService} from '../../services/maps.http.service';
-import {BaseComponent} from '../../../core/components/base.component';
+import {filter, tap} from 'rxjs/operators';
+import {BaseDestroyable} from '../../../core/services/base-destroyable';
 import {NewMapObjectsDrawer} from '../../services/new-map-objects.drawer';
-import {BehaviorSubject} from 'rxjs';
 import {MapInstanceService} from '../../services/map-instance.service';
+import {EditMapObjectFlow} from '../../services/edit-map-object.flow';
 
 @Component({
     selector: 'app-map',
     templateUrl: './map.component.html',
     styleUrls: ['./map.component.scss'],
-    providers: [MapObjectsDrawer, NewMapObjectsDrawer, MapInstanceService]
+    providers: [DrawMapObjectsFlow, NewMapObjectsDrawer, MapInstanceService, EditMapObjectFlow]
 })
-export class MapComponent extends BaseComponent implements OnInit {
+export class MapComponent extends BaseDestroyable implements OnInit {
 
     private mapId: string = undefined;
 
     constructor(private mapService: MapService,
                 private route: ActivatedRoute,
-                private mapObjectsDrawer: MapObjectsDrawer,
-                private mapObjectsQuery: MapObjectsQuery,
                 private mapsSignalRService: MapsSignalRService,
-                private matDialog: MatDialog,
-                private mapsHttpService: MapsHttpService,
-                private newMapObjectsDrawer: NewMapObjectsDrawer,
-                private mapInstanceService: MapInstanceService) {
+                private mapInstanceService: MapInstanceService,
+                private mapObjectsDrawer: DrawMapObjectsFlow,
+                private editMapObjectFlow: EditMapObjectFlow) {
         super();
+
+        this.editMapObjectFlow.setUp();
     }
 
     ngOnInit() {
@@ -44,41 +39,15 @@ export class MapComponent extends BaseComponent implements OnInit {
             }
 
             this.mapService.load(this.mapId);
+
             this.mapsSignalRService.isConnected$.pipe(
                 filter(isConnected => !!isConnected),
                 tap(() => this.mapsSignalRService.initialize(this.mapId))
             ).subscribe();
         });
-
-        this.initializeObjectsEdit();
     }
 
     onMapReady(mapInstance: google.maps.Map) {
         this.mapInstanceService.setInstance(mapInstance);
-    }
-
-    private initializeObjectsEdit() {
-        this.mapObjectsQuery.select(state => state.ui.editingObject)
-            .pipe(
-                filter(object => !!object),
-                map(object => object.id),
-                map(id => this.mapObjectsQuery.getEntity(id)),
-                switchMap(model => this.matDialog.open(EditMapObjectComponent, {
-                    width: '450px',
-                    hasBackdrop: true,
-                    data: model
-                }).afterClosed()),
-                tap(() => this.mapService.resetEditingMapObject()),
-                filter(result => !!result),
-                switchMap(result => this.mapsHttpService.updateMapObject(this.mapId, result)),
-                takeUntil(this.componentAlive$)
-            )
-            .subscribe();
-
-        this.mapsSignalRService.objectUpdated$.pipe(
-            tap(model => this.mapService.updateObject(model)),
-            takeUntil(this.componentAlive$)
-        )
-        .subscribe();
     }
 }
