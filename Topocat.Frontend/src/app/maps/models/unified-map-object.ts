@@ -7,9 +7,13 @@ export interface UnifiedMapObject {
 
     click$: Observable<ID>;
 
-    clear();
+    dispose();
 
     update(object: MapObjectModel);
 
     getInfoWindowPosition(): {lat: number, lng: number};
+
+    disable();
+
+    enable();
 }

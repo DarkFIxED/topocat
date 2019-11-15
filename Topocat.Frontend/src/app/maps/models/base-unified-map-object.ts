@@ -18,11 +18,15 @@ export abstract class BaseUnifiedMapObject<T extends google.maps.MVCObject> impl
         this.underlyingObject.addListener('click', () => this.click.next(this.id));
     }
 
-    abstract clear();
+    abstract dispose();
 
     abstract update(object: MapObjectModel);
 
     abstract getInfoWindowPosition(): { lat: number; lng: number };
 
     protected abstract createInstance(opts?: any): T;
+
+    abstract disable();
+
+    abstract enable();
 }

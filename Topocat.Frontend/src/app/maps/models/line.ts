@@ -10,7 +10,7 @@ export class Line extends BaseUnifiedMapObject<google.maps.Polyline> implements 
         super(id, opts);
     }
 
-    clear() {
+    dispose() {
         this.underlyingObject.unbindAll();
         this.underlyingObject.setMap(null);
     }
@@ -29,5 +29,19 @@ export class Line extends BaseUnifiedMapObject<google.maps.Polyline> implements 
         const center = bounds.getCenter();
 
         return {lat: center.lat(), lng: center.lng()};
+    }
+
+    disable() {
+        this.underlyingObject.setOptions({
+            strokeOpacity: 0.2,
+            clickable: false
+        });
+    }
+
+    enable() {
+        this.underlyingObject.setOptions({
+            strokeOpacity: 1,
+            clickable: true
+        });
     }
 }

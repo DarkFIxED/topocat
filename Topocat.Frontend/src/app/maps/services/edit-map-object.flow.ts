@@ -54,7 +54,7 @@ export class EditMapObjectFlow extends BaseDestroyable implements DataFlow {
                 map(() => this.mapObjectsQuery.getValue().editing.mapObjectId),
                 map(objectId => this.mapObjectsQuery.getEntity(objectId)),
                 tap(() => this.openedEditDialog.close(DialogResult.Interrupt<MapObjectModel>())),
-                switchMap(model => this.newMapObjectsDrawer.redrawFigure(model)),
+                switchMap(model => this.newMapObjectsDrawer.drawFigure(model)),
                 tap(() => this.mapService.resetDrawingMode()),
                 tap(model => this.mapService.updateObject(model)),
                 tap(model => this.mapService.editMapObject(model))

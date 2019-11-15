@@ -10,7 +10,7 @@ export class Polygon extends BaseUnifiedMapObject<google.maps.Polygon> implement
         super(id, opts);
     }
 
-    clear() {
+    dispose() {
         this.underlyingObject.unbindAll();
         this.underlyingObject.setMap(null);
     }
@@ -29,5 +29,21 @@ export class Polygon extends BaseUnifiedMapObject<google.maps.Polygon> implement
         const center = bounds.getCenter();
 
         return {lat: center.lat(), lng: center.lng()};
+    }
+
+    disable() {
+        this.underlyingObject.setOptions({
+            strokeOpacity: 0.2,
+            fillOpacity: 0.2,
+            clickable: false
+        });
+    }
+
+    enable() {
+        this.underlyingObject.setOptions({
+            strokeOpacity: 1,
+            fillOpacity: 1,
+            clickable: true
+        });
     }
 }

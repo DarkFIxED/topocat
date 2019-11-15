@@ -9,12 +9,13 @@ import {NewMapObjectsDrawer} from '../../services/new-map-objects.drawer';
 import {MapInstanceService} from '../../services/map-instance.service';
 import {EditMapObjectFlow} from '../../services/edit-map-object.flow';
 import {ObjectsDrawingFlow} from '../../services/objects-drawing.flow';
+import {DrawnObjectsStore} from '../../stores/drawn-objects.store';
 
 @Component({
     selector: 'app-map',
     templateUrl: './map.component.html',
     styleUrls: ['./map.component.scss'],
-    providers: [MapRenderingService, NewMapObjectsDrawer, MapInstanceService, EditMapObjectFlow, ObjectsDrawingFlow]
+    providers: [MapRenderingService, NewMapObjectsDrawer, MapInstanceService, EditMapObjectFlow, ObjectsDrawingFlow, DrawnObjectsStore]
 })
 export class MapComponent extends BaseDestroyable implements OnInit {
 

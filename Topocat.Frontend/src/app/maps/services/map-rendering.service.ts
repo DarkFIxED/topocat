@@ -2,27 +2,27 @@ import {Injectable} from '@angular/core';
 import {google} from 'google-maps';
 import {MapObjectsQuery} from '../queries/map-objects.query';
 import {ID} from '@datorama/akita';
-import {BehaviorSubject, Subscription} from 'rxjs';
-import {filter, tap} from 'rxjs/operators';
+import {BehaviorSubject} from 'rxjs';
+import {filter, takeUntil, tap} from 'rxjs/operators';
 import {MapObjectModel} from '../models/map-object.model';
 import {UnifiedMapObjectsFactory} from '../models/unified-map-objects.factory';
-import {UnifiedMapObject} from '../models/unified-map-object';
 import {MapService} from './map.service';
 import {formatDate} from '@angular/common';
 import {MapInstanceService} from './map-instance.service';
+import {DrawnObjectsStore} from '../stores/drawn-objects.store';
+import {BaseDestroyable} from '../../core/services/base-destroyable';
 
 @Injectable()
-export class MapRenderingService {
-
-    private drawnObjects: UnifiedMapObject[] = [];
-    private drawnObjectsSubscriptions: { id: ID, subscriptions: Subscription[] }[] = [];
+export class MapRenderingService extends BaseDestroyable {
 
     private infoWindowInstance$: BehaviorSubject<google.maps.InfoWindow> = new BehaviorSubject<google.maps.InfoWindow>(undefined);
 
-    constructor(private mapObjectsQuery: MapObjectsQuery,
+    constructor(private drawnObjectsStore: DrawnObjectsStore,
+                private mapObjectsQuery: MapObjectsQuery,
                 private mapService: MapService,
                 private unifiedMapObjectsFactory: UnifiedMapObjectsFactory,
                 private mapInstanceService: MapInstanceService) {
+        super();
         this.initialize();
     }
 
@@ -34,8 +34,17 @@ export class MapRenderingService {
                 infoWindow.addListener('closeclick', () => this.mapService.clearActive());
                 this.infoWindowInstance$.next(infoWindow);
             })
-        )
-        .subscribe();
+        ).subscribe();
+
+        this.drawnObjectsStore.objectAdded$
+            .pipe(
+                tap(object => {
+                    const subs = object.click$.subscribe(id => this.mapService.setActive(id));
+                    this.drawnObjectsStore.addSubscription(object.id, subs);
+                }),
+                takeUntil(this.componentAlive$)
+            )
+            .subscribe();
     }
 
     updateMany(mapObjects: MapObjectModel[]) {
@@ -47,21 +56,21 @@ export class MapRenderingService {
     }
 
     clearAll() {
-        if (this.drawnObjects.length === 0) {
+        if (this.drawnObjectsStore.drawnObjects.length === 0) {
             return;
         }
 
-        const ids = this.drawnObjects.map(x => x.id);
-        ids.forEach(id => this.removeObjectsFromDrawnAndRemoveSubs(id));
+        const ids = this.drawnObjectsStore.drawnObjects.map(x => x.id);
+        ids.forEach(id => this.drawnObjectsStore.remove(id));
     }
 
     draw(map: google.maps.Map, object: MapObjectModel) {
         const unifiedMapObject = this.unifiedMapObjectsFactory.build(map, object);
-        this.addObjectToDrawn(unifiedMapObject);
+        this.drawnObjectsStore.add(unifiedMapObject);
     }
 
     update(object: MapObjectModel) {
-        const foundObject = this.drawnObjects.find(x => x.id === object.id);
+        const foundObject = this.drawnObjectsStore.drawnObjects.find(x => x.id === object.id);
         if (!foundObject) {
             throw new Error();
         }
@@ -71,40 +80,32 @@ export class MapRenderingService {
 
     showInfoWindow(map: google.maps.Map, active: MapObjectModel) {
         const infoWindow = this.infoWindowInstance$.getValue();
-        const unifiedMapObject = this.drawnObjects.find(x => x.id === active.id);
+        const unifiedMapObject = this.drawnObjectsStore.drawnObjects.find(x => x.id === active.id);
 
         const content =
             `<span>Title:&nbsp;${active.title}</span><br>` +
-             `<span>Created&nbsp;at:&nbsp;${formatDate(active.createdAt, 'hh:mm dd-MM-yyyy', 'en-US')}</span><br>` +
-             `<span>Last&nbsp;modified&nbsp;at:&nbsp;${formatDate(active.lastModifiedAt, 'hh:mm dd-MM-yyyy', 'en-US')}</span>`;
+            `<span>Created&nbsp;at:&nbsp;${formatDate(active.createdAt, 'hh:mm dd-MM-yyyy', 'en-US')}</span><br>` +
+            `<span>Last&nbsp;modified&nbsp;at:&nbsp;${formatDate(active.lastModifiedAt, 'hh:mm dd-MM-yyyy', 'en-US')}</span>`;
 
         infoWindow.setContent(content);
         infoWindow.setPosition(unifiedMapObject.getInfoWindowPosition());
         infoWindow.open(map);
     }
 
-    private addObjectToDrawn(unifiedMapObject: UnifiedMapObject) {
-        this.drawnObjects.push(unifiedMapObject);
-        this.drawnObjectsSubscriptions.push({
-            id: unifiedMapObject.id,
-            subscriptions: [
-                unifiedMapObject.click$.subscribe(id => this.mapService.setActive(id))
-            ]
-        });
-    }
-
-    private removeObjectsFromDrawnAndRemoveSubs(id: ID) {
-        const subs = this.drawnObjectsSubscriptions.find(x => x.id === id);
-        if (!subs) {
+    disable(ids: ID[]) {
+        const foundObjects = this.drawnObjectsStore.drawnObjects.filter(object => ids.some(id => id === object.id));
+        if (!foundObjects)
             throw new Error();
-        }
 
-        subs.subscriptions.forEach(sub => sub.unsubscribe());
-        let index = this.drawnObjectsSubscriptions.indexOf(subs);
-        this.drawnObjectsSubscriptions.splice(index, 1);
-
-        index = this.drawnObjects.findIndex(x => x.id === id);
-        this.drawnObjects[index].clear();
-        this.drawnObjects.splice(index, 1);
+        foundObjects.forEach(object => object.disable());
     }
+
+    enable(ids: ID[]) {
+        const foundObjects = this.drawnObjectsStore.drawnObjects.filter(object => ids.some(id => id === object.id));
+        if (!foundObjects)
+            throw new Error();
+
+        foundObjects.forEach(object => object.enable());
+    }
+
 }

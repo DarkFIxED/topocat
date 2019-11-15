@@ -8,9 +8,7 @@ import {WktService} from './wkt.service';
 
 @Injectable()
 export class NewMapObjectsDrawer {
-
     private drawingManager = new BehaviorSubject<google.maps.drawing.DrawingManager>(undefined);
-    drawingManager$ = this.drawingManager.asObservable();
 
     private map: google.maps.Map;
 
@@ -37,7 +35,7 @@ export class NewMapObjectsDrawer {
         ).subscribe();
     }
 
-    redrawFigure(mapObject: MapObjectModel): Promise<MapObjectModel> {
+    drawFigure(mapObject: MapObjectModel): Promise<MapObjectModel> {
         return new Promise<MapObjectModel>((resolve => {
             const drawingManager = this.drawingManager.getValue();
             const objectType = this.wktService.getWktType(mapObject.wktString);

@@ -9,7 +9,7 @@ export class Point extends BaseUnifiedMapObject<google.maps.Marker> implements U
         super(id, opts);
     }
 
-    clear() {
+    dispose() {
         this.underlyingObject.unbindAll();
         this.underlyingObject.setMap(null);
     }
@@ -26,4 +26,19 @@ export class Point extends BaseUnifiedMapObject<google.maps.Marker> implements U
         const position = this.underlyingObject.getPosition();
         return {lat: position.lat(), lng: position.lng()};
     }
+
+    disable() {
+        this.underlyingObject.setOptions({
+            clickable: false,
+            opacity: 0.2
+        });
+    }
+
+    enable() {
+        this.underlyingObject.setOptions({
+            clickable: true,
+            opacity: 1
+        });
+    }
+
 }
