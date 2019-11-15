@@ -82,7 +82,9 @@ export class MapService {
 
     resetEditingMapObject() {
         this.mapObjectsStore.update({
-            editing: undefined
+            editing: {
+                mapObjectId: undefined
+            }
         });
     }
 

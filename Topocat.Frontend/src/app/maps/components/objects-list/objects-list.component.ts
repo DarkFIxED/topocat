@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {MapObjectsQuery} from '../../queries/map-objects.query';
-import {debounceTime, map} from 'rxjs/operators';
+import {debounceTime, map, tap} from 'rxjs/operators';
 import {BehaviorSubject, combineLatest, Subject} from 'rxjs';
 
 @Component({
@@ -14,6 +14,10 @@ export class ObjectsListComponent implements OnInit {
     searchSubject = new BehaviorSubject<string>(undefined);
     search$ = this.searchSubject.asObservable().pipe(
         debounceTime(200)
+    );
+
+    editing$ = this.mapsQuery.select(state => state.editing.mapObjectId).pipe(
+        map(id => !!id)
     );
 
     activeId$ = this.mapsQuery.selectActiveId();

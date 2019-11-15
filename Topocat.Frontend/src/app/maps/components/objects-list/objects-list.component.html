@@ -31,7 +31,9 @@
                 <span>Total objects: {{(objects$ | async)?.length}}</span>
             </div>
         </div>
-        <button mat-fab color="primary"
+        <button *ngIf="!(editing$ | async)"
+                mat-fab
+                color="primary"
                 class="add-button"
                 (click)="openAddDialog()">
             <span class="mdi mdi-24px mdi-plus"></span>
