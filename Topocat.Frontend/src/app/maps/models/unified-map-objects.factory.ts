@@ -6,6 +6,7 @@ import * as Terraformer from 'terraformer';
 import {Line} from './line';
 import {Polygon} from './polygon';
 import {Injectable} from '@angular/core';
+import {WktPrimitives} from './wkt-primitives';
 
 @Injectable()
 export class UnifiedMapObjectsFactory {
@@ -14,14 +15,14 @@ export class UnifiedMapObjectsFactory {
         const primitive = WKT.parse(mapObject.wktString);
 
         switch (primitive.type) {
-            case 'Point':
+            case WktPrimitives.Point:
                 const point = primitive as Terraformer.Point;
                 return new Point(mapObject.id, {
                     map,
                     position: new google.maps.LatLng(point.coordinates[1], point.coordinates[0]),
                 });
 
-            case 'LineString':
+            case WktPrimitives.LineString:
                 const lineString = primitive as Terraformer.LineString;
 
                 return new Line(mapObject.id, {
@@ -29,7 +30,7 @@ export class UnifiedMapObjectsFactory {
                     path: lineString.coordinates.map(coords => new google.maps.LatLng(coords[1], coords[0]))
                 });
 
-            case 'Polygon':
+            case WktPrimitives.Polygon:
                 const polygon = primitive as Terraformer.Polygon;
 
                 return new Polygon(mapObject.id, {

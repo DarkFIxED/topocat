@@ -2,6 +2,7 @@ import {Component, Input, OnInit} from '@angular/core';
 import {MapObjectModel} from '../../models/map-object.model';
 import {MapService} from '../../services/map.service';
 import {WktService} from '../../services/wkt.service';
+import {WktPrimitives} from '../../models/wkt-primitives';
 
 @Component({
     selector: 'app-objects-list-item',
@@ -9,7 +10,7 @@ import {WktService} from '../../services/wkt.service';
     styleUrls: ['./objects-list-item.component.scss']
 })
 export class ObjectsListItemComponent implements OnInit {
-
+    WktPrimitives = WktPrimitives;
     type = '';
 
     @Input()

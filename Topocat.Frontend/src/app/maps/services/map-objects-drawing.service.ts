@@ -9,6 +9,7 @@ import {DrawnObjectsStore} from '../stores/drawn-objects.store';
 import {MapRenderingService} from './map-rendering.service';
 import {UnifiedMapObject} from '../models/unified-map-object';
 import {Coordinates} from '../../core/models/coordinates';
+import {WktPrimitives} from '../models/wkt-primitives';
 
 @Injectable()
 export class MapObjectsDrawingService {
@@ -73,15 +74,15 @@ export class MapObjectsDrawingService {
 
     private mapWktString(type: string, coords: Coordinates | Coordinates[] | Coordinates[][]): string {
         switch (type) {
-            case 'Point':
+            case WktPrimitives.Point:
                 const pointCoords = coords as Coordinates;
                 return this.wktService.getPoint(pointCoords.lat, pointCoords.lng);
 
-            case 'LineString':
+            case WktPrimitives.LineString:
                 const path = coords as Coordinates[];
                 return this.wktService.getLineString(path);
 
-            case 'Polygon':
+            case WktPrimitives.Polygon:
                 const paths = coords as Coordinates[][];
                 return  this.wktService.getPolygon(paths);
 
@@ -96,7 +97,7 @@ export class MapObjectsDrawingService {
             const objectType = this.wktService.getWktType(mapObject.wktString);
 
             switch (objectType) {
-                case 'Point':
+                case WktPrimitives.Point:
                     drawingManager.setOptions({
                         drawingControl: false,
                         drawingMode: google.maps.drawing.OverlayType.MARKER,

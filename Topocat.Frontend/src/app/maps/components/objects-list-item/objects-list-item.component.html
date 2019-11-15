@@ -1,9 +1,9 @@
 <div class="d-flex h-100 w-100 lh-40px">
     <div class="p-0 icon-wrapper">
         <span class="mdi mdi-24px"
-                [class.mdi-map-marker-outline]="type == 'Point'"
-                [class.mdi-vector-polyline]="type == 'LineString'"
-                [class.mdi-vector-polygon]="type == 'Polygon'">
+                [class.mdi-map-marker-outline]="type === WktPrimitives.Point"
+                [class.mdi-vector-polyline]="type === WktPrimitives.LineString"
+                [class.mdi-vector-polygon]="type === WktPrimitives.Polygon">
         </span>
     </div>
 
