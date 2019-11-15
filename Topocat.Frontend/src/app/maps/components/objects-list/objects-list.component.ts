@@ -38,4 +38,8 @@ export class ObjectsListComponent implements OnInit {
     emitValue() {
         this.searchSubject.next(this.searchString);
     }
+
+    openAddDialog() {
+
+    }
 }

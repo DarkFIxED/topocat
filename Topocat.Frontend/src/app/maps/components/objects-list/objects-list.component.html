@@ -1,5 +1,5 @@
 <mat-card class="objects-list-card p-0">
-    <mat-card-content>
+    <mat-card-content class="content mb-0">
         <div class="pl-3 pr-3 pt-2">
             <mat-form-field class="w-100">
                 <input matInput
@@ -17,11 +17,24 @@
                                        [class.active]="(activeId$ | async) == object.id"
                                        [object]="object">
                 </app-objects-list-item>
-                <mat-divider [inset]="true" *ngIf="!last"></mat-divider>
+                <mat-divider [inset]="true"></mat-divider>
             </mat-list-item>
         </mat-list>
         <div *ngIf="(objects$ | async)?.length === 0" class="p-3">
             No items found...
         </div>
     </mat-card-content>
+    <mat-card-footer class="m-0 w-100">
+        <mat-divider [inset]="true"></mat-divider>
+        <div class="d-table-cell footer-content p-3">
+            <div class="float-left mr-auto">
+                <span>Total objects: {{(objects$ | async)?.length}}</span>
+            </div>
+        </div>
+        <button mat-fab color="primary"
+                class="add-button"
+                (click)="openAddDialog()">
+            <span class="mdi mdi-24px mdi-plus"></span>
+        </button>
+    </mat-card-footer>
 </mat-card>
