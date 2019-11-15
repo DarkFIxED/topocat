@@ -6,6 +6,7 @@ import {forkJoin} from 'rxjs';
 import {tap} from 'rxjs/operators';
 import {MapObjectModel} from '../models/map-object.model';
 import {ID} from '@datorama/akita';
+import {dashCaseToCamelCase} from '@angular/compiler/src/util';
 
 @Injectable()
 export class MapService {
@@ -58,6 +59,26 @@ export class MapService {
         });
     }
 
+    stopEditMapObject() {
+        this.mapObjectsStore.update({
+            editing: {
+                mapObjectId: undefined
+            }
+        });
+    }
+
+    addNewMapObject() {
+        this.mapObjectsStore.update({
+            adding: true
+        });
+    }
+
+    stopAddNewMapObject() {
+        this.mapObjectsStore.update({
+            adding: false
+        });
+    }
+
     startDrawing(initialState: string) {
         this.mapObjectsStore.update({
             drawing: {
@@ -80,13 +101,7 @@ export class MapService {
         });
     }
 
-    resetEditingMapObject() {
-        this.mapObjectsStore.update({
-            editing: {
-                mapObjectId: undefined
-            }
-        });
-    }
+
 
     updateObject(model: MapObjectModel) {
         this.mapObjectsStore.upsert(model.id, model);

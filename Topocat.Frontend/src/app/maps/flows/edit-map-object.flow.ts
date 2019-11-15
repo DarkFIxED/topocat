@@ -3,15 +3,15 @@ import {filter, map, switchMap, takeUntil, tap} from 'rxjs/operators';
 import {EditMapObjectComponent} from '../dialogs/edit-map-object/edit-map-object.component';
 import {MapObjectsQuery} from '../queries/map-objects.query';
 import {MatDialog, MatDialogRef} from '@angular/material';
-import {MapService} from './map.service';
-import {MapsHttpService} from './maps.http.service';
+import {MapService} from '../services/map.service';
+import {MapsHttpService} from '../services/maps.http.service';
 import {MapQuery} from '../queries/map.query';
 import {BaseDestroyable} from '../../core/services/base-destroyable';
-import {MapsSignalRService} from './maps.signal-r.service';
+import {MapsSignalRService} from '../services/maps.signal-r.service';
 import {MapObjectModel} from '../models/map-object.model';
 import {DialogResult} from '../../core/models/dialog-result';
 import {combineLatest, iif, of} from 'rxjs';
-import {MapObjectsDrawingService} from './map-objects-drawing.service';
+import {MapObjectsDrawingService} from '../services/map-objects-drawing.service';
 import {DataFlow} from '../../core/services/data.flow';
 import {MapObjectHelper} from '../helpers/map-object.helper';
 
@@ -41,7 +41,7 @@ export class EditMapObjectFlow extends BaseDestroyable implements DataFlow {
                 map(model => this.openDialog(model)),
                 switchMap(dialog => dialog.afterClosed()),
                 filter(dialogResult => !dialogResult.isInterrupted),
-                tap(() => this.mapService.resetEditingMapObject()),
+                tap(() => this.mapService.stopEditMapObject()),
                 switchMap(dialogResult => iif(() => dialogResult.isCancelled, of<MapObjectModel>(undefined), of(dialogResult.data))),
                 filter(data => !!data),
                 switchMap(data => this.mapsHttpService.updateMapObject(this.mapQuery.getAll()[0].id.toString(), data)),

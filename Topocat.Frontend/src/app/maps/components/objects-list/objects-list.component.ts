@@ -1,7 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {MapObjectsQuery} from '../../queries/map-objects.query';
-import {debounceTime, map, tap} from 'rxjs/operators';
-import {BehaviorSubject, combineLatest, Subject} from 'rxjs';
+import {debounceTime, map} from 'rxjs/operators';
+import {BehaviorSubject, combineLatest} from 'rxjs';
+import {MapService} from '../../services/map.service';
 
 @Component({
     selector: 'app-objects-list',
@@ -29,11 +30,14 @@ export class ObjectsListComponent implements OnInit {
                     return results[1];
                 }
 
-                return results[1].filter(object => object.title.startsWith(results[0]));
+                return results[1].filter(object => object.title.toLowerCase().startsWith(results[0].toLowerCase()));
             })
         );
 
-    constructor(private mapsQuery: MapObjectsQuery) {
+    totalObjects$ = this.mapsQuery.selectAll();
+
+    constructor(private mapsQuery: MapObjectsQuery,
+                private mapService: MapService) {
     }
 
     ngOnInit() {
@@ -43,7 +47,7 @@ export class ObjectsListComponent implements OnInit {
         this.searchSubject.next(this.searchString);
     }
 
-    openAddDialog() {
-
+    newMapObject() {
+        this.mapService.addNewMapObject();
     }
 }

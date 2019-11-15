@@ -3,9 +3,9 @@ import {filter, switchMap, tap} from 'rxjs/operators';
 import {EntityActions} from '@datorama/akita';
 import {combineLatest} from 'rxjs';
 import {BaseDestroyable} from '../../core/services/base-destroyable';
-import {MapInstanceService} from './map-instance.service';
+import {MapInstanceService} from '../services/map-instance.service';
 import {MapObjectsQuery} from '../queries/map-objects.query';
-import {MapRenderingService} from './map-rendering.service';
+import {MapRenderingService} from '../services/map-rendering.service';
 import {DataFlow} from '../../core/services/data.flow';
 
 @Injectable()

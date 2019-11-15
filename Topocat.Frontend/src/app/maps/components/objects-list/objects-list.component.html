@@ -28,14 +28,14 @@
         <mat-divider [inset]="true"></mat-divider>
         <div class="d-table-cell footer-content p-3">
             <div class="float-left mr-auto">
-                <span>Total objects: {{(objects$ | async)?.length}}</span>
+                <span>Total objects: {{(totalObjects$ | async)?.length}}</span>
             </div>
         </div>
         <button *ngIf="!(editing$ | async)"
                 mat-fab
                 color="primary"
                 class="add-button"
-                (click)="openAddDialog()">
+                (click)="newMapObject()">
             <span class="mdi mdi-24px mdi-plus"></span>
         </button>
     </mat-card-footer>

@@ -7,16 +7,17 @@ import {filter, tap} from 'rxjs/operators';
 import {BaseDestroyable} from '../../../core/services/base-destroyable';
 import {MapObjectsDrawingService} from '../../services/map-objects-drawing.service';
 import {MapInstanceService} from '../../services/map-instance.service';
-import {EditMapObjectFlow} from '../../services/edit-map-object.flow';
-import {ObjectsDrawingFlow} from '../../services/objects-drawing.flow';
+import {EditMapObjectFlow} from '../../flows/edit-map-object.flow';
+import {ObjectsDrawingFlow} from '../../flows/objects-drawing.flow';
 import {DrawnObjectsStore} from '../../stores/drawn-objects.store';
 import {MapObjectsQuery} from '../../queries/map-objects.query';
+import {CreateMapObjectFlow} from '../../flows/create-map-object.flow';
 
 @Component({
     selector: 'app-map',
     templateUrl: './map.component.html',
     styleUrls: ['./map.component.scss'],
-    providers: [MapRenderingService, MapObjectsDrawingService, MapInstanceService, EditMapObjectFlow, ObjectsDrawingFlow, DrawnObjectsStore]
+    providers: [MapRenderingService, MapObjectsDrawingService, MapInstanceService, EditMapObjectFlow, ObjectsDrawingFlow, DrawnObjectsStore, CreateMapObjectFlow]
 })
 export class MapComponent extends BaseDestroyable implements OnInit {
 
@@ -29,13 +30,15 @@ export class MapComponent extends BaseDestroyable implements OnInit {
                 private mapsSignalRService: MapsSignalRService,
                 private mapInstanceService: MapInstanceService,
                 private mapObjectsDrawer: MapRenderingService,
+                private mapObjectsQuery: MapObjectsQuery,
                 private editMapObjectFlow: EditMapObjectFlow,
                 private objectsDrawingFlow: ObjectsDrawingFlow,
-                private mapObjectsQuery: MapObjectsQuery) {
+                private createMapObjectFlow: CreateMapObjectFlow) {
         super();
 
         this.editMapObjectFlow.setUp();
         this.objectsDrawingFlow.setUp();
+        this.createMapObjectFlow.setUp();
     }
 
     ngOnInit() {
