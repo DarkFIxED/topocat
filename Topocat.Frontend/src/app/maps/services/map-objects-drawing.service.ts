@@ -1,20 +1,26 @@
 import {Injectable} from '@angular/core';
-import {BehaviorSubject} from 'rxjs';
-import {filter, tap} from 'rxjs/operators';
+import {BehaviorSubject, Observable} from 'rxjs';
+import {filter, map, tap} from 'rxjs/operators';
 import {MapInstanceService} from './map-instance.service';
 import {MapObjectsQuery} from '../queries/map-objects.query';
 import {MapObjectModel} from '../models/map-object.model';
 import {WktService} from './wkt.service';
+import {DrawnObjectsStore} from '../stores/drawn-objects.store';
+import {MapRenderingService} from './map-rendering.service';
+import {UnifiedMapObject} from '../models/unified-map-object';
+import {Coordinates} from '../../core/models/coordinates';
 
 @Injectable()
-export class NewMapObjectsDrawer {
+export class MapObjectsDrawingService {
     private drawingManager = new BehaviorSubject<google.maps.drawing.DrawingManager>(undefined);
 
-    private map: google.maps.Map;
+    private mapInstance: google.maps.Map;
 
     constructor(private mapInstanceService: MapInstanceService,
                 private mapObjectsQuery: MapObjectsQuery,
-                private wktService: WktService) {
+                private wktService: WktService,
+                private drawnObjectsStore: DrawnObjectsStore,
+                private mapRenderingService: MapRenderingService) {
         this.initialize();
     }
 
@@ -30,9 +36,58 @@ export class NewMapObjectsDrawer {
                 this.drawingManager.next(drawingManager);
             }),
             tap(instance => {
-                this.map = instance;
+                this.mapInstance = instance;
             })
         ).subscribe();
+    }
+
+    changeFigure(mapObject: MapObjectModel): Observable<MapObjectModel> {
+
+        let foundObject: UnifiedMapObject;
+        this.drawnObjectsStore.drawnObjects.forEach(drawnObject => {
+            if (drawnObject.id === mapObject.id) {
+                foundObject = drawnObject;
+                drawnObject.allowChange();
+            } else {
+                drawnObject.disable();
+            }
+        });
+
+        if (!foundObject)
+            throw new Error();
+
+        const type = this.wktService.getWktType(mapObject.wktString);
+        return foundObject.drag$.pipe(
+            map(coords => this.mapWktString(type, coords)),
+            map(wktString => {
+                return {
+                    id: mapObject.id,
+                    title: mapObject.title,
+                    createdAt: mapObject.createdAt,
+                    lastModifiedAt: mapObject.lastModifiedAt,
+                    wktString
+                };
+            })
+        );
+    }
+
+    private mapWktString(type: string, coords: Coordinates | Coordinates[] | Coordinates[][]): string {
+        switch (type) {
+            case 'Point':
+                const pointCoords = coords as Coordinates;
+                return this.wktService.getPoint(pointCoords.lat, pointCoords.lng);
+
+            case 'LineString':
+                const path = coords as Coordinates[];
+                return this.wktService.getLineString(path);
+
+            case 'Polygon':
+                const paths = coords as Coordinates[][];
+                return  this.wktService.getPolygon(paths);
+
+            default:
+                throw new Error();
+        }
     }
 
     drawFigure(mapObject: MapObjectModel): Promise<MapObjectModel> {
@@ -45,7 +100,7 @@ export class NewMapObjectsDrawer {
                     drawingManager.setOptions({
                         drawingControl: false,
                         drawingMode: google.maps.drawing.OverlayType.MARKER,
-                        map: this.map
+                        map: this.mapInstance
                     });
 
                     const listener = drawingManager.addListener('markercomplete', (marker: google.maps.Marker) => {
@@ -56,7 +111,7 @@ export class NewMapObjectsDrawer {
                         const position = marker.getPosition();
                         const wktString = this.wktService.getPoint(position.lat(), position.lng());
 
-                        resolve ({
+                        resolve({
                             id: mapObject.id,
                             createdAt: mapObject.createdAt,
                             lastModifiedAt: mapObject.lastModifiedAt,

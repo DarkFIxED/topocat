@@ -18,7 +18,7 @@ export class UnifiedMapObjectsFactory {
                 const point = primitive as Terraformer.Point;
                 return new Point(mapObject.id, {
                     map,
-                    position: new google.maps.LatLng(point.coordinates[0], point.coordinates[1]),
+                    position: new google.maps.LatLng(point.coordinates[1], point.coordinates[0]),
                 });
 
             case 'LineString':
@@ -26,7 +26,7 @@ export class UnifiedMapObjectsFactory {
 
                 return new Line(mapObject.id, {
                     map,
-                    path: lineString.coordinates.map(coords => new google.maps.LatLng(coords[0], coords[1]))
+                    path: lineString.coordinates.map(coords => new google.maps.LatLng(coords[1], coords[0]))
                 });
 
             case 'Polygon':
@@ -34,7 +34,7 @@ export class UnifiedMapObjectsFactory {
 
                 return new Polygon(mapObject.id, {
                     map,
-                    paths: polygon.coordinates.map(path => path.map(coords => new google.maps.LatLng(coords[0], coords[1])))
+                    paths: polygon.coordinates.map(path => path.map(coords => new google.maps.LatLng(coords[1], coords[0])))
                 });
         }
     }

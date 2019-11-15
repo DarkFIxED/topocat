@@ -10,9 +10,10 @@ import {BaseDestroyable} from '../../core/services/base-destroyable';
 import {MapsSignalRService} from './maps.signal-r.service';
 import {MapObjectModel} from '../models/map-object.model';
 import {DialogResult} from '../../core/models/dialog-result';
-import {iif, of} from 'rxjs';
-import {NewMapObjectsDrawer} from './new-map-objects.drawer';
+import {combineLatest, iif, of} from 'rxjs';
+import {MapObjectsDrawingService} from './map-objects-drawing.service';
 import {DataFlow} from '../../core/services/data.flow';
+import {MapObjectHelper} from '../helpers/map-object.helper';
 
 @Injectable()
 export class EditMapObjectFlow extends BaseDestroyable implements DataFlow {
@@ -25,7 +26,7 @@ export class EditMapObjectFlow extends BaseDestroyable implements DataFlow {
                 private mapService: MapService,
                 private mapsHttpService: MapsHttpService,
                 private mapsSignalRService: MapsSignalRService,
-                private newMapObjectsDrawer: NewMapObjectsDrawer) {
+                private newMapObjectsDrawer: MapObjectsDrawingService) {
         super();
     }
 
@@ -48,23 +49,37 @@ export class EditMapObjectFlow extends BaseDestroyable implements DataFlow {
             )
             .subscribe();
 
-        this.mapObjectsQuery.select(state => state.drawing)
+        const drawFinished$ = this.mapObjectsQuery.select(state => state.drawing.isEnabled)
+            .pipe(
+                filter(enabled => !enabled),
+                map(() => this.mapObjectsQuery.getValue().drawing.result)
+            );
+
+        this.mapObjectsQuery.select(state => state.drawing.isEnabled)
             .pipe(
                 filter(value => !!value),
                 map(() => this.mapObjectsQuery.getValue().editing.mapObjectId),
                 map(objectId => this.mapObjectsQuery.getEntity(objectId)),
                 tap(() => this.openedEditDialog.close(DialogResult.Interrupt<MapObjectModel>())),
-                switchMap(model => this.newMapObjectsDrawer.drawFigure(model)),
-                tap(() => this.mapService.resetDrawingMode()),
+                switchMap(model => combineLatest(this.newMapObjectsDrawer.changeFigure(model), drawFinished$)),
+                map(results => {
+                    if (results[1]) {
+                        return results[0];
+                    } else {
+                        const initialWktString = this.mapObjectsQuery.getValue().drawing.initialState;
+                        return MapObjectHelper.copyWithAnotherWktString(results[0], initialWktString);
+                    }
+                }),
                 tap(model => this.mapService.updateObject(model)),
                 tap(model => this.mapService.editMapObject(model))
             )
             .subscribe();
 
-        this.mapsSignalRService.objectUpdated$.pipe(
-            tap(model => this.mapService.updateObject(model)),
-            takeUntil(this.componentAlive$)
-        )
+        this.mapsSignalRService.objectUpdated$
+            .pipe(
+                tap(model => this.mapService.updateObject(model)),
+                takeUntil(this.componentAlive$)
+            )
             .subscribe();
     }
 

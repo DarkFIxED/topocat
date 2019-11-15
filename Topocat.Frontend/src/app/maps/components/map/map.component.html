@@ -5,4 +5,5 @@
              (mapReady)="onMapReady($event)">
     </agm-map>
     <app-objects-list></app-objects-list>
+    <app-confirm-drawing *ngIf="drawing$ | async"></app-confirm-drawing>
 </div>

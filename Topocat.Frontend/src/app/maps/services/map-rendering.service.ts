@@ -91,21 +91,4 @@ export class MapRenderingService extends BaseDestroyable {
         infoWindow.setPosition(unifiedMapObject.getInfoWindowPosition());
         infoWindow.open(map);
     }
-
-    disable(ids: ID[]) {
-        const foundObjects = this.drawnObjectsStore.drawnObjects.filter(object => ids.some(id => id === object.id));
-        if (!foundObjects)
-            throw new Error();
-
-        foundObjects.forEach(object => object.disable());
-    }
-
-    enable(ids: ID[]) {
-        const foundObjects = this.drawnObjectsStore.drawnObjects.filter(object => ids.some(id => id === object.id));
-        if (!foundObjects)
-            throw new Error();
-
-        foundObjects.forEach(object => object.enable());
-    }
-
 }

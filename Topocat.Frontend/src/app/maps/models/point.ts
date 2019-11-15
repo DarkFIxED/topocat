@@ -2,11 +2,18 @@ import {UnifiedMapObject} from './unified-map-object';
 import {ID} from '@datorama/akita';
 import {MapObjectModel} from './map-object.model';
 import {BaseUnifiedMapObject} from './base-unified-map-object';
+import {Coordinates} from '../../core/models/coordinates';
 
 export class Point extends BaseUnifiedMapObject<google.maps.Marker> implements UnifiedMapObject {
 
     constructor(id: ID, opts?: any) {
         super(id, opts);
+
+        this.underlyingObject.addListener('dragend', event => {
+            const position = this.underlyingObject.getPosition();
+            const coordinates = new Coordinates(position.lat(), position.lng());
+            this.drag.next(coordinates);
+        });
     }
 
     dispose() {
@@ -41,4 +48,15 @@ export class Point extends BaseUnifiedMapObject<google.maps.Marker> implements U
         });
     }
 
+    allowChange() {
+        this.underlyingObject.setOptions({
+            draggable: true
+        });
+    }
+
+    disallowChange() {
+        this.underlyingObject.setOptions({
+            draggable: true
+        });
+    }
 }

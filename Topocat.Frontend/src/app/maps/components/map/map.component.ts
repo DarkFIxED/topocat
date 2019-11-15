@@ -5,21 +5,24 @@ import {MapRenderingService} from '../../services/map-rendering.service';
 import {MapsSignalRService} from '../../services/maps.signal-r.service';
 import {filter, tap} from 'rxjs/operators';
 import {BaseDestroyable} from '../../../core/services/base-destroyable';
-import {NewMapObjectsDrawer} from '../../services/new-map-objects.drawer';
+import {MapObjectsDrawingService} from '../../services/map-objects-drawing.service';
 import {MapInstanceService} from '../../services/map-instance.service';
 import {EditMapObjectFlow} from '../../services/edit-map-object.flow';
 import {ObjectsDrawingFlow} from '../../services/objects-drawing.flow';
 import {DrawnObjectsStore} from '../../stores/drawn-objects.store';
+import {MapObjectsQuery} from '../../queries/map-objects.query';
 
 @Component({
     selector: 'app-map',
     templateUrl: './map.component.html',
     styleUrls: ['./map.component.scss'],
-    providers: [MapRenderingService, NewMapObjectsDrawer, MapInstanceService, EditMapObjectFlow, ObjectsDrawingFlow, DrawnObjectsStore]
+    providers: [MapRenderingService, MapObjectsDrawingService, MapInstanceService, EditMapObjectFlow, ObjectsDrawingFlow, DrawnObjectsStore]
 })
 export class MapComponent extends BaseDestroyable implements OnInit {
 
     private mapId: string = undefined;
+
+    drawing$ = this.mapObjectsQuery.select(state => state.drawing.isEnabled);
 
     constructor(private mapService: MapService,
                 private route: ActivatedRoute,
@@ -27,7 +30,8 @@ export class MapComponent extends BaseDestroyable implements OnInit {
                 private mapInstanceService: MapInstanceService,
                 private mapObjectsDrawer: MapRenderingService,
                 private editMapObjectFlow: EditMapObjectFlow,
-                private objectsDrawingFlow: ObjectsDrawingFlow) {
+                private objectsDrawingFlow: ObjectsDrawingFlow,
+                private mapObjectsQuery: MapObjectsQuery) {
         super();
 
         this.editMapObjectFlow.setUp();

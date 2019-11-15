@@ -58,15 +58,25 @@ export class MapService {
         });
     }
 
-    setDrawingMode() {
+    startDrawing(initialState: string) {
         this.mapObjectsStore.update({
-            drawing: true
+            drawing: {
+                isEnabled: true,
+                result: false,
+                initialState
+            }
         });
     }
 
-    resetDrawingMode() {
+    stopDrawing(isSuccessful: boolean) {
+        const initialState = this.mapObjectsStore.getValue().drawing.initialState;
+
         this.mapObjectsStore.update({
-            drawing: false
+            drawing: {
+                result: isSuccessful,
+                isEnabled: false,
+                initialState
+            }
         });
     }
 

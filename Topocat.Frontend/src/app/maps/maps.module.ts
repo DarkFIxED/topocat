@@ -22,8 +22,9 @@ import {UnifiedMapObjectsFactory} from './models/unified-map-objects.factory';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MapsSignalRService} from './services/maps.signal-r.service';
 import {EditMapObjectComponent} from './dialogs/edit-map-object/edit-map-object.component';
-import {NewMapObjectsDrawer} from './services/new-map-objects.drawer';
+import {MapObjectsDrawingService} from './services/map-objects-drawing.service';
 import {MapQuery} from './queries/map.query';
+import { ConfirmDrawingComponent } from './components/confirm-drawing/confirm-drawing.component';
 
 const routes: Routes = [
     {
@@ -43,7 +44,8 @@ const routes: Routes = [
         MapComponent,
         ObjectsListComponent,
         ObjectsListItemComponent,
-        EditMapObjectComponent
+        EditMapObjectComponent,
+        ConfirmDrawingComponent
     ],
     imports: [
         CommonModule,

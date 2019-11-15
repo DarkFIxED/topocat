@@ -2,11 +2,15 @@ import {UnifiedMapObject} from './unified-map-object';
 import {Subject} from 'rxjs';
 import {ID} from '@datorama/akita';
 import {MapObjectModel} from './map-object.model';
+import {Coordinates} from '../../core/models/coordinates';
 
 export abstract class BaseUnifiedMapObject<T extends google.maps.MVCObject> implements UnifiedMapObject {
 
     protected click = new Subject<ID>();
     click$ = this.click.asObservable();
+
+    protected drag = new Subject<Coordinates | Coordinates[] | Coordinates[][]>();
+    drag$ = this.drag.asObservable();
 
     id: ID;
 
@@ -29,4 +33,9 @@ export abstract class BaseUnifiedMapObject<T extends google.maps.MVCObject> impl
     abstract disable();
 
     abstract enable();
+
+    abstract allowChange();
+
+    abstract disallowChange();
+
 }

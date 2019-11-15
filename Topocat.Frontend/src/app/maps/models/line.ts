@@ -3,11 +3,17 @@ import {ID} from '@datorama/akita';
 import {MapObjectModel} from './map-object.model';
 import {google} from 'google-maps';
 import {BaseUnifiedMapObject} from './base-unified-map-object';
+import {Coordinates} from '../../core/models/coordinates';
 
 export class Line extends BaseUnifiedMapObject<google.maps.Polyline> implements UnifiedMapObject {
 
     constructor(id: ID, opts?: any) {
         super(id, opts);
+
+        this.underlyingObject.getPath().addListener('insert_at', () => this.handlePathChanged());
+        this.underlyingObject.getPath().addListener('remove_at', () => this.handlePathChanged());
+        this.underlyingObject.getPath().addListener('set_at', () => this.handlePathChanged());
+        this.underlyingObject.addListener('dragend', () => this.handlePathChanged());
     }
 
     dispose() {
@@ -43,5 +49,24 @@ export class Line extends BaseUnifiedMapObject<google.maps.Polyline> implements 
             strokeOpacity: 1,
             clickable: true
         });
+    }
+
+    allowChange() {
+        this.underlyingObject.setOptions({
+            editable: true,
+            draggable: true
+        });
+    }
+
+    disallowChange() {
+        this.underlyingObject.setOptions({
+            editable: false,
+            draggable: false
+        });
+    }
+
+    private handlePathChanged() {
+        const path = this.underlyingObject.getPath().getArray().map(latLng => new Coordinates(latLng.lat(), latLng.lng()));
+        this.drag.next(path);
     }
 }

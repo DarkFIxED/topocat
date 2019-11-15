@@ -6,11 +6,11 @@ import {MapService} from '../../services/map.service';
 import {DialogResult} from '../../../core/models/dialog-result';
 
 @Component({
-  selector: 'app-edit-map-object',
-  templateUrl: './edit-map-object.component.html',
-  styleUrls: ['./edit-map-object.component.scss']
+    selector: 'app-edit-map-object',
+    templateUrl: './edit-map-object.component.html',
+    styleUrls: ['./edit-map-object.component.scss']
 })
-export class EditMapObjectComponent  {
+export class EditMapObjectComponent {
 
     mapObjectForm = new FormGroup({
         id: new FormControl(undefined, [Validators.required]),
@@ -20,11 +20,13 @@ export class EditMapObjectComponent  {
         wktString: new FormControl(undefined, [Validators.required])
     });
 
-    constructor(
-        public dialogRef: MatDialogRef<EditMapObjectComponent, DialogResult<MapObjectModel>>,
-        @Inject(MAT_DIALOG_DATA) public data: any,
-        private mapService: MapService) {
+    data: MapObjectModel;
 
+    constructor(public dialogRef: MatDialogRef<EditMapObjectComponent, DialogResult<MapObjectModel>>,
+                @Inject(MAT_DIALOG_DATA) data: any,
+                private mapService: MapService) {
+
+        this.data = data as MapObjectModel;
         this.mapObjectForm.setValue(data);
     }
 
@@ -33,13 +35,14 @@ export class EditMapObjectComponent  {
     }
 
     onOkClick() {
-        if (this.mapObjectForm.invalid)
+        if (this.mapObjectForm.invalid) {
             return;
+        }
 
         this.dialogRef.close(DialogResult.Ok(this.mapObjectForm.value));
     }
 
     onDrawClick() {
-        this.mapService.setDrawingMode();
+        this.mapService.startDrawing(this.data.wktString);
     }
 }
