@@ -1,9 +1,9 @@
 import {Injectable} from '@angular/core';
 import {google} from 'google-maps';
 import {MapObjectsQuery} from '../queries/map-objects.query';
-import {EntityActions, ID} from '@datorama/akita';
-import {combineLatest, Observable, Subject, Subscription} from 'rxjs';
-import {filter, switchMap, tap} from 'rxjs/operators';
+import {ID} from '@datorama/akita';
+import {BehaviorSubject, Subscription} from 'rxjs';
+import {filter, tap} from 'rxjs/operators';
 import {MapObjectModel} from '../models/map-object.model';
 import {UnifiedMapObjectsFactory} from '../models/unified-map-objects.factory';
 import {UnifiedMapObject} from '../models/unified-map-object';
@@ -12,101 +12,41 @@ import {formatDate} from '@angular/common';
 import {MapInstanceService} from './map-instance.service';
 
 @Injectable()
-export class DrawMapObjectsFlow {
+export class MapRenderingService {
 
     private drawnObjects: UnifiedMapObject[] = [];
     private drawnObjectsSubscriptions: { id: ID, subscriptions: Subscription[] }[] = [];
 
-    private map$: Observable<google.maps.Map>;
-    private infoWindowInstance$: Subject<google.maps.InfoWindow> = new Subject<google.maps.InfoWindow>();
+    private infoWindowInstance$: BehaviorSubject<google.maps.InfoWindow> = new BehaviorSubject<google.maps.InfoWindow>(undefined);
 
     constructor(private mapObjectsQuery: MapObjectsQuery,
                 private mapService: MapService,
                 private unifiedMapObjectsFactory: UnifiedMapObjectsFactory,
                 private mapInstanceService: MapInstanceService) {
         this.initialize();
-        this.drawSetObjects();
-        this.drawAddedObjects();
-        this.redrawUpdatedObjects();
-        this.drawInfoWindow();
     }
 
     private initialize() {
-        this.map$ = this.mapInstanceService.mapInstance$.pipe(
-            filter(instance => !!instance)
-        );
-
-        this.map$.pipe(
+        this.mapInstanceService.mapInstance$.pipe(
+            filter(instance => !!instance),
             tap(() => {
                 const infoWindow = new google.maps.InfoWindow();
                 infoWindow.addListener('closeclick', () => this.mapService.clearActive());
                 this.infoWindowInstance$.next(infoWindow);
             })
-        ).subscribe();
+        )
+        .subscribe();
     }
 
-    private drawSetObjects() {
-        const setEntities$ = this.mapObjectsQuery.selectEntityAction(EntityActions.Set)
-            .pipe(
-                switchMap(ids => this.mapObjectsQuery.selectMany(ids))
-            );
-
-        combineLatest(this.map$, setEntities$)
-            .pipe(
-                tap(() => this.clearAll()),
-                tap(results => this.drawMany(results[0], results[1]))
-            )
-            .subscribe();
-    }
-
-    private drawAddedObjects() {
-        const addedEntities$ = this.mapObjectsQuery.selectEntityAction(EntityActions.Add)
-            .pipe(
-                switchMap(ids => this.mapObjectsQuery.selectMany(ids))
-            );
-
-        combineLatest(this.map$, addedEntities$)
-            .pipe(
-                tap(results => this.drawMany(results[0], results[1]))
-            )
-            .subscribe();
-    }
-
-    private redrawUpdatedObjects() {
-        const updatedEntities$ = this.mapObjectsQuery.selectEntityAction(EntityActions.Update)
-            .pipe(
-                switchMap(ids => this.mapObjectsQuery.selectMany(ids))
-            );
-
-        combineLatest(this.map$, updatedEntities$)
-            .pipe(
-                tap(results => this.updateMany(results[1]))
-            )
-            .subscribe();
-    }
-
-    private drawInfoWindow() {
-        const active$ = this.mapObjectsQuery.selectActiveId().pipe(
-            switchMap(id => this.mapObjectsQuery.selectEntity(id))
-        );
-
-        combineLatest(this.map$, this.infoWindowInstance$, active$)
-            .pipe(
-                filter(results => !!results[2]),
-                tap(results => this.showInfoWindow(results[0], results[1], results[2]))
-            )
-            .subscribe();
-    }
-
-    private updateMany(mapObjects: MapObjectModel[]) {
+    updateMany(mapObjects: MapObjectModel[]) {
         mapObjects.forEach(object => this.update(object));
     }
 
-    private drawMany(map: google.maps.Map, objects: MapObjectModel[]) {
+    drawMany(map: google.maps.Map, objects: MapObjectModel[]) {
         objects.forEach(object => this.draw(map, object));
     }
 
-    private clearAll() {
+    clearAll() {
         if (this.drawnObjects.length === 0) {
             return;
         }
@@ -115,12 +55,12 @@ export class DrawMapObjectsFlow {
         ids.forEach(id => this.removeObjectsFromDrawnAndRemoveSubs(id));
     }
 
-    private draw(map: google.maps.Map, object: MapObjectModel) {
+    draw(map: google.maps.Map, object: MapObjectModel) {
         const unifiedMapObject = this.unifiedMapObjectsFactory.build(map, object);
         this.addObjectToDrawn(unifiedMapObject);
     }
 
-    private update(object: MapObjectModel) {
+    update(object: MapObjectModel) {
         const foundObject = this.drawnObjects.find(x => x.id === object.id);
         if (!foundObject) {
             throw new Error();
@@ -129,13 +69,14 @@ export class DrawMapObjectsFlow {
         foundObject.update(object);
     }
 
-    private showInfoWindow(map: google.maps.Map, infoWindow: google.maps.InfoWindow, active: MapObjectModel) {
+    showInfoWindow(map: google.maps.Map, active: MapObjectModel) {
+        const infoWindow = this.infoWindowInstance$.getValue();
         const unifiedMapObject = this.drawnObjects.find(x => x.id === active.id);
 
         const content =
             `<span>Title:&nbsp;${active.title}</span><br>` +
-             `<span>Created at:&nbsp;${formatDate(active.createdAt, 'hh:mm dd-MM-yyyy', 'en-US')}</span><br>` +
-             `<span>Last modified at:&nbsp;${formatDate(active.lastModifiedAt, 'hh:mm dd-MM-yyyy', 'en-US')}</span>`;
+             `<span>Created&nbsp;at:&nbsp;${formatDate(active.createdAt, 'hh:mm dd-MM-yyyy', 'en-US')}</span><br>` +
+             `<span>Last&nbsp;modified&nbsp;at:&nbsp;${formatDate(active.lastModifiedAt, 'hh:mm dd-MM-yyyy', 'en-US')}</span>`;
 
         infoWindow.setContent(content);
         infoWindow.setPosition(unifiedMapObject.getInfoWindowPosition());
