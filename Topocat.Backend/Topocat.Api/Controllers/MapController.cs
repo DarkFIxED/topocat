@@ -7,6 +7,7 @@ using Topocat.API.Models.Maps;
 using Topocat.Services;
 using Topocat.Services.Commands.Maps.AddObject;
 using Topocat.Services.Commands.Maps.Create;
+using Topocat.Services.Commands.Maps.RemoveObject;
 using Topocat.Services.Commands.Maps.UpdateObject;
 using Topocat.Services.Commands.Maps.UpdateTitle;
 using Topocat.Services.Queries.Map.GetMapObjects;
@@ -111,7 +112,7 @@ namespace Topocat.API.Controllers
 
         [Route("/maps/{mapId}/objects/{objectId}")]
         [HttpPut]
-        public async Task<ApiResponse> UpdatePoint([FromRoute] string mapId, [FromRoute] string objectId, [FromBody] UpdateObjectRequestModel model)
+        public async Task<ApiResponse> UpdateObject([FromRoute] string mapId, [FromRoute] string objectId, [FromBody] UpdateObjectRequestModel model)
         {
             var updateLineCommand = _commandsFactory.Get<UpdateObjectCommand>();
 
@@ -122,6 +123,22 @@ namespace Topocat.API.Controllers
                 ObjectId = objectId,
                 ActionExecutorId = HttpContext.User.GetUserId(),
                 WktString = model.WktString
+            });
+
+            return ApiResponse.Success();
+        }
+
+        [Route("/maps/{mapId}/objects/{objectId}")]
+        [HttpDelete]
+        public async Task<ApiResponse> RemoveObject([FromRoute] string mapId, [FromRoute] string objectId)
+        {
+            var updateLineCommand = _commandsFactory.Get<RemoveObjectCommand>();
+
+            await updateLineCommand.Execute(new RemoveObjectCommandArgs
+            {
+                MapId = mapId,
+                ObjectId = objectId,
+                ActionExecutorId = HttpContext.User.GetUserId(),
             });
 
             return ApiResponse.Success();

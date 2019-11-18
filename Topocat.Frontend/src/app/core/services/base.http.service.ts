@@ -22,4 +22,8 @@ export class BaseHttpService {
     put<T>(relativeUrl: string, body: any, headers?: HttpHeaders): Observable<T> {
         return this.http.put<T>(`${environment.serverUrl}${relativeUrl}`, body, {headers});
     }
+
+    delete<T>(relativeUrl: string, headers?: HttpHeaders): Observable<T> {
+        return this.http.delete<T>(`${environment.serverUrl}${relativeUrl}`, {headers});
+    }
 }

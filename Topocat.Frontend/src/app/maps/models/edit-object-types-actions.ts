@@ -1,4 +1,5 @@
 export enum EditObjectTypesActions {
     Finished,
-    RedrawRequested
+    RedrawRequested,
+    RemoveRequested
 }
