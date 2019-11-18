@@ -2,7 +2,7 @@ import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {HttpClientModule} from '@angular/common/http';
 import {UnauthorizedLayoutComponent} from './components/unauthorized-layout/unauthorized-layout.component';
-import {MatButtonModule, MatCardModule, MatIconRegistry, MatInputModule, MatToolbarModule} from '@angular/material';
+import {MatButtonModule, MatCardModule, MatDialogModule, MatIconRegistry, MatInputModule, MatToolbarModule} from '@angular/material';
 import {RouterModule} from '@angular/router';
 import {LoginComponent} from './components/login/login.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
@@ -10,6 +10,7 @@ import { ForgotPasswordComponent } from './components/forgot-password/forgot-pas
 import {DomSanitizer} from '@angular/platform-browser';
 import { IndexComponent } from './components/index/index.component';
 import { RestorePasswordComponent } from './components/restore-password/restore-password.component';
+import { ConfirmationComponent } from './dialogs/confirmation/confirmation.component';
 
 @NgModule({
     declarations: [
@@ -17,7 +18,8 @@ import { RestorePasswordComponent } from './components/restore-password/restore-
         LoginComponent,
         ForgotPasswordComponent,
         IndexComponent,
-        RestorePasswordComponent
+        RestorePasswordComponent,
+        ConfirmationComponent
     ],
     imports: [
         CommonModule,
@@ -29,7 +31,11 @@ import { RestorePasswordComponent } from './components/restore-password/restore-
 
         ReactiveFormsModule,
         FormsModule,
-        MatInputModule
+        MatInputModule,
+        MatDialogModule
+    ],
+    entryComponents: [
+        ConfirmationComponent
     ]
 })
 export class CoreModule {

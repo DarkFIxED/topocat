@@ -54,7 +54,7 @@ export class CreateMapObjectFlow extends BaseDestroyable implements DataFlow {
 
         this.startDrawing$.pipe(
             switchMap(model => this.mapObjectsDrawingService.drawFigure(model.type, model.model)),
-            map(model => this.openEditDialog(model)),
+            map(model => this.openEditDialog(model, true)),
             switchMap(dialogRef => dialogRef.afterClosed()),
             tap(dialogResult => {
                 if (dialogResult.isCancelled || dialogResult.isInterrupted) {
@@ -84,12 +84,12 @@ export class CreateMapObjectFlow extends BaseDestroyable implements DataFlow {
         });
     }
 
-    private openEditDialog(data: MapObjectModel): MatDialogRef<EditMapObjectComponent, DialogResult<{action: EditObjectTypesActions, data: MapObjectModel}>> {
+    private openEditDialog(model: MapObjectModel, isNewObject: boolean): MatDialogRef<EditMapObjectComponent, DialogResult<{action: EditObjectTypesActions, data: MapObjectModel}>> {
         return this.matDialog.open(EditMapObjectComponent, {
             width: '450px',
             hasBackdrop: true,
             disableClose: true,
-            data
+            data: {model, isNewObject}
         });
     }
 }

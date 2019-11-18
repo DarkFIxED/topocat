@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
 import {google} from 'google-maps';
 import {MapObjectsQuery} from '../queries/map-objects.query';
-import {ID} from '@datorama/akita';
 import {BehaviorSubject} from 'rxjs';
 import {filter, takeUntil, tap} from 'rxjs/operators';
 import {MapObjectModel} from '../models/map-object.model';
@@ -11,6 +10,7 @@ import {formatDate} from '@angular/common';
 import {MapInstanceService} from './map-instance.service';
 import {DrawnObjectsStore} from '../stores/drawn-objects.store';
 import {BaseDestroyable} from '../../core/services/base-destroyable';
+import {ID} from '@datorama/akita';
 
 @Injectable()
 export class MapRenderingService extends BaseDestroyable {
@@ -78,6 +78,10 @@ export class MapRenderingService extends BaseDestroyable {
         foundObject.update(object);
     }
 
+    removeMany(ids: ID[]) {
+        ids.forEach(id => this.drawnObjectsStore.remove(id));
+    }
+
     showInfoWindow(map: google.maps.Map, active: MapObjectModel) {
         const infoWindow = this.infoWindowInstance$.getValue();
         const unifiedMapObject = this.drawnObjectsStore.drawnObjects.find(x => x.id === active.id);
@@ -91,4 +95,6 @@ export class MapRenderingService extends BaseDestroyable {
         infoWindow.setPosition(unifiedMapObject.getInfoWindowPosition());
         infoWindow.open(map);
     }
+
+
 }

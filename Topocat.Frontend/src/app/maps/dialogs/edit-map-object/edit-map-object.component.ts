@@ -21,14 +21,13 @@ export class EditMapObjectComponent {
         wktString: new FormControl(undefined, [Validators.required])
     });
 
-    data: MapObjectModel;
+    data: { model: MapObjectModel, isNewObject: boolean };
 
-    constructor(public dialogRef: MatDialogRef<EditMapObjectComponent, DialogResult<{action: EditObjectTypesActions, data: MapObjectModel}>>,
-                @Inject(MAT_DIALOG_DATA) data: any,
-                private mapService: MapService) {
+    constructor(public dialogRef: MatDialogRef<EditMapObjectComponent, DialogResult<{ action: EditObjectTypesActions, data: MapObjectModel }>>,
+                @Inject(MAT_DIALOG_DATA) data: any) {
 
-        this.data = data as MapObjectModel;
-        this.mapObjectForm.patchValue(data);
+        this.data = data as { model: MapObjectModel, isNewObject: boolean };
+        this.mapObjectForm.patchValue(this.data.model);
     }
 
     onNoClick() {
@@ -44,6 +43,10 @@ export class EditMapObjectComponent {
     }
 
     onDrawClick() {
-        this.dialogRef.close(DialogResult.Ok({action: EditObjectTypesActions.RedrawRequested, data: this.data}));
+        this.dialogRef.close(DialogResult.Ok({action: EditObjectTypesActions.RedrawRequested, data: this.data.model}));
+    }
+
+    onDeleteClick() {
+        this.dialogRef.close(DialogResult.Ok({action: EditObjectTypesActions.RemoveRequested, data: this.data.model}));
     }
 }

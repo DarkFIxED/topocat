@@ -1,5 +1,5 @@
 <div mat-dialog-title class="d-flex">
-    <h5 class="mr-auto">New map</h5>
+    <h5 class="mr-auto">New object</h5>
     <button mat-button class="float-right" (click)="onDrawClick()">
         <span class="mdi mdi-24px mdi-draw"></span>
     </button>
@@ -17,11 +17,19 @@
             </mat-form-field>
         </div>
         <div class="d-flex w-100 pb-1">
-            <button class="float-left mr-auto"
+            <button class="float-left mr-3"
                     type="button"
                     mat-raised-button
                     (click)="onNoClick()"
                     tabindex="3">Cancel
+            </button>
+            <button *ngIf="!data.isNewObject"
+                    class="float-left mr-auto"
+                    type="button"
+                    mat-raised-button
+                    color="warn"
+                    (click)="onDeleteClick()"
+                    tabindex="3">Delete
             </button>
             <button class="float-right"
                     type="submit"

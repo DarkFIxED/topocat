@@ -26,7 +26,7 @@ namespace Topocat.Services.DomainEventHandlers
             {
                 var hubContext = provider.GetService<IHubContext<MapHub>>();
 
-                await hubContext.Clients.Group(@event.MapId).SendAsync("ObjectRemoved", @event.MapId, token);
+                await hubContext.Clients.Group(@event.MapId).SendAsync("objectRemoved", @event.ObjectId, token);
             }
 
             _backgroundTaskQueue.QueueBackgroundWorkItem(WorkItem);

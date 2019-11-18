@@ -2,6 +2,7 @@ import * as signalR from '@aspnet/signalr';
 import {environment} from '../../../environments/environment';
 import {BehaviorSubject, Subject} from 'rxjs';
 import {MapObjectModel} from '../models/map-object.model';
+import {ID} from '@datorama/akita';
 
 export class MapsSignalRService {
 
@@ -10,6 +11,9 @@ export class MapsSignalRService {
 
     private objectUpdated = new Subject<MapObjectModel>();
     objectUpdated$ = this.objectUpdated.asObservable();
+
+    private objectRemoved = new Subject<ID>();
+    objectRemoved$ = this.objectRemoved.asObservable();
 
     private hubConnection: signalR.HubConnection;
 
@@ -39,6 +43,11 @@ export class MapsSignalRService {
         this.hubConnection.on('objectUpdated', (data) => {
             console.log(data);
             this.objectUpdated.next(data);
+        });
+
+        this.hubConnection.on('objectRemoved', (id) => {
+            console.log(id);
+            this.objectRemoved.next(id);
         });
     }
 

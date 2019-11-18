@@ -23,23 +23,9 @@ export class ObjectsDrawingFlow extends BaseDestroyable implements DataFlow {
 
     setUp() {
         this.drawAddedObjects();
-        this.drawSetObjects();
         this.redrawUpdatedObjects();
+        this.clearRemovedObjects();
         this.drawInfoWindow();
-    }
-
-    private drawSetObjects() {
-        const setEntities$ = this.mapObjectsQuery.selectEntityAction(EntityActions.Set)
-            .pipe(
-                switchMap(ids => this.mapObjectsQuery.selectMany(ids))
-            );
-
-        combineLatest(this.map$, setEntities$)
-            .pipe(
-                tap(() => this.drawingService.clearAll()),
-                tap(results => this.drawingService.drawMany(results[0], results[1]))
-            )
-            .subscribe();
     }
 
     private drawAddedObjects() {
@@ -68,6 +54,16 @@ export class ObjectsDrawingFlow extends BaseDestroyable implements DataFlow {
             .subscribe();
     }
 
+    private clearRemovedObjects() {
+        const removedEntities$ = this.mapObjectsQuery.selectEntityAction(EntityActions.Remove);
+
+        combineLatest(this.map$, removedEntities$)
+            .pipe(
+                tap(results => this.drawingService.removeMany(results[1]))
+            )
+            .subscribe();
+    }
+
     private drawInfoWindow() {
         const active$ = this.mapObjectsQuery.selectActiveId().pipe(
             switchMap(id => this.mapObjectsQuery.selectEntity(id))
@@ -80,4 +76,5 @@ export class ObjectsDrawingFlow extends BaseDestroyable implements DataFlow {
             )
             .subscribe();
     }
+
 }

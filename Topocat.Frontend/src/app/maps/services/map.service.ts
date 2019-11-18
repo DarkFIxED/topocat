@@ -34,7 +34,7 @@ export class MapService {
             )
             .subscribe(results => {
                 this.mapStore.set([results[0].data.map]);
-                this.mapObjectsStore.set(results[1].data.mapObjects);
+                this.mapObjectsStore.upsertMany(results[1].data.mapObjects);
             });
     }
 
@@ -98,5 +98,9 @@ export class MapService {
 
     updateObject(model: MapObjectModel) {
         this.mapObjectsStore.upsert(model.id, model);
+    }
+
+    removeObject(id: ID) {
+        this.mapObjectsStore.remove(id);
     }
 }

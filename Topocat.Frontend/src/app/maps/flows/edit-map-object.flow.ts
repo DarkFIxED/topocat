@@ -10,16 +10,18 @@ import {BaseDestroyable} from '../../core/services/base-destroyable';
 import {MapsSignalRService} from '../services/maps.signal-r.service';
 import {MapObjectModel} from '../models/map-object.model';
 import {DialogResult} from '../../core/models/dialog-result';
-import {Observable, Subject} from 'rxjs';
+import {iif, Observable, of, Subject} from 'rxjs';
 import {MapObjectsDrawingService} from '../services/map-objects-drawing.service';
 import {DataFlow} from '../../core/services/data.flow';
 import {MapObjectHelper} from '../helpers/map-object.helper';
 import {EditObjectTypesActions} from '../models/edit-object-types-actions';
+import {ConfirmationComponent} from '../../core/dialogs/confirmation/confirmation.component';
 
 @Injectable()
 export class EditMapObjectFlow extends BaseDestroyable implements DataFlow {
 
     private openEditDialog$ = new Subject<{ source: MapObjectModel, changed: MapObjectModel }>();
+    private openRemoveConfirmationDialog$ = new Subject<{ source: MapObjectModel, changed: MapObjectModel }>();
     private startDraw$ = new Subject<{ source: MapObjectModel, changed: MapObjectModel }>();
 
     constructor(private mapObjectsQuery: MapObjectsQuery,
@@ -51,7 +53,7 @@ export class EditMapObjectFlow extends BaseDestroyable implements DataFlow {
 
         this.openEditDialog$
             .pipe(
-                switchMap(data => this.openDialog(data.changed)
+                switchMap(data => this.openEditDialog(data.changed, false)
                     .afterClosed()
                     .pipe(
                         map(dialogResult => {
@@ -73,9 +75,12 @@ export class EditMapObjectFlow extends BaseDestroyable implements DataFlow {
                     if (data.dialogResult.data.action === EditObjectTypesActions.RedrawRequested) {
                         this.startDraw$.next({source: data.source, changed: data.dialogResult.data.data});
                     }
+                    if (data.dialogResult.data.action === EditObjectTypesActions.RemoveRequested) {
+                        this.openRemoveConfirmationDialog$.next({source: data.source, changed: data.dialogResult.data.data});
+                    }
                 }),
                 filter(data => data.dialogResult.data.action === EditObjectTypesActions.Finished),
-                switchMap(data => this.mapsHttpService.updateMapObject(this.mapQuery.getAll()[0].id.toString(), data.dialogResult.data.data)),
+                switchMap(data => this.mapsHttpService.updateMapObject(this.getActualMapId(), data.dialogResult.data.data)),
                 tap(() => this.mapService.stopEditMapObject()),
                 takeUntil(this.componentAlive$)
             )
@@ -107,23 +112,58 @@ export class EditMapObjectFlow extends BaseDestroyable implements DataFlow {
                 tap(data => this.openEditDialog$.next(data))
             ).subscribe();
 
+        this.openRemoveConfirmationDialog$.pipe(
+            switchMap(data => this.openRemoveConfirmationDialog().afterClosed()
+                .pipe(
+                    map(dialogResult => {
+                        return {
+                            ...data,
+                            isCancelled: dialogResult.isCancelled
+                        };
+                    })
+                )),
+            switchMap(result => iif(() => result.isCancelled,
+                of({source: result.source, changed: result.changed})
+                    .pipe(
+                        tap(data => this.openEditDialog$.next(data))
+                    ),
+                of({source: result.source, changed: result.changed}).pipe(
+                    tap(() => this.mapService.stopEditMapObject()),
+                    switchMap(data => this.mapsHttpService.deleteMapObject(this.getActualMapId(), data.source))
+                )))
+        ).subscribe();
+
         this.mapsSignalRService.objectUpdated$
             .pipe(
                 tap(model => this.mapService.updateObject(model)),
                 takeUntil(this.componentAlive$)
             ).subscribe();
+
+        this.mapsSignalRService.objectRemoved$
+            .pipe(
+                tap(id => this.mapService.removeObject(id)),
+                takeUntil(this.componentAlive$)
+            ).subscribe();
     }
 
-    private openDialog(model: MapObjectModel): MatDialogRef<EditMapObjectComponent, DialogResult<{ action: EditObjectTypesActions, data: MapObjectModel }>> {
+    private openEditDialog(model: MapObjectModel, isNewObject: boolean): MatDialogRef<EditMapObjectComponent, DialogResult<{ action: EditObjectTypesActions, data: MapObjectModel }>> {
         return this.matDialog.open(EditMapObjectComponent, {
             width: '450px',
             hasBackdrop: true,
-            data: model,
+            data: {model, isNewObject},
             disableClose: true
         });
     }
 
-    private drawUntilConfirmedOrCancelled(model: { source: MapObjectModel, changed: MapObjectModel}, drawFinished$: Observable<boolean>) {
+    private openRemoveConfirmationDialog(): MatDialogRef<ConfirmationComponent, DialogResult<any>> {
+        return this.matDialog.open(ConfirmationComponent, {
+            width: '450px',
+            hasBackdrop: true,
+            disableClose: true
+        });
+    }
+
+    private drawUntilConfirmedOrCancelled(model: { source: MapObjectModel, changed: MapObjectModel }, drawFinished$: Observable<boolean>) {
         return new Promise<{ source: MapObjectModel, changed: MapObjectModel, isConfirmed: boolean }>(resolve => {
             const resultModel = {
                 ...model,
@@ -146,5 +186,9 @@ export class EditMapObjectFlow extends BaseDestroyable implements DataFlow {
                 })
             ).subscribe();
         });
+    }
+
+    private getActualMapId(): string {
+        return this.mapQuery.getAll()[0].id.toString();
     }
 }

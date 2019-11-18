@@ -8,7 +8,7 @@ export class DialogResult<T> {
         return new DialogResult(false, true, undefined);
     }
 
-    static Ok<T>(data: T): DialogResult<T> {
+    static Ok<T>(data?: T): DialogResult<T> {
         return new DialogResult(false, false, data);
     }
 
