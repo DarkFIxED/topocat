@@ -9,7 +9,7 @@
                              class="example-radio-group grid p-2"
                              tabindex="1"
                              formControlName="type">
-                <mat-radio-button [value]="WktPrimitives.Point" color="primary">Point</mat-radio-button>
+                <mat-radio-button [value]="WktPrimitives.Point" color="primary" cdkFocusInitial>Point</mat-radio-button>
                 <mat-radio-button [value]="WktPrimitives.LineString" color="primary">Line</mat-radio-button>
                 <mat-radio-button [value]="WktPrimitives.Polygon" color="primary">Polygon</mat-radio-button>
             </mat-radio-group>

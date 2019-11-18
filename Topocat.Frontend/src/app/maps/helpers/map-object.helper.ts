@@ -18,4 +18,10 @@ export class MapObjectHelper {
             wktString: undefined
         };
     }
+
+    static copy(mapObject: MapObjectModel): MapObjectModel {
+        return {
+            ...mapObject
+        };
+    }
 }

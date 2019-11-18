@@ -31,7 +31,7 @@
                 <span>Total objects: {{(totalObjects$ | async)?.length}}</span>
             </div>
         </div>
-        <button *ngIf="!(editing$ | async)"
+        <button *ngIf="!(editing$ | async) && !(adding$ | async)"
                 mat-fab
                 color="primary"
                 class="add-button"

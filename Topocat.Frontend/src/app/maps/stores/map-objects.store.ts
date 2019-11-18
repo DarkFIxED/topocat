@@ -12,7 +12,6 @@ export interface MapObjectsState extends EntityState<MapObjectModel> {
     drawing: {
         isEnabled: boolean,
         result: boolean,
-        initialState: string
     };
     editing: {
         mapObjectId: ID
@@ -26,7 +25,6 @@ function initialState(): Partial<MapObjectsState> {
         drawing: {
             isEnabled: false,
             result: false,
-            initialState: undefined
         },
         editing: {
             mapObjectId: undefined

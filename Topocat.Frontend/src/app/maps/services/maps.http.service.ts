@@ -24,4 +24,11 @@ export class MapsHttpService {
             wktString: data.wktString
         });
     }
+
+    createMapObject(mapId: string, data: MapObjectModel): Observable<ApiResponse<any>> {
+        return this.authHttpService.post<ApiResponse<any>>(`maps/${mapId}/objects`, {
+            title: data.title,
+            wktString: data.wktString
+        });
+    }
 }

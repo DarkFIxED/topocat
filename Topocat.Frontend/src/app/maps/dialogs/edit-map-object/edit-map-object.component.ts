@@ -4,6 +4,7 @@ import {MapObjectModel} from '../../models/map-object.model';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {MapService} from '../../services/map.service';
 import {DialogResult} from '../../../core/models/dialog-result';
+import {EditObjectTypesActions} from '../../models/edit-object-types-actions';
 
 @Component({
     selector: 'app-edit-map-object',
@@ -22,12 +23,12 @@ export class EditMapObjectComponent {
 
     data: MapObjectModel;
 
-    constructor(public dialogRef: MatDialogRef<EditMapObjectComponent, DialogResult<MapObjectModel>>,
+    constructor(public dialogRef: MatDialogRef<EditMapObjectComponent, DialogResult<{action: EditObjectTypesActions, data: MapObjectModel}>>,
                 @Inject(MAT_DIALOG_DATA) data: any,
                 private mapService: MapService) {
 
         this.data = data as MapObjectModel;
-        this.mapObjectForm.setValue(data);
+        this.mapObjectForm.patchValue(data);
     }
 
     onNoClick() {
@@ -39,10 +40,10 @@ export class EditMapObjectComponent {
             return;
         }
 
-        this.dialogRef.close(DialogResult.Ok(this.mapObjectForm.value));
+        this.dialogRef.close(DialogResult.Ok({action: EditObjectTypesActions.Finished, data: this.mapObjectForm.value}));
     }
 
     onDrawClick() {
-        this.mapService.startDrawing(this.data.wktString);
+        this.dialogRef.close(DialogResult.Ok({action: EditObjectTypesActions.RedrawRequested, data: this.data}));
     }
 }

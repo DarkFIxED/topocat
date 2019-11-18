@@ -3,8 +3,6 @@ import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {WktPrimitives} from '../../models/wkt-primitives';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
 import {DialogResult} from '../../../core/models/dialog-result';
-import {MapObjectModel} from '../../models/map-object.model';
-import {MapService} from '../../services/map.service';
 
 @Component({
     selector: 'app-select-new-object-type',
@@ -21,6 +19,9 @@ export class SelectNewObjectTypeComponent implements OnInit {
 
     constructor(public dialogRef: MatDialogRef<SelectNewObjectTypeComponent, DialogResult<string>>,
                 @Inject(MAT_DIALOG_DATA) data: any) {
+        this.typeForm.patchValue({
+            type: WktPrimitives.Point
+        });
     }
 
     ngOnInit() {

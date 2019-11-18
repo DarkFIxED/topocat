@@ -21,6 +21,8 @@ export class ObjectsListComponent implements OnInit {
         map(id => !!id)
     );
 
+    adding$ = this.mapsQuery.select(state => state.adding);
+
     activeId$ = this.mapsQuery.selectActiveId();
 
     objects$ = combineLatest(this.search$, this.mapsQuery.selectAll())

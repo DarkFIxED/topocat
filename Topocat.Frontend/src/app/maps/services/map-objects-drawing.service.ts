@@ -10,6 +10,7 @@ import {MapRenderingService} from './map-rendering.service';
 import {UnifiedMapObject} from '../models/unified-map-object';
 import {Coordinates} from '../../core/models/coordinates';
 import {WktPrimitives} from '../models/wkt-primitives';
+import {MapObjectHelper} from '../helpers/map-object.helper';
 
 @Injectable()
 export class MapObjectsDrawingService {
@@ -20,8 +21,7 @@ export class MapObjectsDrawingService {
     constructor(private mapInstanceService: MapInstanceService,
                 private mapObjectsQuery: MapObjectsQuery,
                 private wktService: WktService,
-                private drawnObjectsStore: DrawnObjectsStore,
-                private mapRenderingService: MapRenderingService) {
+                private drawnObjectsStore: DrawnObjectsStore) {
         this.initialize();
     }
 
@@ -54,22 +54,27 @@ export class MapObjectsDrawingService {
             }
         });
 
-        if (!foundObject)
+        if (!foundObject) {
             throw new Error();
+        }
 
         const type = this.wktService.getWktType(mapObject.wktString);
         return foundObject.drag$.pipe(
             map(coords => this.mapWktString(type, coords)),
             map(wktString => {
-                return {
-                    id: mapObject.id,
-                    title: mapObject.title,
-                    createdAt: mapObject.createdAt,
-                    lastModifiedAt: mapObject.lastModifiedAt,
-                    wktString
-                };
+                return MapObjectHelper.copyWithAnotherWktString(mapObject, wktString);
             })
         );
+    }
+
+    stopChangeFigure(mapObject: MapObjectModel) {
+        this.drawnObjectsStore.drawnObjects.forEach(drawnObject => {
+            if (drawnObject.id === mapObject.id) {
+                drawnObject.disallowChange();
+            } else {
+                drawnObject.enable();
+            }
+        });
     }
 
     private mapWktString(type: string, coords: Coordinates | Coordinates[] | Coordinates[][]): string {
@@ -84,51 +89,108 @@ export class MapObjectsDrawingService {
 
             case WktPrimitives.Polygon:
                 const paths = coords as Coordinates[][];
-                return  this.wktService.getPolygon(paths);
+                return this.wktService.getPolygon(paths);
 
             default:
                 throw new Error();
         }
     }
 
-    drawFigure(mapObject: MapObjectModel): Promise<MapObjectModel> {
+    drawFigure(type: string, mapObject: MapObjectModel): Promise<MapObjectModel> {
         return new Promise<MapObjectModel>((resolve => {
             const drawingManager = this.drawingManager.getValue();
-            const objectType = this.wktService.getWktType(mapObject.wktString);
 
-            switch (objectType) {
+            switch (type) {
                 case WktPrimitives.Point:
-                    drawingManager.setOptions({
-                        drawingControl: false,
-                        drawingMode: google.maps.drawing.OverlayType.MARKER,
-                        map: this.mapInstance
-                    });
-
-                    const listener = drawingManager.addListener('markercomplete', (marker: google.maps.Marker) => {
-                        listener.remove();
-                        drawingManager.setMap(null);
-                        marker.setMap(null);
-
-                        const position = marker.getPosition();
-                        const wktString = this.wktService.getPoint(position.lat(), position.lng());
-
-                        resolve({
-                            id: mapObject.id,
-                            createdAt: mapObject.createdAt,
-                            lastModifiedAt: mapObject.lastModifiedAt,
-                            title: mapObject.title,
-                            wktString
-                        });
-                    });
+                    this.drawPoint(drawingManager, mapObject, resolve);
                     break;
 
-                case 'LineString':
-                    return mapObject;
+                case WktPrimitives.LineString:
+                    this.drawLineString(drawingManager, mapObject, resolve);
+                    break;
+
+                case WktPrimitives.Polygon:
+                    this.drawPolygon(drawingManager, mapObject, resolve);
+                    break;
 
                 default:
                     throw new Error();
-
             }
         }));
+    }
+
+    private drawPoint(drawingManager: google.maps.drawing.DrawingManager, mapObject: MapObjectModel, resolveFunc: (result?: any) => void) {
+        drawingManager.setOptions({
+            drawingControl: false,
+            drawingMode: google.maps.drawing.OverlayType.MARKER,
+            map: this.mapInstance
+        });
+
+        const listener = drawingManager.addListener('markercomplete', (marker: google.maps.Marker) => {
+            listener.remove();
+            drawingManager.setMap(null);
+            marker.setMap(null);
+
+            const position = marker.getPosition();
+            const wktString = this.wktService.getPoint(position.lat(), position.lng());
+
+            resolveFunc({
+                id: mapObject.id,
+                createdAt: mapObject.createdAt,
+                lastModifiedAt: mapObject.lastModifiedAt,
+                title: mapObject.title,
+                wktString
+            });
+        });
+    }
+
+    private drawLineString(drawingManager: google.maps.drawing.DrawingManager, mapObject: MapObjectModel, resolveFunc: (result?: any) => void) {
+        drawingManager.setOptions({
+            drawingControl: false,
+            drawingMode: google.maps.drawing.OverlayType.POLYLINE,
+            map: this.mapInstance
+        });
+
+        const listener = drawingManager.addListener('polylinecomplete', (polyline: google.maps.Polyline) => {
+            listener.remove();
+            drawingManager.setMap(null);
+            polyline.setMap(null);
+
+            const path = polyline.getPath().getArray().map(latLng => new Coordinates(latLng.lat(), latLng.lng()));
+            const wktString = this.wktService.getLineString(path);
+
+            resolveFunc({
+                id: mapObject.id,
+                createdAt: mapObject.createdAt,
+                lastModifiedAt: mapObject.lastModifiedAt,
+                title: mapObject.title,
+                wktString
+            });
+        });
+    }
+
+    private drawPolygon(drawingManager: google.maps.drawing.DrawingManager, mapObject: MapObjectModel, resolveFunc: (result?: any) => void) {
+        drawingManager.setOptions({
+            drawingControl: false,
+            drawingMode: google.maps.drawing.OverlayType.POLYGON,
+            map: this.mapInstance
+        });
+
+        const listener = drawingManager.addListener('polygoncomplete', (polygon: google.maps.Polygon) => {
+            listener.remove();
+            drawingManager.setMap(null);
+            polygon.setMap(null);
+
+            const paths = polygon.getPaths().getArray().map(path => path.getArray().map(latLng => new Coordinates(latLng.lat(), latLng.lng())));
+            const wktString = this.wktService.getPolygon(paths);
+
+            resolveFunc({
+                id: mapObject.id,
+                createdAt: mapObject.createdAt,
+                lastModifiedAt: mapObject.lastModifiedAt,
+                title: mapObject.title,
+                wktString
+            });
+        });
     }
 }
