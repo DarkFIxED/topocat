@@ -2,14 +2,16 @@ import {Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {AuthenticateHttpService} from '../../services/authenticate.http.service';
 import {CredentialsStore} from '../../stores/credentials.store';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
+import {map} from 'rxjs/operators';
+import {BaseDestroyable} from '../../services/base-destroyable';
 
 @Component({
     selector: 'app-login',
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.scss']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent extends BaseDestroyable implements OnInit {
 
     loginForm = new FormGroup({
         email: new FormControl(undefined, [Validators.required, Validators.email]),
@@ -20,10 +22,21 @@ export class LoginComponent implements OnInit {
 
     constructor(private authenticateHttpService: AuthenticateHttpService,
                 private credentialsStore: CredentialsStore,
-                private router: Router) {
+                private router: Router,
+                private route: ActivatedRoute) {
+        super();
     }
 
     ngOnInit() {
+        this.route.paramMap
+            .pipe(
+                map(() => window.history.state)
+            ).subscribe(state => {
+                const email = state.email;
+                if (!!email) {
+                   this.loginForm.patchValue({email});
+                }
+            });
     }
 
     onFormSubmit() {

@@ -1,26 +1,21 @@
 <div class="container">
-    <div class="d-flex restore-card-container">
-        <h5>Restore password</h5>
-        <mat-card class="restore-card">
+    <div class="d-flex sign-up-card-container">
+        <h5>Sign up to Topocat</h5>
+        <mat-card class="sign-up-card">
             <mat-card-content>
-                <div *ngIf="showSuccessMessage">
-                    Password successfully reset. You will be redirected to login page soon...
-                </div>
-                <div *ngIf="!showSuccessMessage">
-                    <form [formGroup]="restorePasswordForm">
-                        <input formControlName="token"  type="hidden">
+                <div>
+                    <form [formGroup]="signUpForm">
                         <mat-form-field class="w-100">
                             <input matInput
                                    cdkFocusInitial
                                    tabindex="1"
                                    required
                                    formControlName="email"
-                                   placeholder="Email"
-                            readonly="true">
-                            <mat-error *ngIf="restorePasswordForm.controls['email'].hasError('email')">
+                                   placeholder="Email">
+                            <mat-error *ngIf="signUpForm.controls['email'].hasError('email')">
                                 Email address is incorrect
                             </mat-error>
-                            <mat-error *ngIf="restorePasswordForm.controls['email'].hasError('required')">
+                            <mat-error *ngIf="signUpForm.controls['email'].hasError('required')">
                                 Please enter email address
                             </mat-error>
                         </mat-form-field>
@@ -31,46 +26,46 @@
                                    type="password"
                                    formControlName="password"
                                    placeholder="Password">
-                            <mat-error *ngIf="restorePasswordForm.controls['password'].hasError('required')">
+                            <mat-error *ngIf="signUpForm.controls['password'].hasError('required')">
                                 Please enter password
                             </mat-error>
                         </mat-form-field>
                         <mat-form-field class="w-100">
                             <input matInput
-                                   tabindex="3"
+                                   tabindex="2"
                                    required
                                    type="password"
                                    formControlName="repeatPassword"
-                                   placeholder="Repeat password">
-                            <mat-error *ngIf="restorePasswordForm.controls['repeatPassword'].hasError('required')">
+                                   placeholder="Password confirmation">
+                            <mat-error *ngIf="signUpForm.controls['repeatPassword'].hasError('required')">
                                 Please enter password confirmation
                             </mat-error>
                         </mat-form-field>
 
-                        <mat-error *ngIf="restorePasswordForm.hasError('passwordsMismatch')">
+                        <mat-error *ngIf="signUpForm.hasError('passwordsMismatch')">
                             Passwords mismatch
                         </mat-error>
-                        <mat-error *ngIf="restorePasswordForm.hasError('server')">
-                            {{restorePasswordForm.errors['server']}}
+                        <mat-error *ngIf="signUpForm.hasError('server')">
+                            {{signUpForm.errors['server']}}
                         </mat-error>
 
                         <div class="w-100">
                             <button mat-stroked-button
-                                    tabindex="5"
+                                    tabindex="4"
                                     type="button"
                                     class="float-left mr-auto"
-                                    routerLink="/">
-                                Cancel
+                                    routerLink="/login">
+                                Go to login
                             </button>
 
                             <button color="primary"
-                                    tabindex="4"
+                                    tabindex="3"
                                     type="submit"
                                     [disabled]="loading"
                                     class="float-right ml-auto"
                                     mat-raised-button
                                     (click)="onFormSubmit()">
-                                Login
+                                Sign Up
                             </button>
                         </div>
                     </form>

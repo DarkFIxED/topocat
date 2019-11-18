@@ -11,6 +11,7 @@ import {DomSanitizer} from '@angular/platform-browser';
 import { IndexComponent } from './components/index/index.component';
 import { RestorePasswordComponent } from './components/restore-password/restore-password.component';
 import { ConfirmationComponent } from './dialogs/confirmation/confirmation.component';
+import { SignUpComponent } from './components/sign-up/sign-up.component';
 
 @NgModule({
     declarations: [
@@ -19,7 +20,8 @@ import { ConfirmationComponent } from './dialogs/confirmation/confirmation.compo
         ForgotPasswordComponent,
         IndexComponent,
         RestorePasswordComponent,
-        ConfirmationComponent
+        ConfirmationComponent,
+        SignUpComponent
     ],
     imports: [
         CommonModule,

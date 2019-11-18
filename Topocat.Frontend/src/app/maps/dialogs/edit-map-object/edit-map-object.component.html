@@ -10,7 +10,7 @@
         <input type="hidden" formControlName="wktString">
         <div class="d-flex align-items-center">
             <mat-form-field class="w-100">
-                <input matInput formControlName="title" placeholder="Title" tabindex="1" cdkFocusInitial>
+                <input matInput formControlName="title" placeholder="Title" tabindex="1" cdkFocusInitial required>
                 <mat-error *ngIf="mapObjectForm.controls['title'].hasError('required')">
                     Please enter title
                 </mat-error>

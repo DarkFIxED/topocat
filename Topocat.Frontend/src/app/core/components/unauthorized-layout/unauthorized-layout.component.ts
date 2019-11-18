@@ -17,4 +17,8 @@ export class UnauthorizedLayoutComponent implements OnInit {
     goToLogin() {
         this.router.navigateByUrl('/login');
     }
+
+    goToSignUp() {
+        this.router.navigateByUrl('/sign-up');
+    }
 }

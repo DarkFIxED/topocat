@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {AuthenticateHttpService} from '../../services/authenticate.http.service';
+import {CheckPasswordsValidator} from '../../validators/check-passwords.validator';
 
 @Component({
     selector: 'app-restore-password',
@@ -20,18 +21,11 @@ export class RestorePasswordComponent implements OnInit {
         email: new FormControl(undefined, [Validators.email, Validators.required]),
         password: new FormControl(undefined, [Validators.required]),
         repeatPassword: new FormControl(undefined, [Validators.required])
-    }, [this.checkPasswords]);
+    }, [CheckPasswordsValidator.checkPasswords]);
 
     loading = false;
 
     showSuccessMessage = false;
-
-    checkPasswords(group: FormGroup) {
-        const pass = group.get('password').value;
-        const confirmPass = group.get('repeatPassword').value;
-
-        return pass === confirmPass ? null : {passwordsMismatch: true};
-    }
 
     ngOnInit() {
         this.route.queryParams.subscribe(params => {

@@ -6,6 +6,7 @@ import {LoginComponent} from './core/components/login/login.component';
 import {ForgotPasswordComponent} from './core/components/forgot-password/forgot-password.component';
 import {IndexComponent} from './core/components/index/index.component';
 import {RestorePasswordComponent} from './core/components/restore-password/restore-password.component';
+import {SignUpComponent} from './core/components/sign-up/sign-up.component';
 
 
 const routes: Routes = [
@@ -16,6 +17,10 @@ const routes: Routes = [
             {
                 path: 'login',
                 component: LoginComponent
+            },
+            {
+                path: 'sign-up',
+                component: SignUpComponent
             },
             {
                 path: 'forgot-password',

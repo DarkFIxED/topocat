@@ -45,7 +45,12 @@ namespace Topocat.API
                 builder.UseSqlServer(AppConfiguration.GetConnectionString("Database"), x => x.UseNetTopologySuite());
             });
 
-            services.AddIdentity<User, Role>()
+            services.AddIdentity<User, Role>(options =>
+                {
+                    options.Password.RequiredLength = 6;
+                    options.Password.RequireNonAlphanumeric = false;
+                    options.Password.RequireDigit = false;
+                })
                 .AddEntityFrameworkStores<TopocatContext>()
                 .AddDefaultTokenProviders();
 
