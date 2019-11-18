@@ -1,0 +1,33 @@
+<mat-toolbar color="primary">
+    <div class="d-flex w-100">
+        <button mat-button
+                class="menu-button mr-2"
+                (click)="drawer.toggle()">
+            <mat-icon *ngIf="drawer.opened">keyboard_backspace</mat-icon>
+            <mat-icon *ngIf="!drawer.opened">menu</mat-icon>
+        </button>
+
+        <span>Topocat</span>
+        <button class="mr-auto" mat-button>About</button>
+        <button class="float-right" mat-button (click)="logout()">Logout</button>
+    </div>
+</mat-toolbar>
+
+<mat-drawer-container class="layout" autosize>
+    <mat-drawer #drawer class="sidenav" mode="side">
+        <div class="sidenav-container p-2">
+            <div class="d-table w-100">
+                <div class="sidenav-row">
+                    <button mat-button color="primary" routerLink="/maps-list" routerLinkActive="active">Maps list</button>
+                </div>
+            </div>
+        </div>
+    </mat-drawer>
+
+    <div class="sidenav-content">
+        <div class="outlet-container h-100">
+            <router-outlet></router-outlet>
+        </div>
+    </div>
+
+</mat-drawer-container>

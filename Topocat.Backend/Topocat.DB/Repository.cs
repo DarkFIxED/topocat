@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Topocat.Common;
 using Topocat.Common.DomainEventsDispatcher;
+using Topocat.Domain.DomainEvents;
 
 namespace Topocat.DB
 {
@@ -40,7 +41,13 @@ namespace Topocat.DB
 
         public async Task<int> SaveAsync()
         {
-            var domainEvents = _context.GetDomainEvents();
+            var domainEvents = _context.GetDomainEvents().ToList();
+
+            var entityRemovedEvents = domainEvents.OfType<EntityRemoved>().ToList();
+            foreach (var removed in entityRemovedEvents)
+            {
+                Delete(removed.Entity);
+            }
 
             var result = await _context.SaveChangesAsync();
 

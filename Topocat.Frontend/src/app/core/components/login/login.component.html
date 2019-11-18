@@ -1,0 +1,63 @@
+<div class="container">
+    <div class="d-flex login-card-container">
+        <h5>Sign in to Topocat</h5>
+        <mat-card class="login-card">
+            <mat-card-content>
+                <div>
+                    <form [formGroup]="loginForm">
+                        <mat-form-field class="w-100">
+                            <input matInput
+                                   cdkFocusInitial
+                                   tabindex="1"
+                                   required
+                                   formControlName="email"
+                                   placeholder="Email">
+                            <mat-error *ngIf="loginForm.controls['email'].hasError('email')">
+                                Email address is incorrect
+                            </mat-error>
+                            <mat-error *ngIf="loginForm.controls['email'].hasError('required')">
+                                Please enter email address
+                            </mat-error>
+                        </mat-form-field>
+                        <mat-form-field class="w-100">
+                            <input matInput
+                                   tabindex="2"
+                                   required
+                                   type="password"
+                                   formControlName="password"
+                                   placeholder="Password">
+                            <mat-error *ngIf="loginForm.controls['password'].hasError('required')">
+                                Please enter password
+                            </mat-error>
+                        </mat-form-field>
+
+                        <mat-error *ngIf="loginForm.hasError('server')">
+                            {{loginForm.errors['server']}}
+                        </mat-error>
+
+                        <div class="w-100">
+                            <button mat-stroked-button
+                                    tabindex="4"
+                                    type="button"
+                                    class="float-left mr-auto"
+                                    routerLink="/forgot-password">
+                                Forgot password?
+                            </button>
+
+                            <button color="primary"
+                                    tabindex="3"
+                                    type="submit"
+                                    [disabled]="loading"
+                                    class="float-right ml-auto"
+                                    mat-raised-button
+                                    (click)="onFormSubmit()">
+                                Login
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </mat-card-content>
+        </mat-card>
+    </div>
+</div>
+

@@ -1,0 +1,23 @@
+<div class="d-flex h-100 w-100 lh-40px">
+    <div class="p-0 icon-wrapper">
+        <span class="mdi mdi-24px"
+                [class.mdi-map-marker-outline]="type === WktPrimitives.Point"
+                [class.mdi-vector-polyline]="type === WktPrimitives.LineString"
+                [class.mdi-vector-polygon]="type === WktPrimitives.Polygon">
+        </span>
+    </div>
+
+    <div class="p-0 mr-auto title">
+        <span [title]="object.title">{{object.title}}</span>
+    </div>
+
+    <div class="p-0 visible-on-hover float-right d-flex">
+        <div mat-ripple class="p-0 icon-wrapper cursor-pointer" (click)="onCenterClick()">
+            <span class="mdi mdi-24px mdi-crosshairs-gps"></span>
+        </div>
+
+        <div mat-ripple class="p-0 icon-wrapper cursor-pointer" (click)="onEditClick()">
+            <span class="mdi mdi-24px mdi-pencil-outline"></span>
+        </div>
+    </div>
+</div>

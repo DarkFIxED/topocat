@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using JetBrains.Annotations;
 using NetTopologySuite.Geometries;
 using Topocat.Common;
+using Topocat.Domain.DomainEvents;
 using Topocat.Domain.Entities.Map.Events;
 
 namespace Topocat.Domain.Entities.Map
@@ -47,6 +48,12 @@ namespace Topocat.Domain.Entities.Map
 
             if (!HasEventsOfType<MapObjectAdded>())
                 AddOrReplaceEvent(new MapObjectUpdated(this));
+        }
+
+        public void MarkAsRemoved()
+        {
+            if (!HasEventsOfType<EntityRemoved>())
+                AddOrReplaceEvent(new EntityRemoved(this));
         }
     }
 }

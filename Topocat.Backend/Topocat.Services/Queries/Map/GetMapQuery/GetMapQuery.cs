@@ -19,7 +19,6 @@ namespace Topocat.Services.Queries.Map.GetMapQuery
         public async Task<GetMapQueryResult> Ask(GetMapQueryArgs args)
         {
             var result = await _repository.AsQueryable<Domain.Entities.Map.Map>()
-                .AsNoTracking()
                 .WithId(args.MapId)
                 .WithAccessOf(args.ActionExecutorId)
                 .ToMapModels()

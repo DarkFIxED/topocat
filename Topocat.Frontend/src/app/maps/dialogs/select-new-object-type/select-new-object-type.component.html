@@ -1,0 +1,34 @@
+<div mat-dialog-title class="d-flex">
+    <h5 class="mr-auto">New object</h5>
+</div>
+<div mat-dialog-content>
+    <form [formGroup]="typeForm">
+        <div class="grid">
+            <label id="type-label">Select new object type:</label>
+            <mat-radio-group aria-labelledby="type-label"
+                             class="example-radio-group grid p-2"
+                             tabindex="1"
+                             formControlName="type">
+                <mat-radio-button [value]="WktPrimitives.Point" color="primary" cdkFocusInitial>Point</mat-radio-button>
+                <mat-radio-button [value]="WktPrimitives.LineString" color="primary">Line</mat-radio-button>
+                <mat-radio-button [value]="WktPrimitives.Polygon" color="primary">Polygon</mat-radio-button>
+            </mat-radio-group>
+        </div>
+        <div class="d-flex w-100 pb-1">
+            <button class="float-left mr-auto"
+                    type="button"
+                    mat-raised-button
+                    (click)="onCancelClick()"
+                    tabindex="3">Cancel
+            </button>
+            <button class="float-right"
+                    type="submit"
+                    mat-raised-button
+                    color="primary"
+                    tabindex="2"
+                    cdkFocusInitial
+                    (click)="onOkClick()">Ok
+            </button>
+        </div>
+    </form>
+</div>

@@ -12,6 +12,6 @@ namespace Topocat.Services.Models
 
         public DateTimeOffset LastModifiedAt { get; set; }
 
-        public string GeoJson { get; set; }
+        public string WktString { get; set; }
     }
 }

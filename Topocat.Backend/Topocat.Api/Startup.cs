@@ -18,6 +18,7 @@ using Topocat.Domain.Entities.Users;
 using Topocat.Services.Hubs;
 using Topocat.Services.Models;
 using Topocat.Services.Services;
+using Topocat.Services.Services.Background;
 
 namespace Topocat.API
 {
@@ -37,12 +38,19 @@ namespace Topocat.API
             services.AddControllers()
                 .AddNewtonsoftJson();
 
+            services.AddCors();
+
             services.AddDbContext<TopocatContext>(builder =>
             {
                 builder.UseSqlServer(AppConfiguration.GetConnectionString("Database"), x => x.UseNetTopologySuite());
             });
 
-            services.AddIdentity<User, Role>()
+            services.AddIdentity<User, Role>(options =>
+                {
+                    options.Password.RequiredLength = 6;
+                    options.Password.RequireNonAlphanumeric = false;
+                    options.Password.RequireDigit = false;
+                })
                 .AddEntityFrameworkStores<TopocatContext>()
                 .AddDefaultTokenProviders();
 
@@ -114,7 +122,11 @@ namespace Topocat.API
 
             services.Configure<JWTOptions>(AppConfiguration.GetSection("JWTOptions"));
             services.Configure<SendGridOptions>(AppConfiguration.GetSection("SendGridOptions"));
+            services.Configure<FrontendUrls>(AppConfiguration.GetSection("FrontendUrls"));
+
             services.AddSingleton(tokenValidationParams);
+            services.AddHostedService<QueuedHostedService>();
+            services.AddSingleton<IBackgroundTaskQueue, BackgroundTaskQueue>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -126,6 +138,15 @@ namespace Topocat.API
             }
 
             app.ConfigureExceptionHandler();
+
+            var frontendUrls = AppConfiguration.GetSection("FrontendUrls").Get<FrontendUrls>();
+
+            app.UseCors(builder => builder
+                .WithOrigins(frontendUrls.BaseUrl)
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials()
+            );
 
             app.UseHttpsRedirection();
             app.UseRouting();

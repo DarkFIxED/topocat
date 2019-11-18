@@ -1,0 +1,43 @@
+<div mat-dialog-title class="d-flex">
+    <h5 class="mr-auto">New object</h5>
+    <button mat-button class="float-right" (click)="onDrawClick()">
+        <span class="mdi mdi-24px mdi-draw"></span>
+    </button>
+</div>
+<div mat-dialog-content>
+    <form [formGroup]="mapObjectForm">
+        <input type="hidden" formControlName="id">
+        <input type="hidden" formControlName="wktString">
+        <div class="d-flex align-items-center">
+            <mat-form-field class="w-100">
+                <input matInput formControlName="title" placeholder="Title" tabindex="1" cdkFocusInitial required>
+                <mat-error *ngIf="mapObjectForm.controls['title'].hasError('required')">
+                    Please enter title
+                </mat-error>
+            </mat-form-field>
+        </div>
+        <div class="d-flex w-100 pb-1">
+            <button class="float-left mr-3"
+                    type="button"
+                    mat-raised-button
+                    (click)="onNoClick()"
+                    tabindex="3">Cancel
+            </button>
+            <button *ngIf="!data.isNewObject"
+                    class="float-left mr-auto"
+                    type="button"
+                    mat-raised-button
+                    color="warn"
+                    (click)="onDeleteClick()"
+                    tabindex="3">Delete
+            </button>
+            <button class="float-right"
+                    type="submit"
+                    mat-raised-button
+                    color="primary"
+                    tabindex="2"
+                    (click)="onOkClick()">Ok
+            </button>
+        </div>
+    </form>
+</div>

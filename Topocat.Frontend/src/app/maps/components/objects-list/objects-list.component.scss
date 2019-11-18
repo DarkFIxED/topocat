@@ -1,0 +1,47 @@
+.objects-list-card {
+    position: absolute;
+    top: 30px;
+    left: 30px;
+    min-height: calc(100vh - 124px);
+}
+
+.objects-list {
+    max-height: calc(100vh - 254px);
+    overflow: auto;
+    min-width: 350px;
+    width: 350px;
+}
+
+.list-item {
+    height: 40px !important;
+    width: 100%;
+}
+
+::ng-deep {
+    .mat-list-item-content {
+        padding: 0 !important;
+    }
+}
+
+app-objects-list-item.active {
+    background-color: #EEE;
+}
+
+mat-card-footer {
+    min-height: 64px;
+    max-height: 64px;
+    position: absolute;
+    bottom: 0;
+}
+
+.footer-content{
+    vertical-align: middle;
+    height: 64px;
+}
+
+.add-button {
+    right: 4px;
+    bottom: 4px;
+    display: block;
+    position: absolute;
+}

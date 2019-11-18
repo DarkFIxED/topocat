@@ -6,6 +6,7 @@ using Topocat.Common;
 using Topocat.DB;
 using Topocat.Domain.Entities.Map;
 using Topocat.Domain.Entities.Users;
+using Topocat.Services.Emails;
 using Topocat.Services.Exceptions;
 using Topocat.Services.QueryExtensions;
 using Topocat.Services.Services;
@@ -18,12 +19,14 @@ namespace Topocat.Services.Commands.Maps.Invite
         private readonly IRepository _repository;
         private readonly UserManager<User> _userManager;
         private readonly IEmailService _emailService;
+        private readonly EmailMessageFactory _emailMessageFactory;
 
-        public InviteUserCommand(IRepository repository, UserManager<User> userManager, IEmailService emailService)
+        public InviteUserCommand(IRepository repository, UserManager<User> userManager, IEmailService emailService, EmailMessageFactory emailMessageFactory)
         {
             _repository = repository;
             _userManager = userManager;
             _emailService = emailService;
+            _emailMessageFactory = emailMessageFactory;
         }
 
         public async Task Execute(InviteUserCommandArgs args)
@@ -56,9 +59,16 @@ namespace Topocat.Services.Commands.Maps.Invite
 
             await _repository.SaveAsync();
 
-            // TODO: create emails factory
             if (notificationSettings.NotifyAboutNewInvites)
-                _emailService.SendEmail(null);
+            {
+                var emailArgs = new MapInviteEmailTemplateArgs
+                {
+                    Address = invitedUser.Email
+                };
+
+                var message = _emailMessageFactory.Get<MapInviteEmailTemplate, MapInviteEmailTemplateArgs>(emailArgs);
+                _emailService.SendEmail(message);
+            }
         }
     }
 }

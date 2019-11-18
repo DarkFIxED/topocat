@@ -4,7 +4,7 @@ using Topocat.Services.Models;
 
 namespace Topocat.Services.Services
 {
-    [RegisterScoped(typeof(IEmailService))]
+    //[RegisterScoped(typeof(IEmailService))]
     public class FakeEmailService : IEmailService
     {
         private readonly ILogger<FakeEmailService> _logger;

@@ -8,7 +8,7 @@ using Topocat.Services.Models;
 namespace Topocat.Services.Services
 {
     //TODO: Uncomment when FakeEmailService will be gone.
-    //[RegisterScoped(typeof(IEmailService))]
+    [RegisterScoped(typeof(IEmailService))]
     public class EmailService : IEmailService
     {
         private readonly SendGridOptions _sendGridOptions;
