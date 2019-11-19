@@ -3,9 +3,6 @@ import * as WKT from 'terraformer-wkt-parser';
 import {Coordinates} from '../../core/models/coordinates';
 import {WktPrimitives} from '../models/wkt-primitives';
 import * as Terraformer from 'terraformer';
-import {Point} from '../models/point';
-import {Line} from '../models/line';
-import {Polygon} from '../models/polygon';
 
 @Injectable()
 export class WktService {

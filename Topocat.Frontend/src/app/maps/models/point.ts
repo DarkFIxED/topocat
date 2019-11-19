@@ -9,7 +9,7 @@ export class Point extends BaseUnifiedMapObject<google.maps.Marker> implements U
     constructor(id: ID, opts?: any) {
         super(id, opts);
 
-        this.underlyingObject.addListener('dragend', event => {
+        this.underlyingObject.addListener('dragend', () => {
             const position = this.underlyingObject.getPosition();
             const coordinates = new Coordinates(position.lat(), position.lng());
             this.drag.next(coordinates);
