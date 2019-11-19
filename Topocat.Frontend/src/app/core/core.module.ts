@@ -13,6 +13,7 @@ import { RestorePasswordComponent } from './components/restore-password/restore-
 import { ConfirmationComponent } from './dialogs/confirmation/confirmation.component';
 import { SignUpComponent } from './components/sign-up/sign-up.component';
 import { LoaderComponent } from './components/loader/loader.component';
+import { AboutComponent } from './components/about/about.component';
 
 @NgModule({
     declarations: [
@@ -23,7 +24,8 @@ import { LoaderComponent } from './components/loader/loader.component';
         RestorePasswordComponent,
         ConfirmationComponent,
         SignUpComponent,
-        LoaderComponent
+        LoaderComponent,
+        AboutComponent
     ],
     imports: [
         CommonModule,
@@ -37,6 +39,9 @@ import { LoaderComponent } from './components/loader/loader.component';
         FormsModule,
         MatInputModule,
         MatDialogModule
+    ],
+    exports: [
+        LoaderComponent
     ],
     entryComponents: [
         ConfirmationComponent

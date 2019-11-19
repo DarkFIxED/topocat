@@ -10,8 +10,9 @@
             </mat-form-field>
         </div>
         <mat-divider [inset]="true"></mat-divider>
-        <mat-list class="objects-list p-0">
-            <mat-list-item *ngFor="let object of objects$ | async; last as last"
+        <app-loader *ngIf="loading$ | async"></app-loader>
+        <mat-list *ngIf="!(loading$ | async)" class="objects-list p-0">
+            <mat-list-item *ngFor="let object of objects$ | async"
                            class="list-item">
                 <app-objects-list-item class="h-100 w-100"
                                        [class.active]="(activeId$ | async) == object.id"
@@ -20,7 +21,7 @@
                 <mat-divider [inset]="true"></mat-divider>
             </mat-list-item>
         </mat-list>
-        <div *ngIf="(objects$ | async)?.length === 0" class="p-3">
+        <div *ngIf="!(loading$ | async) && (objects$ | async)?.length === 0" class="p-3">
             No items found...
         </div>
     </mat-card-content>

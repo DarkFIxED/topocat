@@ -73,4 +73,17 @@ export class MembershipListComponent implements OnInit {
                     throw new Error();
             });
     }
+
+    getStatusDescription(status: MapMembershipStatus) {
+        switch (status) {
+            case MapMembershipStatus.Accepted:
+                return 'Invite accepted';
+            case MapMembershipStatus.Declined:
+                return 'Invite declined';
+            case MapMembershipStatus.DecisionNotMade:
+                return 'Decision not made';
+            default :
+                throw new Error();
+        }
+    }
 }

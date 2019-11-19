@@ -1,5 +1,4 @@
 import {Component, OnInit} from '@angular/core';
-import {Router} from '@angular/router';
 
 @Component({
     selector: 'app-unauthorized-layout',
@@ -8,17 +7,9 @@ import {Router} from '@angular/router';
 })
 export class UnauthorizedLayoutComponent implements OnInit {
 
-    constructor(private router: Router) {
+    constructor() {
     }
 
     ngOnInit() {
-    }
-
-    goToLogin() {
-        this.router.navigateByUrl('/login');
-    }
-
-    goToSignUp() {
-        this.router.navigateByUrl('/sign-up');
     }
 }

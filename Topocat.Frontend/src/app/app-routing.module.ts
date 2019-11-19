@@ -7,6 +7,7 @@ import {ForgotPasswordComponent} from './core/components/forgot-password/forgot-
 import {IndexComponent} from './core/components/index/index.component';
 import {RestorePasswordComponent} from './core/components/restore-password/restore-password.component';
 import {SignUpComponent} from './core/components/sign-up/sign-up.component';
+import {AboutComponent} from './core/components/about/about.component';
 
 
 const routes: Routes = [
@@ -14,6 +15,10 @@ const routes: Routes = [
         path: '',
         component: UnauthorizedLayoutComponent,
         children: [
+            {
+                path: 'about',
+                component: AboutComponent
+            },
             {
                 path: 'login',
                 component: LoginComponent

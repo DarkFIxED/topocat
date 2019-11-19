@@ -18,8 +18,6 @@ export class IndexComponent implements OnInit {
     ngOnInit(): void {
         if (this.isAuthenticated()) {
             this.router.navigateByUrl('/maps-list');
-        } else {
-            this.router.navigateByUrl('/login');
         }
     }
 

@@ -38,6 +38,8 @@ export class ObjectsListComponent implements OnInit {
 
     totalObjects$ = this.mapsQuery.selectAll();
 
+    loading$ = this.mapsQuery.ui.select(state => state.loading);
+
     constructor(private mapsQuery: MapObjectsQuery,
                 private mapService: MapService) {
     }
