@@ -24,7 +24,7 @@ export abstract class BaseUnifiedMapObject<T extends google.maps.MVCObject> impl
 
     abstract dispose();
 
-    abstract update(object: MapObjectModel);
+    abstract update(object: MapObjectModel, newCoords: Coordinates | Coordinates[] | Coordinates[][]);
 
     abstract getInfoWindowPosition(): { lat: number; lng: number };
 

@@ -28,7 +28,10 @@ export class Polygon extends BaseUnifiedMapObject<google.maps.Polygon> implement
         this.underlyingObject.setMap(null);
     }
 
-    update(object: MapObjectModel) {
+    update(object: MapObjectModel, newCoords: Coordinates[][]) {
+        this.underlyingObject.setOptions({
+            paths: newCoords.map(path => path.map(coords => new google.maps.LatLng(coords.lat, coords.lng)))
+        });
     }
 
     protected createInstance(opts?: any): google.maps.Polygon {

@@ -2,6 +2,10 @@ import {Injectable} from '@angular/core';
 import * as WKT from 'terraformer-wkt-parser';
 import {Coordinates} from '../../core/models/coordinates';
 import {WktPrimitives} from '../models/wkt-primitives';
+import * as Terraformer from 'terraformer';
+import {Point} from '../models/point';
+import {Line} from '../models/line';
+import {Polygon} from '../models/polygon';
 
 @Injectable()
 export class WktService {
@@ -9,6 +13,27 @@ export class WktService {
         const primitive = WKT.parse(wktString);
 
         return primitive.type;
+    }
+
+    getWktCoords(wktString: string): Coordinates | Coordinates[] | Coordinates[][] {
+        const primitive = WKT.parse(wktString);
+
+        switch (primitive.type) {
+            case WktPrimitives.Point:
+                const point = primitive as Terraformer.Point;
+                return new Coordinates(point.coordinates[1], point.coordinates[0]);
+
+            case WktPrimitives.LineString:
+                const lineString = primitive as Terraformer.LineString;
+                return lineString.coordinates.map(coords => new Coordinates(coords[1], coords[0]));
+
+            case WktPrimitives.Polygon:
+                const polygon = primitive as Terraformer.Polygon;
+                return polygon.coordinates.map(path => path.map(coords => new Coordinates(coords[1], coords[0])));
+
+            default:
+                throw new Error();
+        }
     }
 
     getPoint(lat: number, lng: number): string {

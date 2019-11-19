@@ -11,6 +11,7 @@ import {MapInstanceService} from './map-instance.service';
 import {DrawnObjectsStore} from '../stores/drawn-objects.store';
 import {BaseDestroyable} from '../../core/services/base-destroyable';
 import {ID} from '@datorama/akita';
+import {WktService} from './wkt.service';
 
 @Injectable()
 export class MapRenderingService extends BaseDestroyable {
@@ -21,7 +22,8 @@ export class MapRenderingService extends BaseDestroyable {
                 private mapObjectsQuery: MapObjectsQuery,
                 private mapService: MapService,
                 private unifiedMapObjectsFactory: UnifiedMapObjectsFactory,
-                private mapInstanceService: MapInstanceService) {
+                private mapInstanceService: MapInstanceService,
+                private wktService: WktService) {
         super();
         this.initialize();
     }
@@ -75,7 +77,8 @@ export class MapRenderingService extends BaseDestroyable {
             throw new Error();
         }
 
-        foundObject.update(object);
+        const newCoords = this.wktService.getWktCoords(object.wktString);
+        foundObject.update(object, newCoords);
     }
 
     removeMany(ids: ID[]) {

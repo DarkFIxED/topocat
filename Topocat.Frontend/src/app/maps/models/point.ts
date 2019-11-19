@@ -21,8 +21,11 @@ export class Point extends BaseUnifiedMapObject<google.maps.Marker> implements U
         this.underlyingObject.setMap(null);
     }
 
-    update(object: MapObjectModel) {
-        this.underlyingObject.setTitle(object.title);
+    update(object: MapObjectModel, newCoords: Coordinates) {
+        this.underlyingObject.setOptions({
+            position: new google.maps.LatLng(newCoords.lat, newCoords.lng),
+            title: object.title
+        });
     }
 
     protected createInstance(opts?: any): google.maps.Marker {
