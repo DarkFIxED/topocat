@@ -30,7 +30,7 @@ export class EditMapObjectFlow extends BaseDestroyable implements DataFlow {
                 private mapService: MapService,
                 private mapsHttpService: MapsHttpService,
                 private mapsSignalRService: MapsSignalRService,
-                private newMapObjectsDrawer: MapObjectsDrawingService) {
+                private mapObjectsDrawingService: MapObjectsDrawingService) {
         super();
     }
 
@@ -170,7 +170,7 @@ export class EditMapObjectFlow extends BaseDestroyable implements DataFlow {
                 isConfirmed: false
             };
 
-            this.newMapObjectsDrawer.changeFigure(model.changed).pipe(
+            this.mapObjectsDrawingService.changeFigure(model.changed).pipe(
                 tap(newData => {
                     resultModel.changed = newData;
                 }),
@@ -181,7 +181,7 @@ export class EditMapObjectFlow extends BaseDestroyable implements DataFlow {
                 tap(isConfirmed => {
                     sub.unsubscribe();
                     resultModel.isConfirmed = isConfirmed;
-                    this.newMapObjectsDrawer.stopChangeFigure(resultModel.changed);
+                    this.mapObjectsDrawingService.stopChangeFigure(resultModel.changed);
                     resolve(resultModel);
                 })
             ).subscribe();

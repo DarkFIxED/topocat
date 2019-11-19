@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {filter, switchMap, tap} from 'rxjs/operators';
+import {filter, map, switchMap, tap} from 'rxjs/operators';
 import {EntityActions} from '@datorama/akita';
 import {combineLatest} from 'rxjs';
 import {BaseDestroyable} from '../../core/services/base-destroyable';
@@ -12,7 +12,7 @@ import {DataFlow} from '../../core/services/data.flow';
 export class ObjectsDrawingFlow extends BaseDestroyable implements DataFlow {
 
     private map$ = this.mapInstanceService.mapInstance$.pipe(
-        filter(map => !!map)
+        filter(mapInstance => !!mapInstance)
     );
 
     constructor(private mapInstanceService: MapInstanceService,
@@ -31,7 +31,7 @@ export class ObjectsDrawingFlow extends BaseDestroyable implements DataFlow {
     private drawAddedObjects() {
         const addedEntities$ = this.mapObjectsQuery.selectEntityAction(EntityActions.Add)
             .pipe(
-                switchMap(ids => this.mapObjectsQuery.selectMany(ids))
+                map(ids => this.mapObjectsQuery.getAll().filter(model => ids.some(id => id === model.id)))
             );
 
         combineLatest(this.map$, addedEntities$)
@@ -44,7 +44,7 @@ export class ObjectsDrawingFlow extends BaseDestroyable implements DataFlow {
     private redrawUpdatedObjects() {
         const updatedEntities$ = this.mapObjectsQuery.selectEntityAction(EntityActions.Update)
             .pipe(
-                switchMap(ids => this.mapObjectsQuery.selectMany(ids))
+                map(ids => this.mapObjectsQuery.getAll().filter(model => ids.some(id => id === model.id)))
             );
 
         combineLatest(this.map$, updatedEntities$)

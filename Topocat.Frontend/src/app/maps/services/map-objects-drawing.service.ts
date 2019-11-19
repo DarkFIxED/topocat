@@ -6,7 +6,6 @@ import {MapObjectsQuery} from '../queries/map-objects.query';
 import {MapObjectModel} from '../models/map-object.model';
 import {WktService} from './wkt.service';
 import {DrawnObjectsStore} from '../stores/drawn-objects.store';
-import {MapRenderingService} from './map-rendering.service';
 import {UnifiedMapObject} from '../models/unified-map-object';
 import {Coordinates} from '../../core/models/coordinates';
 import {WktPrimitives} from '../models/wkt-primitives';
