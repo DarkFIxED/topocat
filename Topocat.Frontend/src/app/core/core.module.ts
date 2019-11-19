@@ -12,6 +12,7 @@ import { IndexComponent } from './components/index/index.component';
 import { RestorePasswordComponent } from './components/restore-password/restore-password.component';
 import { ConfirmationComponent } from './dialogs/confirmation/confirmation.component';
 import { SignUpComponent } from './components/sign-up/sign-up.component';
+import { LoaderComponent } from './components/loader/loader.component';
 
 @NgModule({
     declarations: [
@@ -21,7 +22,8 @@ import { SignUpComponent } from './components/sign-up/sign-up.component';
         IndexComponent,
         RestorePasswordComponent,
         ConfirmationComponent,
-        SignUpComponent
+        SignUpComponent,
+        LoaderComponent
     ],
     imports: [
         CommonModule,

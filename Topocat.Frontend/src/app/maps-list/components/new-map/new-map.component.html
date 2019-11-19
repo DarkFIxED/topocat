@@ -2,7 +2,7 @@
 <div mat-dialog-content>
     <form [formGroup]="newMapForm">
         <mat-form-field class="w-100">
-            <input matInput formControlName="title" placeholder="Title" tabindex="1">
+            <input matInput formControlName="title" placeholder="Title" tabindex="1" cdkFocusInitial>
             <mat-error *ngIf="newMapForm.controls['title'].hasError('required')">
                 Please enter title
             </mat-error>

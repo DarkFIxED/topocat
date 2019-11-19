@@ -4,3 +4,10 @@
     display: block;
     position: absolute;
 }
+
+.line {
+    span {
+        vertical-align: middle;
+        line-height: 36px;
+    }
+}

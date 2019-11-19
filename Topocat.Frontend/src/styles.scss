@@ -13,7 +13,7 @@ textarea:focus {
     outline: none;
 }
 
-@for $i from 1 through 40{
+@for $i from 1 through 64{
     .lh-#{$i}px {
         line-height: #{$i}px;
     }

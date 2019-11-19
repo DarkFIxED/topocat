@@ -4,3 +4,11 @@
     display: block;
     position: absolute;
 }
+
+.mat-card-content {
+    max-height: calc(100vh - 130px);
+}
+
+.management-button {
+    height: 36px;
+}
