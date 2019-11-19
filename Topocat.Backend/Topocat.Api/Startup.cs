@@ -164,6 +164,11 @@ namespace Topocat.API
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Test API V1");
             });
+
+            app.UseRobotsTxt(builder =>
+                builder
+                    .DenyAll()
+            );
         }
     }
 }
