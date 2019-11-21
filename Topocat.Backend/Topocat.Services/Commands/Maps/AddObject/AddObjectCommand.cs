@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using NetTopologySuite.Geometries;
 using Topocat.Common;
 using Topocat.DB;
 using Topocat.Domain.Entities.Map;
@@ -45,15 +46,15 @@ namespace Topocat.Services.Commands.Maps.AddObject
 
             var geometry = _geometryConverter.FromWktString(args.WktString);
 
-            var newPoint = new MapObject(map, args.Title, geometry);
-            map.Add(newPoint);
+            var mapObject = new MapObject(map, args.Title, geometry);
+            map.Add(mapObject);
 
             _repository.Update(map);
             await _repository.SaveAsync();
 
             return new AddObjectCommandResult
             {
-                ObjectId = newPoint.Id
+                ObjectId = mapObject.Id
             };
         }
     }
