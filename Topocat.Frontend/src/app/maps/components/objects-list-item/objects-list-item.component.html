@@ -1,9 +1,9 @@
-<div class="d-flex h-100 w-100 lh-40px">
+<div class="d-flex h-100 w-100 lh-40px visible-on-hover cursor-pointer" (click)="center()">
     <div class="p-0 icon-wrapper">
         <span class="mdi mdi-24px"
-                [class.mdi-map-marker-outline]="type === WktPrimitives.Point"
-                [class.mdi-vector-polyline]="type === WktPrimitives.LineString"
-                [class.mdi-vector-polygon]="type === WktPrimitives.Polygon">
+              [class.mdi-map-marker-outline]="type === WktPrimitives.Point"
+              [class.mdi-vector-polyline]="type === WktPrimitives.LineString"
+              [class.mdi-vector-polygon]="type === WktPrimitives.Polygon">
         </span>
     </div>
 
@@ -11,12 +11,18 @@
         <span [title]="object.title">{{object.title}}</span>
     </div>
 
-    <div class="p-0 visible-on-hover float-right d-flex">
-        <div mat-ripple class="p-0 icon-wrapper cursor-pointer" (click)="onCenterClick()">
-            <span class="mdi mdi-24px mdi-crosshairs-gps"></span>
+    <div class="p-0 toggle-visibility float-right d-flex">
+        <div mat-ripple
+             class="p-0 icon-wrapper cursor-pointer"
+             (click)="openInfoWindow($event)"
+             title="Show info">
+            <span class="mdi mdi-24px mdi-tooltip-text-outline"></span>
         </div>
 
-        <div mat-ripple class="p-0 icon-wrapper cursor-pointer" (click)="onEditClick()">
+        <div mat-ripple
+             class="p-0 icon-wrapper cursor-pointer"
+             (click)="onEditClick($event)"
+             title="Edit object">
             <span class="mdi mdi-24px mdi-pencil-outline"></span>
         </div>
     </div>
