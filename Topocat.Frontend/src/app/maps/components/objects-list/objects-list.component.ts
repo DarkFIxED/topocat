@@ -32,7 +32,7 @@ export class ObjectsListComponent implements OnInit {
                     return results[1];
                 }
 
-                return results[1].filter(object => object.title.toLowerCase().startsWith(results[0].toLowerCase()));
+                return results[1].filter(object => object.title.toLowerCase().includes(results[0].toLowerCase()));
             })
         );
 
