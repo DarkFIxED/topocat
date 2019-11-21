@@ -70,7 +70,7 @@ namespace Topocat.Domain.Entities.Map
             LastModifiedAt = DateTimeOffset.UtcNow;
         }
 
-        public void Invite(User actionExecutor, User invitedUser)
+        public MapMembership Invite(User actionExecutor, User invitedUser)
         {
             if (actionExecutor.Id != CreatedById)
                 throw new DomainException("Only creator can invite members");
@@ -80,6 +80,9 @@ namespace Topocat.Domain.Entities.Map
 
             var membership = new MapMembership(actionExecutor, this, invitedUser);
             Memberships.Add(membership);
+
+
+            return membership;
         }
 
         public void Delete(User actionExecutor, MapObject mapObject)

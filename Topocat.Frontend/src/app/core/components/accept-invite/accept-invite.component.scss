@@ -1,0 +1,20 @@
+.container {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.invite-card {
+    width: 450px;
+    margin: 10px auto;
+}
+
+.invite-card-container {
+    flex-direction: column;
+    margin-bottom: 30vh;
+}
+
+.grid {
+    display: grid;
+}

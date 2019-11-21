@@ -2,7 +2,7 @@
 {
     public class SetInviteDecisionCommandArgs
     {
-        public string ActionExecutorId { get; set; }
+        public string InviteId { get; set; }
 
         public string MapId { get; set; }
 

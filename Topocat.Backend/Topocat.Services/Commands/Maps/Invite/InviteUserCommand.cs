@@ -53,7 +53,7 @@ namespace Topocat.Services.Commands.Maps.Invite
                 .Where(x => x.UserId == invitedUser.Id)
                 .FirstAsync();
 
-            map.Invite(actionExecutor, invitedUser);
+            var newMembership = map.Invite(actionExecutor, invitedUser);
 
             _repository.Update(map);
 
@@ -63,7 +63,9 @@ namespace Topocat.Services.Commands.Maps.Invite
             {
                 var emailArgs = new MapInviteEmailTemplateArgs
                 {
-                    Address = invitedUser.Email
+                    Address = invitedUser.Email,
+                    MapId = map.Id,
+                    InviteId = newMembership.Id
                 };
 
                 var message = _emailMessageFactory.Get<MapInviteEmailTemplate, MapInviteEmailTemplateArgs>(emailArgs);

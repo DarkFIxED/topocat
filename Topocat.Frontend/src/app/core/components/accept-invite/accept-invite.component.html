@@ -1,0 +1,41 @@
+<div class="container">
+    <div class="d-flex invite-card-container">
+        <h5>New invitation</h5>
+        <mat-card class="invite-card">
+            <mat-card-content>
+                <div *ngIf="showSuccessMessage">
+                    <span>Thank you! You will be redirected to main page soon...</span>
+                </div>
+                <div *ngIf="!showSuccessMessage">
+                    <form [formGroup]="acceptInviteForm">
+                        <div class="grid">
+                            <mat-radio-group aria-labelledby="type-label"
+                                             class="example-radio-group grid p-2"
+                                             tabindex="1"
+                                             formControlName="accept">
+                                <mat-radio-button [value]="true" color="primary" cdkFocusInitial>Accept
+                                </mat-radio-button>
+                                <mat-radio-button [value]="false" color="primary">Decline</mat-radio-button>
+                            </mat-radio-group>
+                            <mat-error *ngIf="acceptInviteForm.controls['accept'].hasError('required')">
+                                Please select decision
+                            </mat-error>
+                        </div>
+                        <div>
+                            <button color="primary"
+                                    tabindex="3"
+                                    type="submit"
+                                    [disabled]="loading"
+                                    class="float-right ml-auto"
+                                    mat-raised-button
+                                    (click)="onFormSubmit()">
+                                Decide
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </mat-card-content>
+        </mat-card>
+    </div>
+</div>
+

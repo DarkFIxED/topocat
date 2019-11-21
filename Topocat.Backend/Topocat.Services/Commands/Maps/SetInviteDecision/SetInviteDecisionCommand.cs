@@ -26,11 +26,6 @@ namespace Topocat.Services.Commands.Maps.SetInviteDecision
 
         public async Task Execute(SetInviteDecisionCommandArgs args)
         {
-            var actionExecutor = await _userManager.FindByIdAsync(args.ActionExecutorId);
-
-            if (actionExecutor == null)
-                throw new ArgumentException("User not found", nameof(actionExecutor));
-
             var map = await _repository.AsQueryable<Map>()
                 .WithId(args.MapId)
                 .LoadAggregate()
@@ -39,13 +34,18 @@ namespace Topocat.Services.Commands.Maps.SetInviteDecision
             if (map == null) 
                 throw new ServiceException("Map not found");
 
-            var membership = map.Memberships.FirstOrDefault(x => x.InvitedId == args.ActionExecutorId);
+            var membership = map.Memberships.FirstOrDefault(x => x.Id == args.InviteId);
 
             if (membership == null)
                 throw new ServiceException("Membership not found");
 
             if (membership.Status != MapMembershipStatus.DecisionNotMade)
                 throw new ServiceException("Decision was already made");
+
+            var actionExecutor = await _userManager.FindByIdAsync(membership.InvitedId);
+
+            if (actionExecutor == null)
+                throw new ArgumentException("User not found", nameof(actionExecutor));
 
             membership.SetDecision(actionExecutor, args.Accept 
                 ? MapMembershipStatus.Accepted 

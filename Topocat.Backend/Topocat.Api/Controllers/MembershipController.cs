@@ -61,14 +61,15 @@ namespace Topocat.API.Controllers
         }
 
         [HttpPut]
-        [Route("/map/{mapId}/invite")]
-        public async Task<ApiResponse> SetInviteDecision([FromRoute] string mapId, [FromBody] SetInviteDecisionRequestModel requestModel)
+        [Route("/map/{mapId}/invite/{inviteId}")]
+        [AllowAnonymous]
+        public async Task<ApiResponse> SetInviteDecision([FromRoute] string mapId, [FromRoute]string inviteId, [FromBody] SetInviteDecisionRequestModel requestModel)
         {
             var command = _commandsFactory.Get<SetInviteDecisionCommand>();
 
             var args = new SetInviteDecisionCommandArgs
             {
-                ActionExecutorId = HttpContext.User.GetUserId(),
+                InviteId = inviteId,
                 MapId = mapId,
                 Accept = requestModel.Accept
             };

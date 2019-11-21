@@ -2,7 +2,7 @@ import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {HttpClientModule} from '@angular/common/http';
 import {UnauthorizedLayoutComponent} from './components/unauthorized-layout/unauthorized-layout.component';
-import {MatButtonModule, MatCardModule, MatDialogModule, MatIconRegistry, MatInputModule, MatToolbarModule} from '@angular/material';
+import {MatButtonModule, MatCardModule, MatDialogModule, MatIconRegistry, MatInputModule, MatRadioModule, MatToolbarModule} from '@angular/material';
 import {RouterModule} from '@angular/router';
 import {LoginComponent} from './components/login/login.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
@@ -14,6 +14,7 @@ import { ConfirmationComponent } from './dialogs/confirmation/confirmation.compo
 import { SignUpComponent } from './components/sign-up/sign-up.component';
 import { LoaderComponent } from './components/loader/loader.component';
 import { AboutComponent } from './components/about/about.component';
+import { AcceptInviteComponent } from './components/accept-invite/accept-invite.component';
 
 @NgModule({
     declarations: [
@@ -25,7 +26,8 @@ import { AboutComponent } from './components/about/about.component';
         ConfirmationComponent,
         SignUpComponent,
         LoaderComponent,
-        AboutComponent
+        AboutComponent,
+        AcceptInviteComponent
     ],
     imports: [
         CommonModule,
@@ -38,7 +40,8 @@ import { AboutComponent } from './components/about/about.component';
         ReactiveFormsModule,
         FormsModule,
         MatInputModule,
-        MatDialogModule
+        MatDialogModule,
+        MatRadioModule
     ],
     exports: [
         LoaderComponent
