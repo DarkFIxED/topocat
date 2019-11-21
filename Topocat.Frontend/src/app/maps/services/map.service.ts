@@ -22,6 +22,20 @@ export class MapService {
         this.mapObjectsStore.set([]);
     }
 
+    setPosition(lat: number, lng: number, zoom?: number, setAsManually = true) {
+        const currentZoom = this.mapStore.getValue().position.zoom;
+
+        const newPosition = {
+            position: {
+                lat,
+                lng,
+                zoom: !!zoom ? zoom : currentZoom,
+                setManually: setAsManually
+            }
+        };
+        this.mapStore.update(newPosition);
+    }
+
     load(mapId: string) {
 
         this.mapStore.setLoading(true);

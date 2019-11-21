@@ -5,6 +5,9 @@ import {MapModel} from '../models/map.model';
 
 @Injectable()
 export class MapQuery extends QueryEntity<MapState, MapModel> {
+
+    position$ = this.select(state => state.position);
+
     constructor(protected store: MapStore) {
         super(store);
     }

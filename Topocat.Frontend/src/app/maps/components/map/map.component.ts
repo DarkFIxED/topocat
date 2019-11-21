@@ -12,14 +12,27 @@ import {ObjectsDrawingFlow} from '../../flows/objects-drawing.flow';
 import {DrawnObjectsStore} from '../../stores/drawn-objects.store';
 import {MapObjectsQuery} from '../../queries/map-objects.query';
 import {CreateMapObjectFlow} from '../../flows/create-map-object.flow';
+import {MapPositionFlow} from '../../flows/map-position.flow';
 
 @Component({
     selector: 'app-map',
     templateUrl: './map.component.html',
     styleUrls: ['./map.component.scss'],
-    providers: [MapRenderingService, MapObjectsDrawingService, MapInstanceService, EditMapObjectFlow, ObjectsDrawingFlow, DrawnObjectsStore, CreateMapObjectFlow]
+    providers: [
+        MapRenderingService,
+        MapObjectsDrawingService,
+        MapInstanceService,
+        EditMapObjectFlow,
+        ObjectsDrawingFlow,
+        DrawnObjectsStore,
+        CreateMapObjectFlow,
+        MapPositionFlow
+    ]
 })
 export class MapComponent extends BaseDestroyable implements OnInit {
+
+    // TODO: extract to constants.
+    private readonly defaultZoomLevelForUserPosition = 12;
 
     private mapId: string = undefined;
 
@@ -33,12 +46,14 @@ export class MapComponent extends BaseDestroyable implements OnInit {
                 private mapObjectsQuery: MapObjectsQuery,
                 private editMapObjectFlow: EditMapObjectFlow,
                 private objectsDrawingFlow: ObjectsDrawingFlow,
-                private createMapObjectFlow: CreateMapObjectFlow) {
+                private createMapObjectFlow: CreateMapObjectFlow,
+                private mapPositionFlow: MapPositionFlow) {
         super();
 
         this.editMapObjectFlow.setUp();
         this.objectsDrawingFlow.setUp();
         this.createMapObjectFlow.setUp();
+        this.mapPositionFlow.setUp();
     }
 
     ngOnInit() {
@@ -62,5 +77,15 @@ export class MapComponent extends BaseDestroyable implements OnInit {
 
     onMapReady(mapInstance: google.maps.Map) {
         this.mapInstanceService.setInstance(mapInstance);
+
+        this.trySetCurrentPosition();
+    }
+
+    private trySetCurrentPosition() {
+        if (!!navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(position => {
+               this.mapService.setPosition(position.coords.latitude, position.coords.longitude, this.defaultZoomLevelForUserPosition);
+            });
+        }
     }
 }
