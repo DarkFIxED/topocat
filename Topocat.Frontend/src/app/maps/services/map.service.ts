@@ -15,6 +15,13 @@ export class MapService {
                 private mapsHttpService: MapsHttpService) {
     }
 
+    reset() {
+        this.mapStore.reset();
+        this.mapStore.set([]);
+        this.mapObjectsStore.reset();
+        this.mapObjectsStore.set([]);
+    }
+
     load(mapId: string) {
 
         this.mapStore.setLoading(true);

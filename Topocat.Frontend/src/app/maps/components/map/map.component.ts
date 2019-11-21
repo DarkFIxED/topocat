@@ -56,6 +56,8 @@ export class MapComponent extends BaseDestroyable implements OnInit {
                 tap(() => this.mapsSignalRService.initialize(this.mapId))
             ).subscribe();
         });
+
+        this.componentAlive$.subscribe(() => this.mapService.reset());
     }
 
     onMapReady(mapInstance: google.maps.Map) {
