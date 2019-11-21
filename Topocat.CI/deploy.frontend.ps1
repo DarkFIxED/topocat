@@ -11,14 +11,20 @@ Param (
 
 $outputArchive = "deploy-package.zip"
 $initialLocation = Get-Location;
+$frontendFolder = "./../Topocat.Frontend"
+$buildFolder = "dist/topocat"
+
+Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope CurrentUser -Force
 
 cd ./../Topocat.Frontend
-Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope CurrentUser -Force
 ng build --prod
-Copy-Item -Path "./../Topocat.CI/web.config" -Destination "./dist/topocat"
-rm "./$($outputArchive)" -ea ig
-Compress-Archive -Path "./dist/topocat/*.*" -DestinationPath "./$($outputArchive)"
-
-Invoke-Expression "& MSDeploy.exe -source:package=$outputArchive -dest:auto,computerName=`"$RemoteHost/MSDeploy.axd?site=$Site`",username=`"$UserName`",password=`"$Password`",authtype=`"Basic`",includeAcls=`"False`" -verb:sync -disableLink:AppPoolExtension -disableLink:ContentExtension -disableLink:CertificateExtension -allowUntrusted"
-
 Set-Location $initialLocation
+
+Copy-Item -Path "./web.config" -Destination "$($frontendFolder)/$($buildFolder)"
+rm "./$($outputArchive)" -ea ig
+
+Add-Type -assembly "system.io.compression.filesystem"
+[io.compression.zipfile]::CreateFromDirectory("$($frontendFolder)/$($buildFolder)", "./$($outputArchive)")
+
+Invoke-Expression "& MSDeploy.exe -source:package=$outputArchive -dest:contentPath=`"$Site`",computerName=`"$RemoteHost/MSDeploy.axd`",username=`"$UserName`",password=`"$Password`",authtype=`"Basic`",includeAcls=`"False`" -verb:sync -disableLink:AppPoolExtension -disableLink:ContentExtension -disableLink:CertificateExtension -allowUntrusted"
+

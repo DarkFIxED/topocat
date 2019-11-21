@@ -23,8 +23,8 @@ export class MapService {
         forkJoin(this.mapsHttpService.getMap(mapId), this.mapsHttpService.getMapObjects(mapId))
             .pipe(
                 tap(() => {
-                    this.mapStore.setLoading(true);
-                    this.mapObjectsStore.setLoading(true);
+                    this.mapStore.setLoading(false);
+                    this.mapObjectsStore.setLoading(false);
                 }),
                 tap(results => {
                     if (!results[0].isSuccessful || !results[1].isSuccessful) {

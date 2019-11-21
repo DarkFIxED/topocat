@@ -10,7 +10,7 @@
             </mat-form-field>
         </div>
         <mat-divider [inset]="true"></mat-divider>
-        <app-loader *ngIf="loading$ | async"></app-loader>
+        <app-loader *ngIf="(loading$ | async)"></app-loader>
         <mat-list *ngIf="!(loading$ | async)" class="objects-list p-0">
             <mat-list-item *ngFor="let object of objects$ | async"
                            class="list-item">

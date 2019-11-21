@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Text;
 using DalSoft.Hosting.BackgroundQueue.DependencyInjection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -136,6 +137,10 @@ namespace Topocat.API
             {
                 app.UseDeveloperExceptionPage();
             }
+            else
+            {
+                UpdateDatabase(app);
+            }
 
             app.ConfigureExceptionHandler();
 
@@ -169,6 +174,22 @@ namespace Topocat.API
                 builder
                     .DenyAll()
             );
+        }
+
+        private static void UpdateDatabase(IApplicationBuilder app)
+        {
+            using var serviceScope = app.ApplicationServices
+                .GetRequiredService<IServiceScopeFactory>()
+                .CreateScope();
+            using var context = serviceScope.ServiceProvider.GetService<TopocatContext>();
+            try
+            {
+                context.Database.Migrate();
+            }
+            catch (Exception exc)
+            {
+
+            }
         }
     }
 }
