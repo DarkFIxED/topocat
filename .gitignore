@@ -305,3 +305,5 @@ __pycache__/
 
 # End of https://www.gitignore.io/api/angular,aspnetcore
 Topocat.Frontend/src/environments/
+Topocat.Frontend/deploy-package.zip
+Topocat.CI/deploy-package.zip

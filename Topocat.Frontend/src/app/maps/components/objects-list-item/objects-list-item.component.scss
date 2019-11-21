@@ -1,0 +1,27 @@
+.icon-wrapper {
+    width: 40px;
+    min-width: 40px;
+    text-align: center;
+    background-color: transparent;
+}
+
+.title {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.visible-on-hover {
+    span {
+        transition: visibility 0s, opacity 0.2s linear;
+        visibility: hidden;
+        opacity: 0;
+    }
+
+    &:hover {
+        span {
+            visibility: visible;
+            opacity: 1;
+        }
+    }
+}

@@ -1,0 +1,32 @@
+.layout {
+    height: calc(100vh - 64px);
+}
+
+.menu-button {
+    min-width: 36px !important;
+}
+
+.sidenav-container {
+    min-width: 200px;
+    height: 100%;
+}
+
+.sidenav-row {
+    display: table-row;
+
+    button {
+        width: 100% !important;
+
+        ::ng-deep.mat-button-wrapper {
+            float: left !important;
+        }
+    }
+}
+
+.active {
+    font-weight: bold;
+}
+
+.sidenav-content {
+    height: calc(100vh - 64px);
+}

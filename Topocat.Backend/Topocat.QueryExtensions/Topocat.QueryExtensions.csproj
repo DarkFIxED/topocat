@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Topocat.Common\Topocat.Common.csproj" />
+    <ProjectReference Include="..\Topocat.Domain\Topocat.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

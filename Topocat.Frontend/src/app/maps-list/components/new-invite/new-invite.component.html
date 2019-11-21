@@ -1,0 +1,28 @@
+<h1 mat-dialog-title>Invite collaborator</h1>
+<div mat-dialog-content>
+    <form [formGroup]="newInviteForm">
+        <mat-form-field class="w-100">
+            <input matInput formControlName="email" placeholder="Email" tabindex="1" cdkFocusInitial>
+            <mat-error *ngIf="newInviteForm.controls['email'].hasError('required')">
+                Please enter email
+            </mat-error>
+            <mat-error *ngIf="newInviteForm.controls['email'].hasError('email')">
+                Please enter valid email
+            </mat-error>
+        </mat-form-field>
+        <div class="d-flex w-100 pb-1">
+            <button class="float-left mr-auto"
+                    type="button"
+                    mat-raised-button
+                    (click)="onNoClick()"
+                    tabindex="3">Cancel</button>
+            <button class="float-right"
+                    type="submit"
+                    mat-raised-button
+                    color="primary"
+                    tabindex="2"
+                    cdkFocusInitial
+                    (click)="onOkClick()">Ok</button>
+        </div>
+    </form>
+</div>
