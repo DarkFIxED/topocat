@@ -1,3 +1,5 @@
+@import "./src/variables";
+
 .add-button {
     right: 16px;
     bottom: 16px;
@@ -9,5 +11,11 @@
     span {
         vertical-align: middle;
         line-height: 36px;
+    }
+}
+
+.highlight-on-hover {
+    &:hover {
+        background-color: $selected;
     }
 }

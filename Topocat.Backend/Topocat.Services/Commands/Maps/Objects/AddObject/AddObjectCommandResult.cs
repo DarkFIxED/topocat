@@ -1,4 +1,4 @@
-﻿namespace Topocat.Services.Commands.Maps.AddObject
+﻿namespace Topocat.Services.Commands.Maps.Objects.AddObject
 {
     public class AddObjectCommandResult
     {

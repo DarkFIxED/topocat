@@ -9,7 +9,7 @@ using Topocat.Domain.Entities.Users;
 using Topocat.Services.Exceptions;
 using Topocat.Services.QueryExtensions;
 
-namespace Topocat.Services.Commands.Maps.UpdateTitle
+namespace Topocat.Services.Commands.Maps.Update
 {
     [RegisterScoped]
     public class UpdateMapCommand : ICommand<UpdateMapCommandArgs>

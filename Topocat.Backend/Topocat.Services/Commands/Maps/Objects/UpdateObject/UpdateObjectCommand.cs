@@ -11,7 +11,7 @@ using Topocat.Services.Exceptions;
 using Topocat.Services.QueryExtensions;
 using Topocat.Services.Services;
 
-namespace Topocat.Services.Commands.Maps.UpdateObject
+namespace Topocat.Services.Commands.Maps.Objects.UpdateObject
 {
     [RegisterScoped]
     public class UpdateObjectCommand : ICommand<UpdateObjectCommandArgs>

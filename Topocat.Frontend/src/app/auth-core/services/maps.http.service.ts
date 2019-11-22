@@ -2,8 +2,8 @@ import {Injectable} from '@angular/core';
 import {AuthHttpService} from '../../core/services/auth.http.service';
 import {Observable} from 'rxjs';
 import {ApiResponse} from '../../core/models/api.response';
-import {MapModel} from '../models/map.model';
-import {MapObjectModel} from '../models/map-object.model';
+import {MapModel} from '../../maps/models/map.model';
+import {MapObjectModel} from '../../maps/models/map-object.model';
 
 @Injectable()
 export class MapsHttpService {

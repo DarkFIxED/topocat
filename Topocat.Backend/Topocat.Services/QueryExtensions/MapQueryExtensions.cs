@@ -32,6 +32,11 @@ namespace Topocat.Services.QueryExtensions
                 Title = x.Title,
                 CreatedAt = x.CreatedAt,
                 LastModifiedAt = x.LastModifiedAt,
+                CreatedBy = new UserModel
+                {
+                    Id = x.CreatedBy.Id,
+                    Email = x.CreatedBy.Email
+                }
             });
         }
     }

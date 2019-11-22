@@ -16,4 +16,8 @@ export class MapMembershipsHttpService {
     createInvite(mapId: string, newInviteModel: NewInviteModel): Observable<ApiResponse<any>> {
         return this.authHttpService.post<ApiResponse<any>>(`map/${mapId}/invite`, newInviteModel);
     }
+
+    cancelInvite(mapId: string, inviteId: string): Observable<ApiResponse<any>> {
+        return this.authHttpService.delete<ApiResponse<any>>(`map/${mapId}/invite/${inviteId}`);
+    }
 }

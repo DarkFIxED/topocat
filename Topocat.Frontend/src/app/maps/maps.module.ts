@@ -8,7 +8,7 @@ import {CoreModule} from '../core/core.module';
 import {MapObjectsStore} from './stores/map-objects.store';
 import {MapStore} from './stores/map.store';
 import {MapService} from './services/map.service';
-import {MapsHttpService} from './services/maps.http.service';
+import {MapsHttpService} from '../auth-core/services/maps.http.service';
 import {AgmCoreModule} from '@agm/core';
 import {secrets} from '../../environments/secrets';
 import {MapObjectsQuery} from './queries/map-objects.query';

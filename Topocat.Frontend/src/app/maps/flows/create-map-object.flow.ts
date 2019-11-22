@@ -14,7 +14,7 @@ import {MapObjectsDrawingService} from '../services/map-objects-drawing.service'
 import {EditMapObjectComponent} from '../dialogs/edit-map-object/edit-map-object.component';
 import {EditObjectTypesActions} from '../models/edit-object-types-actions';
 import {WktService} from '../services/wkt.service';
-import {MapsHttpService} from '../services/maps.http.service';
+import {MapsHttpService} from '../../auth-core/services/maps.http.service';
 import {MapQuery} from '../queries/map.query';
 
 @Injectable()

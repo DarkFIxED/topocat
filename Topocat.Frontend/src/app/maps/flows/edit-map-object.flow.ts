@@ -4,7 +4,7 @@ import {EditMapObjectComponent} from '../dialogs/edit-map-object/edit-map-object
 import {MapObjectsQuery} from '../queries/map-objects.query';
 import {MatDialog, MatDialogRef} from '@angular/material';
 import {MapService} from '../services/map.service';
-import {MapsHttpService} from '../services/maps.http.service';
+import {MapsHttpService} from '../../auth-core/services/maps.http.service';
 import {MapQuery} from '../queries/map.query';
 import {BaseDestroyable} from '../../core/services/base-destroyable';
 import {MapsSignalRService} from '../services/maps.signal-r.service';

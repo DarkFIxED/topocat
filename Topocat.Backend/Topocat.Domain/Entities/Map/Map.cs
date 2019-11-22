@@ -98,5 +98,17 @@ namespace Topocat.Domain.Entities.Map
             ObjectsList.Remove(foundMapObject);
             AddEvent(new MapObjectRemoved(foundMapObject));
         }
+
+        public void CancelInvite(MapMembership existingMembership)
+        {
+            if (!Memberships.Contains(existingMembership))
+                throw new ArgumentNullException(nameof(existingMembership), "Invite not found");
+
+            if (existingMembership.Status != MapMembershipStatus.DecisionNotMade)
+                throw new DomainException("Can not cancel invite with specified decision");
+
+            existingMembership.MarkAsRemoved();
+            Memberships.Remove(existingMembership);
+        }
     }
 }

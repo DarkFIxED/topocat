@@ -1,4 +1,4 @@
-﻿namespace Topocat.Services.Commands.Maps.SetInviteDecision
+﻿namespace Topocat.Services.Commands.Maps.Memberships.SetInviteDecision
 {
     public class SetInviteDecisionCommandArgs
     {

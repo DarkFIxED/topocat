@@ -8,7 +8,7 @@ using Topocat.Domain.Entities.Map.Events;
 
 namespace Topocat.Domain.Entities.Map
 {
-    public class MapObject : DomainEntity, IHasIdentifier<string>, ILastModifiedAt, ICreatedAt
+    public class MapObject : DomainEntity, IHasIdentifier<string>, ILastModifiedAt, ICreatedAt, IMarkAsRemoved
     {
         [UsedImplicitly]
         protected MapObject() { }

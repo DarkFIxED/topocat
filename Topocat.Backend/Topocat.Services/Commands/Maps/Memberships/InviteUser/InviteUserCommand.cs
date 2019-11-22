@@ -11,7 +11,7 @@ using Topocat.Services.Exceptions;
 using Topocat.Services.QueryExtensions;
 using Topocat.Services.Services;
 
-namespace Topocat.Services.Commands.Maps.Invite
+namespace Topocat.Services.Commands.Maps.Memberships.InviteUser
 {
     [RegisterScoped]
     public class InviteUserCommand : ICommand<InviteUserCommandArgs>

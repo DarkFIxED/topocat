@@ -5,8 +5,9 @@ using Topocat.API.Extensions;
 using Topocat.API.Models;
 using Topocat.API.Models.Invite;
 using Topocat.Services;
-using Topocat.Services.Commands.Maps.Invite;
-using Topocat.Services.Commands.Maps.SetInviteDecision;
+using Topocat.Services.Commands.Maps.Memberships.CancelInvite;
+using Topocat.Services.Commands.Maps.Memberships.InviteUser;
+using Topocat.Services.Commands.Maps.Memberships.SetInviteDecision;
 using Topocat.Services.Queries.Map.GetMapMemberships;
 
 namespace Topocat.API.Controllers
@@ -72,6 +73,24 @@ namespace Topocat.API.Controllers
                 InviteId = inviteId,
                 MapId = mapId,
                 Accept = requestModel.Accept
+            };
+
+            await command.Execute(args);
+
+            return ApiResponse.Success();
+        }
+
+        [HttpDelete]
+        [Route("/map/{mapId}/invite/{inviteId}")]
+        public async Task<ApiResponse> CancelInvite([FromRoute] string mapId, [FromRoute]string inviteId)
+        {
+            var command = _commandsFactory.Get<CancelInviteCommand>();
+
+            var args = new CancelInviteCommandArgs
+            {
+                InviteId = inviteId,
+                MapId = mapId,
+                ActionExecutorId = HttpContext.User.GetUserId()
             };
 
             await command.Execute(args);
