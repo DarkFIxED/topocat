@@ -99,7 +99,7 @@ export class MembershipListComponent implements OnInit {
         }
     }
 
-    cancelInvite(id: string) {
+    resendInvite(inviteId: string) {
         this.dialog.open(ConfirmationComponent, {
             disableClose: true,
             hasBackdrop: true,
@@ -110,7 +110,27 @@ export class MembershipListComponent implements OnInit {
                 filter((result: DialogResult<any>) => {
                     return !result.isCancelled;
                 }),
-                switchMap(() => this.mapMembershipsHttpService.cancelInvite(this.mapId, id))
+                switchMap(() => this.mapMembershipsHttpService.resendInvite(this.mapId, inviteId))
+            )
+            .subscribe(result => {
+                if (!result.isSuccessful) {
+                    throw new Error();
+                }
+            });
+    }
+
+    cancelInvite(inviteId: string) {
+        this.dialog.open(ConfirmationComponent, {
+            disableClose: true,
+            hasBackdrop: true,
+            width: '450px',
+        })
+            .afterClosed()
+            .pipe(
+                filter((result: DialogResult<any>) => {
+                    return !result.isCancelled;
+                }),
+                switchMap(() => this.mapMembershipsHttpService.cancelInvite(this.mapId, inviteId))
             )
             .subscribe(result => {
                 if (result.isSuccessful) {

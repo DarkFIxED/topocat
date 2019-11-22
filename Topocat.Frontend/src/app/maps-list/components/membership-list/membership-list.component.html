@@ -36,6 +36,10 @@
                         <mat-menu #appMenu="matMenu">
                             <button mat-menu-item
                                     title="Manage map membership..."
+                                    (click)="resendInvite(element.id)">Resend invite...
+                            </button>
+                            <button mat-menu-item
+                                    title="Manage map membership..."
                                     (click)="cancelInvite(element.id)">Cancel invite...
                             </button>
                         </mat-menu>

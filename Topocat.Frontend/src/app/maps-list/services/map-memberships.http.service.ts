@@ -20,4 +20,8 @@ export class MapMembershipsHttpService {
     cancelInvite(mapId: string, inviteId: string): Observable<ApiResponse<any>> {
         return this.authHttpService.delete<ApiResponse<any>>(`map/${mapId}/invite/${inviteId}`);
     }
+
+    resendInvite(mapId: string, inviteId: string): Observable<ApiResponse<any>> {
+        return this.authHttpService.post<ApiResponse<any>>(`map/${mapId}/invite/${inviteId}/resend`, undefined);
+    }
 }

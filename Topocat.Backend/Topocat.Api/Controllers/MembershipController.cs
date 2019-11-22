@@ -7,6 +7,7 @@ using Topocat.API.Models.Invite;
 using Topocat.Services;
 using Topocat.Services.Commands.Maps.Memberships.CancelInvite;
 using Topocat.Services.Commands.Maps.Memberships.InviteUser;
+using Topocat.Services.Commands.Maps.Memberships.ResendInvite;
 using Topocat.Services.Commands.Maps.Memberships.SetInviteDecision;
 using Topocat.Services.Queries.Map.GetMapMemberships;
 
@@ -73,6 +74,24 @@ namespace Topocat.API.Controllers
                 InviteId = inviteId,
                 MapId = mapId,
                 Accept = requestModel.Accept
+            };
+
+            await command.Execute(args);
+
+            return ApiResponse.Success();
+        }
+
+        [HttpPost]
+        [Route("/map/{mapId}/invite/{inviteId}/resend")]
+        public async Task<ApiResponse> ResendInvitation([FromRoute] string mapId, [FromRoute]string inviteId)
+        {
+            var command = _commandsFactory.Get<ResendInviteCommand>();
+
+            var args = new ResendInviteCommandArgs
+            {
+                InviteId = inviteId,
+                MapId = mapId,
+                ActionExecutorId = HttpContext.User.GetUserId()
             };
 
             await command.Execute(args);
