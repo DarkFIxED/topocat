@@ -2,13 +2,13 @@ import {Injectable} from '@angular/core';
 import {ActivatedRouteSnapshot, CanActivate, CanLoad, Route, Router, RouterStateSnapshot, UrlSegment, UrlTree} from '@angular/router';
 import {Observable} from 'rxjs';
 import {CredentialsStore} from '../stores/credentials.store';
-import {TokensService} from '../services/tokens.service';
+import {JwtTokensService} from '../services/jwt-tokens.service';
 
 @Injectable({providedIn: 'root'})
 export class AuthorizedGuard implements CanActivate, CanLoad {
 
     constructor(private credentialsStore: CredentialsStore,
-                private tokensService: TokensService,
+                private tokensService: JwtTokensService,
                 private router: Router) {
     }
 

@@ -12,18 +12,18 @@ using Topocat.Services.QueryExtensions;
 namespace Topocat.Services.Commands.Maps.UpdateTitle
 {
     [RegisterScoped]
-    public class UpdateMapTitleCommand : ICommand<UpdateMapTitleCommandArgs>
+    public class UpdateMapCommand : ICommand<UpdateMapCommandArgs>
     {
         private readonly UserManager<User> _userManager;
         private readonly IRepository _repository;
 
-        public UpdateMapTitleCommand(UserManager<User> userManager, IRepository repository)
+        public UpdateMapCommand(UserManager<User> userManager, IRepository repository)
         {
             _userManager = userManager;
             _repository = repository;
         }
 
-        public async Task Execute(UpdateMapTitleCommandArgs args)
+        public async Task Execute(UpdateMapCommandArgs args)
         {
             var actionExecutor = await _userManager.FindByIdAsync(args.ActionExecutorId);
 

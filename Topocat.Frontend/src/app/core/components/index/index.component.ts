@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {CredentialsStore} from '../../stores/credentials.store';
-import {TokensService} from '../../services/tokens.service';
+import {JwtTokensService} from '../../services/jwt-tokens.service';
 import {Router} from '@angular/router';
 
 @Component({
@@ -11,7 +11,7 @@ import {Router} from '@angular/router';
 export class IndexComponent implements OnInit {
 
     constructor(private credentialsStore: CredentialsStore,
-                private tokensService: TokensService,
+                private tokensService: JwtTokensService,
                 private router: Router) {
     }
 

@@ -1,6 +1,6 @@
 ﻿namespace Topocat.Services.Commands.Maps.UpdateTitle
 {
-    public class UpdateMapTitleCommandArgs
+    public class UpdateMapCommandArgs
     {
         public string MapId { get; set; }
 

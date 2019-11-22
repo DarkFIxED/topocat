@@ -1,7 +1,8 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, Inject} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
 import {NewMapModel} from '../../models/new-map.model';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {DialogResult} from '../../../core/models/dialog-result';
 
 @Component({
   selector: 'app-new-map',
@@ -15,18 +16,20 @@ export class NewMapComponent {
     });
 
     constructor(
-        public dialogRef: MatDialogRef<NewMapComponent>,
-        @Inject(MAT_DIALOG_DATA) public data: NewMapModel) {
+        public dialogRef: MatDialogRef<NewMapComponent, DialogResult<NewMapModel>>,
+        @Inject(MAT_DIALOG_DATA) public data: {model: NewMapModel, isNewMap: boolean}) {
+
+        this.newMapForm.patchValue(data.model);
     }
 
     onNoClick(): void {
-        this.dialogRef.close();
+        this.dialogRef.close(DialogResult.Cancel());
     }
 
     onOkClick() {
         if (this.newMapForm.invalid)
             return;
 
-        this.dialogRef.close(this.newMapForm.value);
+        this.dialogRef.close(DialogResult.Ok(this.newMapForm.value));
     }
 }

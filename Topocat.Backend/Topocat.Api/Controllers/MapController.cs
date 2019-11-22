@@ -60,13 +60,13 @@ namespace Topocat.API.Controllers
             return ApiResponse.Success(result);
         }
 
-        [Route("/maps/{mapId}/title")]
+        [Route("/maps/{mapId}")]
         [HttpPut]
-        public async Task<ApiResponse> UpdateMapTitle([FromRoute] string mapId, [FromBody] UpdateMapTitleRequestModel model)
+        public async Task<ApiResponse> UpdateMap([FromRoute] string mapId, [FromBody] UpdateMapTitleRequestModel model)
         {
-            var updateMapTitleCommand = _commandsFactory.Get<UpdateMapTitleCommand>();
+            var updateMapTitleCommand = _commandsFactory.Get<UpdateMapCommand>();
 
-            await updateMapTitleCommand.Execute(new UpdateMapTitleCommandArgs
+            await updateMapTitleCommand.Execute(new UpdateMapCommandArgs
             {
                 NewTitle = model.Title,
                 MapId = mapId,

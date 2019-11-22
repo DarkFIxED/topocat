@@ -27,27 +27,31 @@
                         <mat-menu #appMenu="matMenu">
                             <button mat-menu-item
                                     routerLink="{{element.id}}/memberships"
-                                    title="Manage map membership...">Manage membership...
+                                    title="Manage map membership...">Manage membership
+                            </button>
+                            <button mat-menu-item
+                                    (click)="changeMap(element)"
+                                    title="Manage map membership...">Edit...
                             </button>
                         </mat-menu>
 
-                        <button mat-button
+                        <button *ngIf="currentUserId === element.createdBy.id"
+                                mat-button
+                                (click)="$event.stopImmediatePropagation()"
                                 [matMenuTriggerFor]="appMenu"
                                 class="management-button"
                                 title="Open management menu">
                             <span class="mdi mdi-24px mdi-dots-vertical"></span>
                         </button>
-                        <button mat-button
-                                (click)="redirectToMap(element.id)"
-                                class="management-button"
-                                title="Open map">
-                            <span class="mdi mdi-24px mdi-map"></span>
-                        </button>
                     </td>
                 </ng-container>
 
                 <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                <tr mat-row
+                    *matRowDef="let row; columns: displayedColumns;"
+                    class="cursor-pointer highlight-on-hover"
+                    (click)="redirectToMap(row.id)">
+                </tr>
             </table>
         </div>
         <button mat-fab color="primary"

@@ -4,7 +4,7 @@ import {BaseHttpService} from './base.http.service';
 import {Injectable} from '@angular/core';
 import {CredentialsStore} from '../stores/credentials.store';
 import {map, switchMap, tap} from 'rxjs/operators';
-import {TokensService} from './tokens.service';
+import {JwtTokensService} from './jwt-tokens.service';
 import {ApiResponse} from '../models/api.response';
 import {TokenPair} from '../models/token-pair';
 
@@ -16,7 +16,7 @@ export class AuthHttpService {
 
     constructor(private http: BaseHttpService,
                 private credentialsStore: CredentialsStore,
-                private tokensService: TokensService) {
+                private tokensService: JwtTokensService) {
     }
 
     get<T>(relativeUrl: string, headers?: HttpHeaders): Observable<T> {
