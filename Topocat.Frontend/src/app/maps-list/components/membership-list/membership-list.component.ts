@@ -1,11 +1,16 @@
 import {Component, OnInit} from '@angular/core';
-import {filter, switchMap, tap} from 'rxjs/operators';
+import {filter, map, switchMap, tap} from 'rxjs/operators';
 import {MapMembershipsHttpService} from '../../services/map-memberships.http.service';
 import {MembershipListItemModel} from '../../models/membership-list-item.model';
 import {ActivatedRoute} from '@angular/router';
 import {MapMembershipStatus} from '../../models/map-membership.status';
 import {MatDialog} from '@angular/material';
 import {NewInviteComponent} from '../new-invite/new-invite.component';
+import {MapsHttpService} from '../../../auth-core/services/maps.http.service';
+import {forkJoin} from 'rxjs';
+import {CredentialsStore} from '../../../core/stores/credentials.store';
+import {ConfirmationComponent} from '../../../core/dialogs/confirmation/confirmation.component';
+import {DialogResult} from '../../../core/models/dialog-result';
 
 @Component({
     selector: 'app-membership-list',
@@ -19,13 +24,16 @@ export class MembershipListComponent implements OnInit {
     loading = false;
     memberships: MembershipListItemModel[] = [];
 
-    displayedColumns: string[] = ['email', 'createdAt'];
+    displayedColumns: string[] = ['email', 'createdAt', 'management'];
 
     mapId: string = undefined;
+    hasAdminRights = false;
 
     constructor(private mapMembershipsHttpService: MapMembershipsHttpService,
                 private route: ActivatedRoute,
-                private dialog: MatDialog) {
+                private dialog: MatDialog,
+                private mapsHttpService: MapsHttpService,
+                private credentialsStore: CredentialsStore) {
     }
 
     ngOnInit() {
@@ -41,15 +49,18 @@ export class MembershipListComponent implements OnInit {
 
     load(mapId: string) {
         this.loading = true;
-        this.mapMembershipsHttpService.getMapMemberships(mapId)
+        forkJoin(this.mapsHttpService.getMap(this.mapId), this.mapMembershipsHttpService.getMapMemberships(mapId))
             .pipe(
-                tap(() => this.loading = false)
+                tap(() => this.loading = false),
+                tap(results => {
+                    this.hasAdminRights = results[0].data.map.createdBy.id === this.credentialsStore.getCurrentUserId();
+                }),
+                map(results => results[1])
             )
             .subscribe(result => {
                 if (!result.isSuccessful) {
                     throw new Error(result.message);
                 }
-
                 this.memberships = [...result.data.memberships];
             });
     }
@@ -66,11 +77,12 @@ export class MembershipListComponent implements OnInit {
                 switchMap(result => this.mapMembershipsHttpService.createInvite(this.mapId, result))
             )
             .subscribe(result => {
-                if (result.isSuccessful)
+                if (result.isSuccessful) {
                     this.load(this.mapId);
-                else
-                // TODO: handle error
+                } else {
+                    // TODO: handle error
                     throw new Error();
+                }
             });
     }
 
@@ -85,5 +97,47 @@ export class MembershipListComponent implements OnInit {
             default :
                 throw new Error();
         }
+    }
+
+    resendInvite(inviteId: string) {
+        this.dialog.open(ConfirmationComponent, {
+            disableClose: true,
+            hasBackdrop: true,
+            width: '450px',
+        })
+            .afterClosed()
+            .pipe(
+                filter((result: DialogResult<any>) => {
+                    return !result.isCancelled;
+                }),
+                switchMap(() => this.mapMembershipsHttpService.resendInvite(this.mapId, inviteId))
+            )
+            .subscribe(result => {
+                if (!result.isSuccessful) {
+                    throw new Error();
+                }
+            });
+    }
+
+    cancelInvite(inviteId: string) {
+        this.dialog.open(ConfirmationComponent, {
+            disableClose: true,
+            hasBackdrop: true,
+            width: '450px',
+        })
+            .afterClosed()
+            .pipe(
+                filter((result: DialogResult<any>) => {
+                    return !result.isCancelled;
+                }),
+                switchMap(() => this.mapMembershipsHttpService.cancelInvite(this.mapId, inviteId))
+            )
+            .subscribe(result => {
+                if (result.isSuccessful) {
+                    this.load(this.mapId);
+                } else {
+                    throw new Error();
+                }
+            });
     }
 }

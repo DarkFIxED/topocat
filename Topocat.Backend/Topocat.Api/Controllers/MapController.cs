@@ -5,11 +5,11 @@ using Topocat.API.Extensions;
 using Topocat.API.Models;
 using Topocat.API.Models.Maps;
 using Topocat.Services;
-using Topocat.Services.Commands.Maps.AddObject;
 using Topocat.Services.Commands.Maps.Create;
-using Topocat.Services.Commands.Maps.RemoveObject;
-using Topocat.Services.Commands.Maps.UpdateObject;
-using Topocat.Services.Commands.Maps.UpdateTitle;
+using Topocat.Services.Commands.Maps.Objects.AddObject;
+using Topocat.Services.Commands.Maps.Objects.RemoveObject;
+using Topocat.Services.Commands.Maps.Objects.UpdateObject;
+using Topocat.Services.Commands.Maps.Update;
 using Topocat.Services.Queries.Map.GetMapObjects;
 using Topocat.Services.Queries.Map.GetMapQuery;
 using Topocat.Services.Queries.Map.GetMapsListQuery;
@@ -60,13 +60,13 @@ namespace Topocat.API.Controllers
             return ApiResponse.Success(result);
         }
 
-        [Route("/maps/{mapId}/title")]
+        [Route("/maps/{mapId}")]
         [HttpPut]
-        public async Task<ApiResponse> UpdateMapTitle([FromRoute] string mapId, [FromBody] UpdateMapTitleRequestModel model)
+        public async Task<ApiResponse> UpdateMap([FromRoute] string mapId, [FromBody] UpdateMapTitleRequestModel model)
         {
-            var updateMapTitleCommand = _commandsFactory.Get<UpdateMapTitleCommand>();
+            var updateMapTitleCommand = _commandsFactory.Get<UpdateMapCommand>();
 
-            await updateMapTitleCommand.Execute(new UpdateMapTitleCommandArgs
+            await updateMapTitleCommand.Execute(new UpdateMapCommandArgs
             {
                 NewTitle = model.Title,
                 MapId = mapId,

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -8,29 +9,26 @@ using Topocat.Domain.Entities.Map;
 using Topocat.Domain.Entities.Users;
 using Topocat.Services.Exceptions;
 using Topocat.Services.QueryExtensions;
-using Topocat.Services.Services;
 
-namespace Topocat.Services.Commands.Maps.AddObject
+namespace Topocat.Services.Commands.Maps.Objects.RemoveObject
 {
     [RegisterScoped]
-    public class AddObjectCommand : ICommand<AddObjectCommandArgs, AddObjectCommandResult>
+    public class RemoveObjectCommand : ICommand<RemoveObjectCommandArgs>
     {
         private readonly UserManager<User> _userManager;
-        private readonly IRepository _repository;
-        private readonly IGeometryConverter _geometryConverter;
 
-        public AddObjectCommand(UserManager<User> userManager,
-            IRepository repository, 
-            IGeometryConverter geometryConverter)
+        private readonly IRepository _repository;
+
+        public RemoveObjectCommand(UserManager<User> userManager, IRepository repository)
         {
             _userManager = userManager;
             _repository = repository;
-            _geometryConverter = geometryConverter;
         }
 
-        public async Task<AddObjectCommandResult> Execute(AddObjectCommandArgs args)
+        public async Task Execute(RemoveObjectCommandArgs args)
         {
             var actionExecutor = await _userManager.FindByIdAsync(args.ActionExecutorId);
+
             if (actionExecutor == null)
                 throw new ArgumentException("User not found", nameof(actionExecutor));
 
@@ -43,18 +41,16 @@ namespace Topocat.Services.Commands.Maps.AddObject
             if (map == null)
                 throw new ServiceException("Map not found");
 
-            var geometry = _geometryConverter.FromWktString(args.WktString);
+            var mapObject = map.ObjectsList
+                .FirstOrDefault(x => x.Id == args.ObjectId);
 
-            var newPoint = new MapObject(map, args.Title, geometry);
-            map.Add(newPoint);
+            if (mapObject == null)
+                throw new ServiceException("Object not found");
 
-            _repository.Update(map);
+            map.Delete(actionExecutor, mapObject);
+            _repository.Update(mapObject);
+
             await _repository.SaveAsync();
-
-            return new AddObjectCommandResult
-            {
-                ObjectId = newPoint.Id
-            };
         }
     }
 }

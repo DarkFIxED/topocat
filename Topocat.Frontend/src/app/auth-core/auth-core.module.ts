@@ -4,6 +4,7 @@ import {MatButtonModule, MatIconModule, MatSidenavModule, MatToolbarModule} from
 import {AuthorizedLayoutComponent} from './components/authorized-layout/authorized-layout.component';
 import {CoreModule} from '../core/core.module';
 import {RouterModule} from '@angular/router';
+import {MapsHttpService} from './services/maps.http.service';
 
 
 @NgModule({
@@ -16,6 +17,9 @@ import {RouterModule} from '@angular/router';
         MatSidenavModule,
         MatIconModule,
         RouterModule
+    ],
+    providers: [
+        MapsHttpService
     ]
 })
 export class AuthCoreModule {

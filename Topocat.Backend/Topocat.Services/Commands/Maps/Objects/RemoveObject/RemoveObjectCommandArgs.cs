@@ -1,4 +1,4 @@
-﻿namespace Topocat.Services.Commands.Maps.RemoveObject
+﻿namespace Topocat.Services.Commands.Maps.Objects.RemoveObject
 {
     public class RemoveObjectCommandArgs
     {

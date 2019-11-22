@@ -22,8 +22,9 @@ export class DrawnObjectsStore {
 
     addSubscription(id: ID, subs: Subscription) {
         const foundSubs = this.drawnObjectsSubscriptions.find(x => x.id === id);
-        if (!foundSubs)
+        if (!foundSubs) {
             throw new Error();
+        }
 
         foundSubs.subscriptions.push(subs);
     }
@@ -41,5 +42,9 @@ export class DrawnObjectsStore {
         index = this.drawnObjects.findIndex(x => x.id === id);
         this.drawnObjects[index].dispose();
         this.drawnObjects.splice(index, 1);
+    }
+
+    find(id: ID): UnifiedMapObject {
+        return this.drawnObjects.find(x => x.id === id);
     }
 }

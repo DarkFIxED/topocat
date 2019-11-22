@@ -1,10 +1,12 @@
-﻿namespace Topocat.Services.Commands.Maps.AddObject
+﻿namespace Topocat.Services.Commands.Maps.Objects.UpdateObject
 {
-    public class AddObjectCommandArgs
+    public class UpdateObjectCommandArgs
     {
         public string ActionExecutorId { get; set; }
 
         public string MapId { get; set; }
+
+        public string ObjectId { get; set; }
 
         public string Title { get; set; }
 

@@ -1,4 +1,4 @@
-﻿namespace Topocat.Services.Commands.Maps.Invite
+﻿namespace Topocat.Services.Commands.Maps.Memberships.InviteUser
 {
     public class InviteUserCommandArgs
     {

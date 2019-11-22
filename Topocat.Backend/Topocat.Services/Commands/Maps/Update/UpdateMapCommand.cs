@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -9,27 +8,22 @@ using Topocat.Domain.Entities.Map;
 using Topocat.Domain.Entities.Users;
 using Topocat.Services.Exceptions;
 using Topocat.Services.QueryExtensions;
-using Topocat.Services.Services;
 
-namespace Topocat.Services.Commands.Maps.UpdateObject
+namespace Topocat.Services.Commands.Maps.Update
 {
     [RegisterScoped]
-    public class UpdateObjectCommand : ICommand<UpdateObjectCommandArgs>
+    public class UpdateMapCommand : ICommand<UpdateMapCommandArgs>
     {
         private readonly UserManager<User> _userManager;
         private readonly IRepository _repository;
-        private readonly IGeometryConverter _geometryConverter;
 
-        public UpdateObjectCommand(UserManager<User> userManager, 
-            IRepository repository,
-            IGeometryConverter geometryConverter)
+        public UpdateMapCommand(UserManager<User> userManager, IRepository repository)
         {
             _userManager = userManager;
             _repository = repository;
-            _geometryConverter = geometryConverter;
         }
 
-        public async Task Execute(UpdateObjectCommandArgs args)
+        public async Task Execute(UpdateMapCommandArgs args)
         {
             var actionExecutor = await _userManager.FindByIdAsync(args.ActionExecutorId);
 
@@ -38,24 +32,16 @@ namespace Topocat.Services.Commands.Maps.UpdateObject
 
             var map = await _repository.AsQueryable<Map>()
                 .WithId(args.MapId)
-                .WithAccessOf(actionExecutor.Id)
+                .WithAdminPermissions(actionExecutor.Id)
                 .LoadAggregate()
                 .FirstOrDefaultAsync();
 
             if (map == null)
                 throw new ServiceException("Map not found");
-            
-            var mapObject = map.ObjectsList
-                .FirstOrDefault(x => x.Id == args.ObjectId);
 
-            if (mapObject == null)
-                throw new ServiceException("Object not found");
+            map.SetTitle(args.NewTitle);
 
-            var geometry = _geometryConverter.FromWktString(args.WktString);
-
-            mapObject.Update(args.Title, geometry);
-
-            _repository.Update(mapObject);
+            _repository.Update(map);
 
             await _repository.SaveAsync();
         }

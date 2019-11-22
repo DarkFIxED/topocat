@@ -12,5 +12,7 @@ namespace Topocat.Services.Models
 
         public DateTimeOffset LastModifiedAt { get; set; }
 
+        public UserModel CreatedBy { get; set; }
+
     }
 }

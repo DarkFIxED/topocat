@@ -10,7 +10,7 @@ using Topocat.Domain.Entities.Users;
 using Topocat.Services.Exceptions;
 using Topocat.Services.QueryExtensions;
 
-namespace Topocat.Services.Commands.Maps.SetInviteDecision
+namespace Topocat.Services.Commands.Maps.Memberships.SetInviteDecision
 {
     [RegisterScoped]
     public class SetInviteDecisionCommand : ICommand<SetInviteDecisionCommandArgs>

@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {MapStore} from '../stores/map.store';
 import {MapObjectsStore} from '../stores/map-objects.store';
-import {MapsHttpService} from './maps.http.service';
+import {MapsHttpService} from '../../auth-core/services/maps.http.service';
 import {forkJoin} from 'rxjs';
 import {tap} from 'rxjs/operators';
 import {MapObjectModel} from '../models/map-object.model';
@@ -13,6 +13,27 @@ export class MapService {
     constructor(private mapStore: MapStore,
                 private mapObjectsStore: MapObjectsStore,
                 private mapsHttpService: MapsHttpService) {
+    }
+
+    reset() {
+        this.mapStore.reset();
+        this.mapStore.set([]);
+        this.mapObjectsStore.reset();
+        this.mapObjectsStore.set([]);
+    }
+
+    setPosition(lat: number, lng: number, zoom?: number, setAsManually = true) {
+        const currentZoom = this.mapStore.getValue().position.zoom;
+
+        const newPosition = {
+            position: {
+                lat,
+                lng,
+                zoom: !!zoom ? zoom : currentZoom,
+                setManually: setAsManually
+            }
+        };
+        this.mapStore.update(newPosition);
     }
 
     load(mapId: string) {

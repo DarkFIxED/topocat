@@ -24,6 +24,7 @@ namespace Topocat.Services.Queries.Map.GetMapMemberships
                 .Where(x => x.Map.CreatedById == args.ActionExecutorId)
                 .Select(x => new GetMapMembershipsQueryResultItem
                 {
+                    Id = x.Id,
                     Status = x.Status,
                     CreatedAt = x.CreatedAt,
                     InvitedEmail = x.Invited.Email

@@ -2,12 +2,13 @@
 using JetBrains.Annotations;
 using Topocat.Common;
 using Topocat.Common.Extensions;
+using Topocat.Domain.DomainEvents;
 using Topocat.Domain.Entities.Users;
 using Topocat.Domain.Exceptions;
 
 namespace Topocat.Domain.Entities.Map
 {
-    public class MapMembership : IDomainEntity, IHasIdentifier<string>, ICreatedAt
+    public class MapMembership : DomainEntity, IHasIdentifier<string>, ICreatedAt, IMarkAsRemoved
     {
         public static MapMembership CreateOwnerMembership(Map map)
         {
@@ -68,6 +69,12 @@ namespace Topocat.Domain.Entities.Map
                 throw new ArgumentException("Only accepted or declined statuses allowed.");
 
             Status = status;
+        }
+
+        public void MarkAsRemoved()
+        {
+            if (!HasEventsOfType<EntityRemoved>())
+                AddOrReplaceEvent(new EntityRemoved(this));
         }
     }
 }

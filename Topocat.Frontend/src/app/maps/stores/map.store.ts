@@ -3,11 +3,23 @@ import {EntityState, EntityStore, StoreConfig} from '@datorama/akita';
 import {MapModel} from '../models/map.model';
 
 export interface MapState extends EntityState<MapModel> {
+    position: {
+        lat: number,
+        lng: number,
+        zoom: number,
+        setManually: boolean
+    };
 }
 
 function initialState(): Partial<MapState> {
     return {
         loading: false,
+        position: {
+            lat: 0,
+            lng: 0,
+            zoom: 5,
+            setManually: false
+        }
     };
 }
 

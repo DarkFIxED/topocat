@@ -12,16 +12,21 @@
 }
 
 .visible-on-hover {
-    span {
-        transition: visibility 0s, opacity 0.2s linear;
-        visibility: hidden;
-        opacity: 0;
+
+    .toggle-visibility {
+        span {
+            transition: visibility 0s, opacity 0.2s linear;
+            visibility: hidden;
+            opacity: 0;
+        }
     }
 
     &:hover {
-        span {
-            visibility: visible;
-            opacity: 1;
+        .toggle-visibility {
+            span {
+                visibility: visible;
+                opacity: 1;
+            }
         }
     }
 }

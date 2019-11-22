@@ -13,7 +13,7 @@
         <app-loader *ngIf="(loading$ | async)"></app-loader>
         <mat-list *ngIf="!(loading$ | async)" class="objects-list p-0">
             <mat-list-item *ngFor="let object of objects$ | async"
-                           class="list-item">
+                           class="list-item highlight-on-hover">
                 <app-objects-list-item class="h-100 w-100"
                                        [class.active]="(activeId$ | async) == object.id"
                                        [object]="object">

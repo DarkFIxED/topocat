@@ -1,5 +1,6 @@
 import {Injectable} from '@angular/core';
 import {TokenPair} from '../models/token-pair';
+import {JwtTokensService} from '../services/jwt-tokens.service';
 
 @Injectable({
     providedIn: 'root'
@@ -13,7 +14,7 @@ export class CredentialsStore {
         return this.currentTokenPair;
     }
 
-    constructor() {
+    constructor(private jwtTokensService: JwtTokensService) {
         this.currentTokenPair = this.load();
     }
 
@@ -24,6 +25,14 @@ export class CredentialsStore {
 
     clear() {
         localStorage.removeItem(this.storageKey);
+    }
+
+    getCurrentUserId(): string {
+        const tokenPair = this.tokenPair;
+        if (!tokenPair || !tokenPair.accessToken)
+            return undefined;
+
+        return this.jwtTokensService.getUserId(tokenPair.accessToken);
     }
 
     private save(tokenPair: TokenPair) {

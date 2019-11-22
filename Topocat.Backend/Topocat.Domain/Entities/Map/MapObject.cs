@@ -8,7 +8,7 @@ using Topocat.Domain.Entities.Map.Events;
 
 namespace Topocat.Domain.Entities.Map
 {
-    public class MapObject : DomainEntity, IHasIdentifier<string>, ILastModifiedAt, ICreatedAt
+    public class MapObject : DomainEntity, IHasIdentifier<string>, ILastModifiedAt, ICreatedAt, IMarkAsRemoved
     {
         [UsedImplicitly]
         protected MapObject() { }
@@ -43,7 +43,7 @@ namespace Topocat.Domain.Entities.Map
         public void Update(string title, Geometry geometry)
         {
             Title = title;
-            Geometry = geometry;
+            Geometry = FixClockWiseOrientationIfRequired(geometry);
             LastModifiedAt = DateTimeOffset.UtcNow;
 
             if (!HasEventsOfType<MapObjectAdded>())
@@ -55,5 +55,21 @@ namespace Topocat.Domain.Entities.Map
             if (!HasEventsOfType<EntityRemoved>())
                 AddOrReplaceEvent(new EntityRemoved(this));
         }
+
+        private static Geometry FixClockWiseOrientationIfRequired(Geometry geometry)
+        {
+            if (geometry.OgcGeometryType != OgcGeometryType.Polygon) 
+                return geometry;
+
+            var polygon = geometry as Polygon;
+            if (polygon == null)
+                throw new InvalidCastException();
+
+            if (!polygon.Shell.IsCCW)
+                geometry = polygon.Reverse();
+
+            return geometry;
+        }
+
     }
 }

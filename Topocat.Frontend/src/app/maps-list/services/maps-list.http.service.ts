@@ -15,6 +15,10 @@ export class MapsListHttpService {
     }
 
     createMap(newMapModel: NewMapModel): Observable<ApiResponse<any>> {
-        return this.authHttpService.post('maps', newMapModel);
+        return this.authHttpService.post<ApiResponse<any>>('maps', newMapModel);
+    }
+
+    updateMap(id: string, data: NewMapModel): Observable<ApiResponse<any>> {
+        return this.authHttpService.put<ApiResponse<any>>(`maps/${id}`, data);
     }
 }
