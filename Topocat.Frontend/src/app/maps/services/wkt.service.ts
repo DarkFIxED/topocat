@@ -26,7 +26,7 @@ export class WktService {
 
             case WktPrimitives.Polygon:
                 const polygon = primitive as Terraformer.Polygon;
-                return polygon.coordinates.map(path => path.map(coords => new Coordinates(coords[1], coords[0])));
+                return polygon.coordinates.map(path => path.filter(coords => path.indexOf(coords) !== path.length - 1).map(coords => new Coordinates(coords[1], coords[0])));
 
             default:
                 throw new Error();
