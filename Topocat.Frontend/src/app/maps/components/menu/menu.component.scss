@@ -1,0 +1,11 @@
+.menu-card {
+    position: absolute;
+    top: 30px;
+    left: 30px;
+}
+
+.card-content {
+    max-height: calc(100vh - 125px);
+    min-height: 180px;
+    min-width: 350px;
+}

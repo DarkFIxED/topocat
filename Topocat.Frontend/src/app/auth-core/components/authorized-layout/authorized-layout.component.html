@@ -8,7 +8,7 @@
         </button>
 
         <button class="mr-3" mat-button routerLink="/">Topocat (PoC)</button>
-        <button class="mr-auto" mat-button>About</button>
+        <button class="mr-auto" mat-button routerLink="/about">About</button>
         <button class="float-right" mat-button (click)="logout()">Logout</button>
     </div>
 </mat-toolbar>
@@ -29,5 +29,4 @@
             <router-outlet></router-outlet>
         </div>
     </div>
-
 </mat-drawer-container>

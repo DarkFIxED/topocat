@@ -1,0 +1,24 @@
+<mat-card class="menu-card p-0">
+    <mat-card-content class="mb-0 card-content">
+        <mat-tab-group animationDuration="0ms" mat-stretch-tabs>
+            <mat-tab>
+                <ng-template mat-tab-label>
+                    <span class="mdi mdi-24px mdi-map-search-outline mr-2"></span>
+                    Objects
+                </ng-template>
+                <ng-template matTabContent>
+                    <app-objects-list></app-objects-list>
+                </ng-template>
+            </mat-tab>
+            <mat-tab>
+                <ng-template mat-tab-label>
+                    <span class="mdi mdi-24px mdi-settings mr-2"></span>
+                    Settings
+                </ng-template>
+                <ng-template matTabContent>
+                    <app-maps-settings></app-maps-settings>
+                </ng-template>
+            </mat-tab>
+        </mat-tab-group>
+    </mat-card-content>
+</mat-card>

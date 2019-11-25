@@ -1,43 +1,40 @@
-<mat-card class="objects-list-card p-0">
-    <mat-card-content class="content mb-0">
-        <div class="pl-3 pr-3 pt-2">
-            <mat-form-field class="w-100">
-                <input matInput
-                       placeholder="Search map objects..."
-                       autocomplete="off"
-                       (keyup)="emitValue()"
-                       [(ngModel)]="searchString">
-            </mat-form-field>
-        </div>
+<div class="pl-3 pr-3 pt-2">
+    <mat-form-field class="w-100">
+        <input matInput
+               placeholder="Search map objects..."
+               autocomplete="off"
+               (keyup)="emitValue()"
+               [(ngModel)]="searchString">
+    </mat-form-field>
+</div>
+<mat-divider [inset]="true"></mat-divider>
+<app-loader *ngIf="(loading$ | async)"></app-loader>
+<mat-list *ngIf="!(loading$ | async)" class="objects-list p-0">
+    <mat-list-item *ngFor="let object of objects$ | async"
+                   class="list-item highlight-on-hover">
+        <app-objects-list-item class="h-100 w-100"
+                               [class.active]="(activeId$ | async) == object.id"
+                               [object]="object">
+        </app-objects-list-item>
         <mat-divider [inset]="true"></mat-divider>
-        <app-loader *ngIf="(loading$ | async)"></app-loader>
-        <mat-list *ngIf="!(loading$ | async)" class="objects-list p-0">
-            <mat-list-item *ngFor="let object of objects$ | async"
-                           class="list-item highlight-on-hover">
-                <app-objects-list-item class="h-100 w-100"
-                                       [class.active]="(activeId$ | async) == object.id"
-                                       [object]="object">
-                </app-objects-list-item>
-                <mat-divider [inset]="true"></mat-divider>
-            </mat-list-item>
-        </mat-list>
-        <div *ngIf="!(loading$ | async) && (objects$ | async)?.length === 0" class="p-3">
-            No items found...
+    </mat-list-item>
+</mat-list>
+<div *ngIf="!(loading$ | async) && (objects$ | async)?.length === 0" class="p-3">
+    No items found...
+</div>
+<div class="m-0 w-100">
+    <mat-divider [inset]="true"></mat-divider>
+    <div class="d-table-cell footer-content p-3">
+        <div class="float-left mr-auto">
+            <span>Total objects: {{(totalObjects$ | async)?.length}}</span>
         </div>
-    </mat-card-content>
-    <mat-card-footer class="m-0 w-100">
-        <mat-divider [inset]="true"></mat-divider>
-        <div class="d-table-cell footer-content p-3">
-            <div class="float-left mr-auto">
-                <span>Total objects: {{(totalObjects$ | async)?.length}}</span>
-            </div>
-        </div>
-        <button *ngIf="!(editing$ | async) && !(adding$ | async)"
-                mat-mini-fab
-                color="primary"
-                class="add-button"
-                (click)="newMapObject()">
-            <span class="mdi mdi-24px mdi-plus"></span>
-        </button>
-    </mat-card-footer>
-</mat-card>
+    </div>
+    <button *ngIf="!(editing$ | async) && !(adding$ | async)"
+            mat-mini-fab
+            color="primary"
+            class="add-button"
+            (click)="newMapObject()">
+        <span class="mdi mdi-24px mdi-plus"></span>
+    </button>
+</div>
+

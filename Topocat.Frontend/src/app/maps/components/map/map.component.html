@@ -4,6 +4,6 @@
              [zoomControl]="false"
              (mapReady)="onMapReady($event)">
     </agm-map>
-    <app-objects-list></app-objects-list>
+    <app-menu></app-menu>
     <app-confirm-drawing *ngIf="drawing$ | async"></app-confirm-drawing>
 </div>

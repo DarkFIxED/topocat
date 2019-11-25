@@ -3,10 +3,10 @@
 </div>
 <div mat-dialog-content>
     <form [formGroup]="typeForm">
-        <div class="grid">
+        <div class="d-grid">
             <label id="type-label">Select new object type:</label>
             <mat-radio-group aria-labelledby="type-label"
-                             class="example-radio-group grid p-2"
+                             class="example-radio-group d-grid p-2"
                              tabindex="1"
                              formControlName="type">
                 <mat-radio-button [value]="WktPrimitives.Point" color="primary" cdkFocusInitial>Point</mat-radio-button>
