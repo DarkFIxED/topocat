@@ -1,12 +1,5 @@
-.objects-list-card {
-    position: absolute;
-    top: 30px;
-    left: 30px;
-    min-height: calc(100vh - 124px);
-}
-
 .objects-list {
-    max-height: calc(100vh - 254px);
+    max-height: calc(100vh - 305px);
     overflow: auto;
     min-width: 350px;
     width: 350px;
@@ -25,13 +18,6 @@
 
 app-objects-list-item.active {
     background-color: #EEE;
-}
-
-mat-card-footer {
-    min-height: 64px;
-    max-height: 64px;
-    position: absolute;
-    bottom: 0;
 }
 
 .footer-content{
