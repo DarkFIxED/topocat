@@ -57,8 +57,8 @@ export class Polygon extends BaseUnifiedMapObject<google.maps.Polygon> implement
 
     enable() {
         this.underlyingObject.setOptions({
-            strokeOpacity: 1,
-            fillOpacity: 1,
+            strokeOpacity: 0.8,
+            fillOpacity: 0.35,
             clickable: true
         });
     }
