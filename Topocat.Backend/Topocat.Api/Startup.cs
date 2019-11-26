@@ -120,6 +120,7 @@ namespace Topocat.API
             services.Configure<JWTOptions>(AppConfiguration.GetSection("JWTOptions"));
             services.Configure<SendGridOptions>(AppConfiguration.GetSection("SendGridOptions"));
             services.Configure<FrontendUrls>(AppConfiguration.GetSection("FrontendUrls"));
+            services.Configure<FileStorageOptions>(AppConfiguration.GetSection("StorageOptions"));
 
             services.AddSingleton(tokenValidationParams);
             services.AddHostedService<QueuedHostedService>();
