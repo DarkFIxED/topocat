@@ -124,4 +124,20 @@ export class MapService {
     removeObject(id: ID) {
         this.mapObjectsStore.remove(id);
     }
+
+    openPropertiesWindow(mapObjectId: ID) {
+        this.mapObjectsStore.update({
+            showPropertiesWindow: {
+                mapObjectId
+            }
+        });
+    }
+
+    closePropertiesWindow() {
+        this.mapObjectsStore.update({
+            showPropertiesWindow: {
+                mapObjectId: undefined
+            }
+        });
+    }
 }

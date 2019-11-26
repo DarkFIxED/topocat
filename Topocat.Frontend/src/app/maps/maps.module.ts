@@ -76,7 +76,8 @@ const routes: Routes = [
     ],
     entryComponents: [
         EditMapObjectComponent,
-        SelectNewObjectTypeComponent
+        SelectNewObjectTypeComponent,
+        MapObjectPropertiesComponent
     ],
     providers: [
         MapObjectsStore,

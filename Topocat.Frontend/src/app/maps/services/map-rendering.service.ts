@@ -89,10 +89,7 @@ export class MapRenderingService extends BaseDestroyable {
         const infoWindow = this.infoWindowInstance$.getValue();
         const unifiedMapObject = this.drawnObjectsStore.drawnObjects.find(x => x.id === active.id);
 
-        const content =
-            `<span>Title:&nbsp;${active.title}</span><br>` +
-            `<span>Created&nbsp;at:&nbsp;${formatDate(active.createdAt, 'hh:mm dd-MM-yyyy', 'en-US')}</span><br>` +
-            `<span>Last&nbsp;modified&nbsp;at:&nbsp;${formatDate(active.lastModifiedAt, 'hh:mm dd-MM-yyyy', 'en-US')}</span>`;
+        const content = `<span>${active.title}</span><br>`;
 
         infoWindow.setContent(content);
         infoWindow.setPosition(unifiedMapObject.getInfoWindowPosition());
