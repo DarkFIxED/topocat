@@ -148,19 +148,12 @@ export class EditMapObjectFlow extends BaseDestroyable implements DataFlow {
 
     private openEditDialog(model: MapObjectModel, isNewObject: boolean): MatDialogRef<EditMapObjectComponent, DialogResult<{ action: EditObjectTypesActions, data: MapObjectModel }>> {
         return this.matDialog.open(EditMapObjectComponent, {
-            width: '450px',
-            hasBackdrop: true,
             data: {model, isNewObject},
-            disableClose: true
         });
     }
 
     private openRemoveConfirmationDialog(): MatDialogRef<ConfirmationComponent, DialogResult<any>> {
-        return this.matDialog.open(ConfirmationComponent, {
-            width: '450px',
-            hasBackdrop: true,
-            disableClose: true
-        });
+        return this.matDialog.open(ConfirmationComponent, {});
     }
 
     private drawUntilConfirmedOrCancelled(model: { source: MapObjectModel, changed: MapObjectModel }, drawFinished$: Observable<boolean>) {

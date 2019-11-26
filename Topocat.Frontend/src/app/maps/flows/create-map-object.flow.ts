@@ -77,18 +77,11 @@ export class CreateMapObjectFlow extends BaseDestroyable implements DataFlow {
     }
 
     private openTypeDialog(): MatDialogRef<SelectNewObjectTypeComponent, DialogResult<string>> {
-        return this.matDialog.open(SelectNewObjectTypeComponent, {
-            width: '450px',
-            hasBackdrop: true,
-            disableClose: true
-        });
+        return this.matDialog.open(SelectNewObjectTypeComponent, {});
     }
 
     private openEditDialog(model: MapObjectModel, isNewObject: boolean): MatDialogRef<EditMapObjectComponent, DialogResult<{action: EditObjectTypesActions, data: MapObjectModel}>> {
         return this.matDialog.open(EditMapObjectComponent, {
-            width: '450px',
-            hasBackdrop: true,
-            disableClose: true,
             data: {model, isNewObject}
         });
     }

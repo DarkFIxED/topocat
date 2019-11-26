@@ -25,6 +25,7 @@ import { ConfirmDrawingComponent } from './components/confirm-drawing/confirm-dr
 import { SelectNewObjectTypeComponent } from './dialogs/select-new-object-type/select-new-object-type.component';
 import { MenuComponent } from './components/menu/menu.component';
 import { MapsSettingsComponent } from './components/maps-settings/maps-settings.component';
+import { MapObjectPropertiesComponent } from './dialogs/map-object-properties/map-object-properties.component';
 
 const routes: Routes = [
     {
@@ -48,7 +49,8 @@ const routes: Routes = [
         ConfirmDrawingComponent,
         SelectNewObjectTypeComponent,
         MenuComponent,
-        MapsSettingsComponent
+        MapsSettingsComponent,
+        MapObjectPropertiesComponent
     ],
     imports: [
         CommonModule,
