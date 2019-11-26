@@ -26,9 +26,9 @@ export class ObjectsListItemComponent implements OnInit {
         this.type = this.wktService.getWktType(this.object.wktString);
     }
 
-    openInfoWindow(event: MouseEvent) {
+    onShowInfoClick(event: MouseEvent) {
         event.stopImmediatePropagation();
-        this.mapService.setActive(this.object.id);
+        this.mapService.openPropertiesWindow(this.object.id);
     }
 
     onEditClick(event: MouseEvent) {
@@ -40,5 +40,7 @@ export class ObjectsListItemComponent implements OnInit {
         const unifiedMapObject = this.drawnObjectsStore.find(this.object.id);
         const center = unifiedMapObject.getInfoWindowPosition();
         this.mapService.setPosition(center.lat, center.lng);
+
+        this.mapService.setActive(this.object.id);
     }
 }

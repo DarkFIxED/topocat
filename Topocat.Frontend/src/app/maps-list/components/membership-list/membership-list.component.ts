@@ -68,7 +68,6 @@ export class MembershipListComponent implements OnInit {
     openInviteDialog() {
         const dialogRef = this.dialog.open(NewInviteComponent, {
             width: '250px',
-            hasBackdrop: true
         });
 
         dialogRef.afterClosed()
@@ -100,11 +99,7 @@ export class MembershipListComponent implements OnInit {
     }
 
     resendInvite(inviteId: string) {
-        this.dialog.open(ConfirmationComponent, {
-            disableClose: true,
-            hasBackdrop: true,
-            width: '450px',
-        })
+        this.dialog.open(ConfirmationComponent, {})
             .afterClosed()
             .pipe(
                 filter((result: DialogResult<any>) => {
@@ -120,11 +115,7 @@ export class MembershipListComponent implements OnInit {
     }
 
     cancelInvite(inviteId: string) {
-        this.dialog.open(ConfirmationComponent, {
-            disableClose: true,
-            hasBackdrop: true,
-            width: '450px',
-        })
+        this.dialog.open(ConfirmationComponent, {})
             .afterClosed()
             .pipe(
                 filter((result: DialogResult<any>) => {

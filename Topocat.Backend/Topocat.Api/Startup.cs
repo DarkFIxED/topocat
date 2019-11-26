@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Text;
 using DalSoft.Hosting.BackgroundQueue.DependencyInjection;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -41,10 +40,7 @@ namespace Topocat.API
 
             services.AddCors();
 
-            services.AddDbContext<TopocatContext>(builder =>
-            {
-                builder.UseSqlServer(AppConfiguration.GetConnectionString("Database"), x => x.UseNetTopologySuite());
-            });
+            services.AddDbContext<TopocatContext>(builder => { builder.UseSqlServer(AppConfiguration.GetConnectionString("Database"), x => x.UseNetTopologySuite()); });
 
             services.AddIdentity<User, Role>(options =>
                 {
@@ -65,7 +61,7 @@ namespace Topocat.API
                 ValidIssuer = jwtOptions.Issuer,
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.Key)),
             };
-            
+
             services.AddAuthentication(options =>
                 {
                     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -111,12 +107,12 @@ namespace Topocat.API
                                 Id = "Bearer"
                             }
                         },
-                        new string[] {}
+                        new string[] { }
                     }
                 });
             });
 
-            services.AddBackgroundQueue(exc => {});
+            services.AddBackgroundQueue(exc => { });
             services.AddSignalR();
 
             services.RegisterServicesByAttributes();
@@ -165,10 +161,7 @@ namespace Topocat.API
             });
 
             app.UseSwagger();
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Test API V1");
-            });
+            app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "Test API V1"); });
 
             app.UseRobotsTxt(builder =>
                 builder
@@ -182,14 +175,8 @@ namespace Topocat.API
                 .GetRequiredService<IServiceScopeFactory>()
                 .CreateScope();
             using var context = serviceScope.ServiceProvider.GetService<TopocatContext>();
-            try
-            {
-                context.Database.Migrate();
-            }
-            catch (Exception exc)
-            {
 
-            }
+            context.Database.Migrate();
         }
     }
 }
