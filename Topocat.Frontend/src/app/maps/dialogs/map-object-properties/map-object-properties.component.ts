@@ -5,6 +5,7 @@ import {DialogResult} from '../../../core/models/dialog-result';
 import {ShowPropertiesActions} from '../../models/show-properties-actions';
 import {environment} from '../../../../environments/environment';
 import {WktService} from '../../services/wkt.service';
+import {ID} from '@datorama/akita';
 
 @Component({
     selector: 'app-map-object-properties',
@@ -17,7 +18,7 @@ export class MapObjectPropertiesComponent implements OnInit {
 
     model: MapObjectModel = undefined;
     type: string;
-    constructor(public dialogRef: MatDialogRef<MapObjectPropertiesComponent, DialogResult<{ result: ShowPropertiesActions }>>,
+    constructor(public dialogRef: MatDialogRef<MapObjectPropertiesComponent, DialogResult<{ result: ShowPropertiesActions, mapObjectId: ID }>>,
                 @Inject(MAT_DIALOG_DATA) data: any,
                 private wktService: WktService) {
 
@@ -29,10 +30,10 @@ export class MapObjectPropertiesComponent implements OnInit {
     }
 
     onCloseClick() {
-        this.dialogRef.close(DialogResult.Ok({result: ShowPropertiesActions.Finished}));
+        this.dialogRef.close(DialogResult.Ok({result: ShowPropertiesActions.Finished, mapObjectId: this.model.id}));
     }
 
     onEditClick() {
-        this.dialogRef.close(DialogResult.Ok({result: ShowPropertiesActions.EditRequested}));
+        this.dialogRef.close(DialogResult.Ok({result: ShowPropertiesActions.EditRequested, mapObjectId: this.model.id}));
     }
 }

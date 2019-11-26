@@ -1,4 +1,4 @@
 export enum ShowPropertiesActions {
-    Finished,
+    Finished = 0,
     EditRequested = 1
 }

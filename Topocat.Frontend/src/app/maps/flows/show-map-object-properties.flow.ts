@@ -8,6 +8,8 @@ import {MatDialog, MatDialogRef} from '@angular/material';
 import {MapObjectModel} from '../models/map-object.model';
 import {MapObjectPropertiesComponent} from '../dialogs/map-object-properties/map-object-properties.component';
 import {DialogResult} from '../../core/models/dialog-result';
+import {ShowPropertiesActions} from '../models/show-properties-actions';
+import {ID} from '@datorama/akita';
 
 @Injectable()
 export class ShowMapObjectPropertiesFlow extends BaseDestroyable implements DataFlow {
@@ -28,6 +30,12 @@ export class ShowMapObjectPropertiesFlow extends BaseDestroyable implements Data
                 map(mapObject => this.openPropertiesDialog(mapObject)),
                 switchMap(dialogRef => dialogRef.afterClosed()),
                 tap(() => this.mapService.closePropertiesWindow()),
+                tap(dialogResult => {
+                    if (dialogResult.data.result === ShowPropertiesActions.EditRequested) {
+                        const mapObject = this.mapObjectsQuery.getEntity(dialogResult.data.mapObjectId);
+                        this.mapService.editMapObject(mapObject);
+                    }
+                }),
                 takeUntil(this.componentAlive$)
             ).subscribe();
 
@@ -41,7 +49,7 @@ export class ShowMapObjectPropertiesFlow extends BaseDestroyable implements Data
             ).subscribe();
     }
 
-    private openPropertiesDialog(mapObject: MapObjectModel): MatDialogRef<MapObjectPropertiesComponent, DialogResult<any>> {
+    private openPropertiesDialog(mapObject: MapObjectModel): MatDialogRef<MapObjectPropertiesComponent, DialogResult<{ result: ShowPropertiesActions, mapObjectId: ID }>> {
         this.openedDialog = this.dialog.open(MapObjectPropertiesComponent, {
             data: {
                 model: mapObject

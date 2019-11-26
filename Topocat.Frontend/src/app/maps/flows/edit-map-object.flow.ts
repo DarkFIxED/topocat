@@ -66,8 +66,7 @@ export class EditMapObjectFlow extends BaseDestroyable implements DataFlow {
                 ),
                 tap(data => {
                     if (data.dialogResult.isCancelled) {
-                        this.mapService.updateObject(data.source);
-                        this.mapService.stopEditMapObject();
+                        this.cancelEdit(data.source);
                     }
                 }),
                 filter(data => !data.dialogResult.isCancelled),
@@ -80,8 +79,12 @@ export class EditMapObjectFlow extends BaseDestroyable implements DataFlow {
                     }
                 }),
                 filter(data => data.dialogResult.data.action === EditObjectTypesActions.Finished),
-                switchMap(data => this.mapsHttpService.updateMapObject(this.getActualMapId(), data.dialogResult.data.data)),
-                tap(() => this.mapService.stopEditMapObject()),
+                switchMap(data => this.mapsHttpService.updateMapObject(this.getActualMapId(), data.dialogResult.data.data).pipe(
+                    tap(() => {
+                        this.mapService.stopEditMapObject();
+                        this.onEditFinished(data.dialogResult.data.data);
+                    })
+                )),
                 takeUntil(this.componentAlive$)
             )
             .subscribe();
@@ -98,8 +101,7 @@ export class EditMapObjectFlow extends BaseDestroyable implements DataFlow {
                 switchMap(model => this.drawUntilConfirmedOrCancelled(model, drawFinished$)),
                 tap(data => {
                     if (!data.isConfirmed) {
-                        this.mapService.updateObject(data.source);
-                        this.mapService.stopEditMapObject();
+                        this.cancelEdit(data.source);
                     }
                 }),
                 filter(data => !!data.isConfirmed),
@@ -183,5 +185,15 @@ export class EditMapObjectFlow extends BaseDestroyable implements DataFlow {
 
     private getActualMapId(): string {
         return this.mapQuery.getAll()[0].id.toString();
+    }
+
+    private cancelEdit(sourceObject: MapObjectModel) {
+        this.mapService.updateObject(sourceObject);
+        this.mapService.stopEditMapObject();
+        this.mapService.openPropertiesWindow(sourceObject.id);
+    }
+
+    private onEditFinished(modifiedObject: MapObjectModel) {
+        this.mapService.openPropertiesWindow(modifiedObject.id);
     }
 }
