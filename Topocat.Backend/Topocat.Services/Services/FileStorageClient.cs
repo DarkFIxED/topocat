@@ -1,7 +1,11 @@
 ﻿using System;
+using System.IO;
+using System.Net;
+using Amazon;
 using Amazon.Runtime;
 using Amazon.S3;
 using Amazon.S3.Model;
+using Microsoft.Extensions.Options;
 using Topocat.Common;
 using Topocat.Services.Models;
 
@@ -18,10 +22,11 @@ namespace Topocat.Services.Services
 
         private readonly string _bucketName;
 
-        public FileStorageClient(FileStorageOptions options)
+        public FileStorageClient(IOptions<FileStorageOptions> options)
         {
-            _bucketName = options.BucketName;
-            _client = new AmazonS3Client(new BasicAWSCredentials(options.AccessKey, options.SecretKey));
+            _bucketName = options.Value.BucketName;
+            // TODO: now static Ohio. Add flexible configuration.
+            _client = new AmazonS3Client(new BasicAWSCredentials(options.Value.AccessKey, options.Value.SecretKey), RegionEndpoint.USEast2);
         }
 
         public string GenerateUploadPreSignedUrl(string objectKey)
@@ -31,7 +36,7 @@ namespace Topocat.Services.Services
 
         public string GenerateGetPreSignedUrl(string objectKey)
         {
-            return MakeRequest(objectKey, HttpVerb.PUT, DateTime.Now.Add(_getAvailability));
+            return MakeRequest(objectKey, HttpVerb.GET, DateTime.Now.Add(_getAvailability));
         }
 
         private string MakeRequest(string objectKey, HttpVerb verb, DateTime expiration)
@@ -41,7 +46,8 @@ namespace Topocat.Services.Services
                 BucketName = _bucketName,
                 Key = objectKey,
                 Verb = verb,
-                Expires = expiration
+                Expires = expiration,
+                ServerSideEncryptionMethod = ServerSideEncryptionMethod.None
             };
 
             return _client.GetPreSignedURL(request);

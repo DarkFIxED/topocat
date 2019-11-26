@@ -1,6 +1,6 @@
 ﻿namespace Topocat.API.Models.Maps
 {
-    public class AddFeatureRequestModel
+    public class AddObjectRequestModel
     {
         public string Title { get; set; }
 
