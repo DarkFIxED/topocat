@@ -1,6 +1,8 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Text;
 using DalSoft.Hosting.BackgroundQueue.DependencyInjection;
+using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -10,15 +12,14 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
-using Topocat.API.Extensions;
+using Topocat.API.Activators;
 using Topocat.API.Middlewares;
+using Topocat.API.StartupExtensions;
 using Topocat.DB;
 using Topocat.Domain.Entities.Users;
 using Topocat.Services.Hubs;
 using Topocat.Services.Models;
 using Topocat.Services.Services;
-using Topocat.Services.Services.Background;
 
 namespace Topocat.API
 {
@@ -80,55 +81,18 @@ namespace Topocat.API
                     options.SecurityTokenValidators.Add(customValidator);
                 });
 
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo
-                {
-                    Title = "Topocat API Reference"
-                });
-
-                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-                {
-                    Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
-                    Name = "Authorization",
-                    In = ParameterLocation.Header,
-                    Type = SecuritySchemeType.ApiKey
-                });
-
-
-                c.AddSecurityRequirement(new OpenApiSecurityRequirement
-                {
-                    {
-                        new OpenApiSecurityScheme
-                        {
-                            Reference = new OpenApiReference
-                            {
-                                Type = ReferenceType.SecurityScheme,
-                                Id = "Bearer"
-                            }
-                        },
-                        new string[] { }
-                    }
-                });
-            });
-
+            
+            services.RegisterSwagger();
+            services.RegisterHangfire(AppConfiguration.GetConnectionString("Database"));
+           
             services.AddBackgroundQueue(exc => { });
             services.AddSignalR();
 
-            services.RegisterServicesByAttributes();
-
-            services.Configure<JWTOptions>(AppConfiguration.GetSection("JWTOptions"));
-            services.Configure<SendGridOptions>(AppConfiguration.GetSection("SendGridOptions"));
-            services.Configure<FrontendUrls>(AppConfiguration.GetSection("FrontendUrls"));
-            services.Configure<FileStorageOptions>(AppConfiguration.GetSection("StorageOptions"));
-
-            services.AddSingleton(tokenValidationParams);
-            services.AddHostedService<QueuedHostedService>();
-            services.AddSingleton<IBackgroundTaskQueue, BackgroundTaskQueue>();
+            services.RegisterDI(AppConfiguration, tokenValidationParams);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider serviceProvider)
         {
             if (env.IsDevelopment())
             {
@@ -140,6 +104,10 @@ namespace Topocat.API
             }
 
             app.ConfigureExceptionHandler();
+
+            GlobalConfiguration.Configuration.UseActivator(new HangfireActivator(serviceProvider));
+            app.UseHangfireServer();
+            app.UseHangfireDashboard();
 
             var frontendUrls = AppConfiguration.GetSection("FrontendUrls").Get<FrontendUrls>();
 
@@ -164,10 +132,9 @@ namespace Topocat.API
             app.UseSwagger();
             app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "Test API V1"); });
 
-            app.UseRobotsTxt(builder =>
-                builder
-                    .DenyAll()
-            );
+            app.UseRobotsTxt(builder => builder.DenyAll());
+
+            app.RunBackgroundJobs();
         }
 
         private static void UpdateDatabase(IApplicationBuilder app)
