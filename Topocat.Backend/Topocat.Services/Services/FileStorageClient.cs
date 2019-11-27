@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Amazon;
 using Amazon.Runtime;
 using Amazon.S3;
@@ -35,6 +36,17 @@ namespace Topocat.Services.Services
         public string GenerateGetPreSignedUrl(string objectKey)
         {
             return MakeRequest(objectKey, HttpVerb.GET, DateTime.Now.Add(_getAvailability));
+        }
+
+        public async Task Remove(string objectKey)
+        {
+            var deleteObjectRequest = new DeleteObjectRequest
+            {
+                BucketName = _bucketName,
+                Key = objectKey
+            };
+
+            await _client.DeleteObjectAsync(deleteObjectRequest);
         }
 
         private string MakeRequest(string objectKey, HttpVerb verb, DateTime expiration, string mimeType = null)

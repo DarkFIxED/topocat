@@ -4,10 +4,11 @@ using Microsoft.AspNetCore.Mvc;
 using Topocat.API.Extensions;
 using Topocat.API.Models;
 using Topocat.API.Models.MapObjects;
-using Topocat.API.Models.Maps;
 using Topocat.Services;
 using Topocat.Services.Commands.Maps.Objects.AddAttachment;
 using Topocat.Services.Commands.Maps.Objects.AddObject;
+using Topocat.Services.Commands.Maps.Objects.ConfirmAttachment;
+using Topocat.Services.Commands.Maps.Objects.RemoveAttachment;
 using Topocat.Services.Commands.Maps.Objects.RemoveObject;
 using Topocat.Services.Commands.Maps.Objects.UpdateObject;
 using Topocat.Services.Queries.Map.GetMapObjects;
@@ -128,6 +129,40 @@ namespace Topocat.API.Controllers
             });
 
             return ApiResponse.Success(result);
+        }
+
+        [Route("/maps/{mapId}/objects/{objectId}/attachments/{attachmentId}")]
+        [HttpDelete]
+        public async Task<ApiResponse> RemoveAttachment([FromRoute] string mapId, [FromRoute] string objectId, [FromRoute] string attachmentId)
+        {
+            var updateLineCommand = _commandsFactory.Get<RemoveAttachmentCommand>();
+
+            await updateLineCommand.Execute(new RemoveAttachmentCommandArgs
+            {
+                MapId = mapId,
+                ObjectId = objectId,
+                ActionExecutorId = HttpContext.User.GetUserId(),
+                AttachmentId = attachmentId
+            });
+
+            return ApiResponse.Success();
+        }
+
+        [Route("/maps/{mapId}/objects/{objectId}/attachments/{attachmentId}")]
+        [HttpPatch]
+        public async Task<ApiResponse> ConfirmAttachment([FromRoute] string mapId, [FromRoute] string objectId, [FromRoute] string attachmentId)
+        {
+            var updateLineCommand = _commandsFactory.Get<ConfirmAttachmentCommand>();
+
+            await updateLineCommand.Execute(new ConfirmAttachmentCommandArgs
+            {
+                MapId = mapId,
+                ObjectId = objectId,
+                ActionExecutorId = HttpContext.User.GetUserId(),
+                AttachmentId = attachmentId
+            });
+
+            return ApiResponse.Success();
         }
     }
 }
