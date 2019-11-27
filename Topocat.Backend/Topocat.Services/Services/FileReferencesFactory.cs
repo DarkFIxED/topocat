@@ -9,10 +9,10 @@ namespace Topocat.Services.Services
     {
         private const string AttachmentsFolder = "upload";
         
-        public FileReference GenerateMapObjectAttachment(string sourceFileName)
+        public FileReference GenerateMapObjectAttachment(string sourceFileName, string mimeType)
         {
             var objectKey = $"{AttachmentsFolder}/{Guid.NewGuid():D}";
-            var fileReference = new FileReference(objectKey, sourceFileName);
+            var fileReference = new FileReference(objectKey, sourceFileName, mimeType);
 
             return fileReference;
         }

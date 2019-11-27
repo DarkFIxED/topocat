@@ -9,5 +9,7 @@
         public string ObjectId { get; set; }
 
         public string SourceFileName { get; set; }
+
+        public string MimeType { get; set; }
     }
 }

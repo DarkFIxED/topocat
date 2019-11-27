@@ -28,13 +28,15 @@ namespace Topocat.Services.Queries.Objects.GetAttachments
                 .OfMap(args.MapId, args.ActionExecutorId)
                 .SelectMany(mapObject => mapObject.FileReferencesBindings)
                 .Select(binding => binding.FileReference)
+                .AsNoTracking()
                 .ToListAsync();
 
             var result = new GetObjectAttachmentsResult
             {
                 Attachments = attachments.Select(attachment => new GetObjectAttachmentsResultItem
                 {
-                    AccessUrl = _fileStorageClient.GenerateGetPreSignedUrl(attachment.ObjectKey)
+                    AccessUrl = _fileStorageClient.GenerateGetPreSignedUrl(attachment.ObjectKey),
+                    MimeType = attachment.MimeType
                 }).ToList()
             };
 

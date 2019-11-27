@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Topocat.API.Extensions;
 using Topocat.API.Models;
+using Topocat.API.Models.MapObjects;
 using Topocat.API.Models.Maps;
 using Topocat.Services;
 using Topocat.Services.Commands.Maps.Objects.AddAttachment;
@@ -106,7 +107,8 @@ namespace Topocat.API.Controllers
                 MapId = mapId,
                 ObjectId = objectId,
                 ActionExecutorId = HttpContext.User.GetUserId(),
-                SourceFileName = model.SourceFileName
+                SourceFileName = model.SourceFileName,
+                MimeType = model.MimeType
             });
 
             return ApiResponse.Success(result);

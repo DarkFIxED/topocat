@@ -36,12 +36,12 @@ namespace Topocat.Services.Commands.Maps.Objects.AddAttachment
             if (mapObject == null)
                 throw new ArgumentNullException(nameof(mapObject), "Map object not found");
 
-            var fileReference = _fileReferencesFactory.GenerateMapObjectAttachment(args.SourceFileName);
+            var fileReference = _fileReferencesFactory.GenerateMapObjectAttachment(args.SourceFileName, args.MimeType);
 
             mapObject.AddAttachment(fileReference);
             _repository.Create(fileReference);
 
-            var uploadUrl = _fileStorageClient.GenerateUploadPreSignedUrl(fileReference.ObjectKey);
+            var uploadUrl = _fileStorageClient.GenerateUploadPreSignedUrl(fileReference.ObjectKey, fileReference.MimeType);
             var accessUrl = _fileStorageClient.GenerateGetPreSignedUrl(fileReference.ObjectKey);
 
             await _repository.SaveAsync();

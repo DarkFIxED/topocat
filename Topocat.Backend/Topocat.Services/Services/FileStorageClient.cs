@@ -1,6 +1,4 @@
 ﻿using System;
-using System.IO;
-using System.Net;
 using Amazon;
 using Amazon.Runtime;
 using Amazon.S3;
@@ -29,9 +27,9 @@ namespace Topocat.Services.Services
             _client = new AmazonS3Client(new BasicAWSCredentials(options.Value.AccessKey, options.Value.SecretKey), RegionEndpoint.USEast2);
         }
 
-        public string GenerateUploadPreSignedUrl(string objectKey)
+        public string GenerateUploadPreSignedUrl(string objectKey, string mimeType)
         {
-            return MakeRequest(objectKey, HttpVerb.PUT, DateTime.Now.Add(_putAvailability));
+            return MakeRequest(objectKey, HttpVerb.PUT, DateTime.Now.Add(_putAvailability), mimeType);
         }
 
         public string GenerateGetPreSignedUrl(string objectKey)
@@ -39,7 +37,7 @@ namespace Topocat.Services.Services
             return MakeRequest(objectKey, HttpVerb.GET, DateTime.Now.Add(_getAvailability));
         }
 
-        private string MakeRequest(string objectKey, HttpVerb verb, DateTime expiration)
+        private string MakeRequest(string objectKey, HttpVerb verb, DateTime expiration, string mimeType = null)
         {
             var request = new GetPreSignedUrlRequest
             {
@@ -47,8 +45,11 @@ namespace Topocat.Services.Services
                 Key = objectKey,
                 Verb = verb,
                 Expires = expiration,
-                ServerSideEncryptionMethod = ServerSideEncryptionMethod.None
+                ServerSideEncryptionMethod = ServerSideEncryptionMethod.None,
             };
+
+            if (!string.IsNullOrEmpty(mimeType))
+                request.ContentType = mimeType;
 
             return _client.GetPreSignedURL(request);
         }

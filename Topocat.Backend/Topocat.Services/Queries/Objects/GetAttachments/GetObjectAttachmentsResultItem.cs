@@ -3,5 +3,7 @@
     public class GetObjectAttachmentsResultItem
     {
         public string AccessUrl { get; set; }
+
+        public string MimeType { get; set; }
     }
 }

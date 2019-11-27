@@ -4,6 +4,6 @@ namespace Topocat.Services.Services
 {
     public interface IFileReferencesFactory
     {
-        FileReference GenerateMapObjectAttachment(string sourceFileName);
+        FileReference GenerateMapObjectAttachment(string sourceFileName, string mimeType);
     }
 }
