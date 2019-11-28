@@ -39,6 +39,11 @@ export class AuthHttpService {
             ((localRelativeUrl, localBody, localHeaders) => this.http.delete<T>(localRelativeUrl, localHeaders)));
     }
 
+    patch<T>(relativeUrl: string, body: any, headers?: HttpHeaders): Observable<T> {
+        return this.makeRequest(relativeUrl, body, headers,
+            ((localRelativeUrl, localBody, localHeaders) => this.http.patch<T>(localRelativeUrl, localBody, localHeaders)));
+    }
+
     private makeRequest<T>(relativeUrl: string, body: any, headers: HttpHeaders,
                            func: (relativeUrl: string, body: any, headers: HttpHeaders) => Observable<T>): Observable<T> {
         if (!headers) {

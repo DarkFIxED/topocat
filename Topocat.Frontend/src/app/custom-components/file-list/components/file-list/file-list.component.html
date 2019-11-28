@@ -1,0 +1,44 @@
+<div class="h-100">
+    <div class="h-75 w-100 d-flex flex-row flex-wrap items-container">
+        <div *ngFor="let item of items"
+             class="item"
+             [ngStyle]="{'width': itemWidth+'px', 'height': itemHeight+'px'}">
+
+            <div mat-ripple
+                 class="item-menu mdi mdi-18px mdi-trash-can-outline"
+                (click)="onDelete($event, item)">
+            </div>
+
+            <img *ngIf="item.mimeType.includes('image/')" [src]="item.thumbUrl" (click)="onShowImages(item)"/>
+
+        </div>
+        <div mat-ripple
+             class="item add-item"
+             title="Upload file..."
+             (click)="openUploadDialog()"
+             [ngStyle]="{'width': itemWidth+'px', 'height': itemHeight+'px'}">
+
+            <div class="mdi mdi-36px mdi-plus d-flex justify-content-center"
+                 [ngStyle]="{'line-height': itemHeight+'px'}">
+            </div>
+
+            <input #uploadInput class="d-none" type="file" name="fileUpload" multiple="multiple"/>
+        </div>
+    </div>
+    <div class="h-25 uploading-files-container">
+        <div class="d-flex mt-2" *ngFor="let file of files" [@fadeInOut]="file.state">
+            <div class="mr-2 bar-with-title">
+                <mat-progress-bar [value]="file.progress"></mat-progress-bar>
+                <div class="text-overflow" [title]="file.data.name">{{file.data.name}}</div>
+            </div>
+            <span class="cursor-pointer">
+                <a title="Retry" (click)="retryFile(file)" *ngIf="file.canRetry">
+                        <mat-icon>refresh</mat-icon>
+                </a>
+                <a title="Cancel" (click)="cancelFile(file)" *ngIf="file.canCancel">
+                    <mat-icon>cancel</mat-icon>
+                </a>
+            </span>
+        </div>
+    </div>
+</div>

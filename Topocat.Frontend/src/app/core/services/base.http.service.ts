@@ -26,4 +26,8 @@ export class BaseHttpService {
     delete<T>(relativeUrl: string, headers?: HttpHeaders): Observable<T> {
         return this.http.delete<T>(`${environment.serverUrl}${relativeUrl}`, {headers});
     }
+
+    patch<T>(relativeUrl: string, body: any, headers?: HttpHeaders): Observable<T> {
+        return this.http.patch<T>(`${environment.serverUrl}${relativeUrl}`, body, {headers});
+    }
 }

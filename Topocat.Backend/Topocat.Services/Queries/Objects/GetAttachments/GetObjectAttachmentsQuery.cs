@@ -4,39 +4,50 @@ using Microsoft.EntityFrameworkCore;
 using Topocat.Common;
 using Topocat.DB;
 using Topocat.Domain.Entities.Map;
+using Topocat.Services.Helpers;
 using Topocat.Services.QueryExtensions;
 using Topocat.Services.Services;
 
 namespace Topocat.Services.Queries.Objects.GetAttachments
 {
     [RegisterScoped]
-    public class GetObjectAttachmentsQuery : IQuery<GetObjectAttachmentsArgs, GetObjectAttachmentsResult>
+    public class GetObjectAttachmentsQuery : IQuery<GetObjectAttachmentsQueryArgs, GetObjectAttachmentsQueryResult>
     {
         private readonly IRepository _repository;
         private readonly IFileStorageClient _fileStorageClient;
+        private readonly EndpointsBuilder _endpointsBuilder;
 
-        public GetObjectAttachmentsQuery(IRepository repository, IFileStorageClient fileStorageClient)
+        public GetObjectAttachmentsQuery(
+            IRepository repository, 
+            IFileStorageClient fileStorageClient, 
+            EndpointsBuilder endpointsBuilder)
         {
             _repository = repository;
             _fileStorageClient = fileStorageClient;
+            _endpointsBuilder = endpointsBuilder;
         }
 
-        public async Task<GetObjectAttachmentsResult> Ask(GetObjectAttachmentsArgs args)
+        public async Task<GetObjectAttachmentsQueryResult> Ask(GetObjectAttachmentsQueryArgs queryArgs)
         {
             var attachments = await _repository.AsQueryable<MapObject>()
-                .WithId(args.ObjectId)
-                .OfMap(args.MapId, args.ActionExecutorId)
+                .WithId(queryArgs.ObjectId)
+                .OfMap(queryArgs.MapId, queryArgs.ActionExecutorId)
                 .SelectMany(mapObject => mapObject.FileReferencesBindings)
                 .Select(binding => binding.FileReference)
                 .AsNoTracking()
                 .ToListAsync();
 
-            var result = new GetObjectAttachmentsResult
+            var result = new GetObjectAttachmentsQueryResult
             {
-                Attachments = attachments.Select(attachment => new GetObjectAttachmentsResultItem
+                Attachments = attachments.Select(attachment => new GetObjectAttachmentsQueryResultItem
                 {
+                    Id = attachment.Id,
                     AccessUrl = _fileStorageClient.GenerateGetPreSignedUrl(attachment.ObjectKey),
-                    MimeType = attachment.MimeType
+                    MimeType = attachment.MimeType,
+                    PreviewTemplate = MimeTypesHelper.IsPreviewSupporting(attachment.MimeType) 
+                        ? _endpointsBuilder.BuildImagePreviewUrl(attachment.ObjectKey) 
+                        : null
+
                 }).ToList()
             };
 

@@ -1,16 +1,33 @@
-<div mat-dialog-title class="d-flex">
-    <div class="mr-2">{{model.title}}</div>
-    <span class="type-label">({{type}})</span>
-</div>
 <div mat-dialog-content>
-    <div class="container mb-3">
-        <div class="row">
-            <span>Created at: {{model.createdAt | date:environment.defaultDateFormat}}</span>
-        </div>
-        <div class="row">
-            <span>Last modified at: {{model.lastModifiedAt | date:environment.defaultDateFormat}}</span>
-        </div>
-    </div>
+    <mat-tab-group animationDuration="0ms" mat-stretch-tabs>
+        <mat-tab>
+            <ng-template mat-tab-label>
+                <span class="mdi mdi-24px mdi-information-outline mr-2"></span>
+                General
+            </ng-template>
+            <ng-template matTabContent>
+                <div class="content">
+                    <app-general-map-object-properties [model]="model"></app-general-map-object-properties>
+                </div>
+            </ng-template>
+        </mat-tab>
+        <mat-tab>
+            <ng-template mat-tab-label>
+                <span class="mdi mdi-24px mdi-file-multiple-outline mr-2"></span>
+                Attachments
+            </ng-template>
+            <ng-template matTabContent>
+                <div class="content">
+                    <app-attachments-map-object-properties [model]="model"
+                                                           [mapId]="mapId">
+                    </app-attachments-map-object-properties>
+                </div>
+            </ng-template>
+        </mat-tab>
+    </mat-tab-group>
+
+</div>
+<div mat-dialog-actions>
     <div class="d-flex w-100 pb-1">
         <button class="float-left mr-auto"
                 type="button"

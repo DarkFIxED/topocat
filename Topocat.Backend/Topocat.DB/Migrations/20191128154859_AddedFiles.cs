@@ -15,7 +15,8 @@ namespace Topocat.DB.Migrations
                     CreatedAt = table.Column<DateTimeOffset>(nullable: false),
                     ObjectKey = table.Column<string>(nullable: true),
                     UploadConfirmed = table.Column<bool>(nullable: false),
-                    SourceFileName = table.Column<string>(nullable: true)
+                    SourceFileName = table.Column<string>(nullable: true),
+                    MimeType = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -38,13 +39,13 @@ namespace Topocat.DB.Migrations
                         column: x => x.FileReferenceId,
                         principalTable: "FileReferences",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_MapObjectFileReferences_MapObjects_MapObjectId",
                         column: x => x.MapObjectId,
                         principalTable: "MapObjects",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(

@@ -1,0 +1,32 @@
+@import "src/variables";
+
+.items-container {
+    justify-content: flex-start;
+    align-items: flex-start;
+    align-content: flex-start;
+    overflow-y: auto;
+    border: 1px dashed black
+}
+
+.item {
+    background-color: darkgray;
+    margin-left: 10px;
+    margin-top: 10px;
+    position: relative;
+}
+
+.item-menu {
+    position: absolute;
+    top: 0;
+    right: 0;
+    color: $selected;
+}
+
+.bar-with-title {
+    width: calc(100% - 31px);
+}
+
+.uploading-files-container {
+    overflow-y: auto;
+    overflow-x: hidden;
+}

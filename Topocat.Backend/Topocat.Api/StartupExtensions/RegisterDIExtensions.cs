@@ -17,6 +17,7 @@ namespace Topocat.API.StartupExtensions
             services.Configure<SendGridOptions>(appConfiguration.GetSection("SendGridOptions"));
             services.Configure<FrontendUrls>(appConfiguration.GetSection("FrontendUrls"));
             services.Configure<FileStorageOptions>(appConfiguration.GetSection("StorageOptions"));
+            services.Configure<ImageResizerOptions>(appConfiguration.GetSection("ImageResizerOptions"));
 
             services.AddSingleton(tokenValidationParams);
             services.AddHostedService<QueuedHostedService>();

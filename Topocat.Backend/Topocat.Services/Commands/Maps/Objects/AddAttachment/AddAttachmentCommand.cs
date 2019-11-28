@@ -42,13 +42,12 @@ namespace Topocat.Services.Commands.Maps.Objects.AddAttachment
             _repository.Create(fileReference);
 
             var uploadUrl = _fileStorageClient.GenerateUploadPreSignedUrl(fileReference.ObjectKey, fileReference.MimeType);
-            var accessUrl = _fileStorageClient.GenerateGetPreSignedUrl(fileReference.ObjectKey);
 
             await _repository.SaveAsync();
 
             return new AddAttachmentCommandResult
             {
-                AccessUrl = accessUrl,
+                Id = fileReference.Id,
                 UploadUrl = uploadUrl
             };
         }

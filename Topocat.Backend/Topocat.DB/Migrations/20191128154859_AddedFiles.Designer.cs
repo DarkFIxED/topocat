@@ -11,8 +11,8 @@ using Topocat.DB;
 namespace Topocat.DB.Migrations
 {
     [DbContext(typeof(TopocatContext))]
-    [Migration("20191127145102_AddMimeType")]
-    partial class AddMimeType
+    [Migration("20191128154859_AddedFiles")]
+    partial class AddedFiles
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

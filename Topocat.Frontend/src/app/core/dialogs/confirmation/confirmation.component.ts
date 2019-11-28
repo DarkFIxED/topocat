@@ -1,4 +1,4 @@
-import {Component, Inject} from '@angular/core';
+import {Component, Inject, Optional} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
 import {DialogResult} from '../../models/dialog-result';
 
@@ -10,7 +10,7 @@ import {DialogResult} from '../../models/dialog-result';
 export class ConfirmationComponent {
 
     constructor(public dialogRef: MatDialogRef<ConfirmationComponent, DialogResult<any>>,
-                @Inject(MAT_DIALOG_DATA) data: any) {
+                @Optional() @Inject(MAT_DIALOG_DATA) data: any) {
     }
 
     onNoClick() {

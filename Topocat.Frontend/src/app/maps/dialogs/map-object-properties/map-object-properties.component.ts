@@ -3,8 +3,6 @@ import {MapObjectModel} from '../../models/map-object.model';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
 import {DialogResult} from '../../../core/models/dialog-result';
 import {ShowPropertiesActions} from '../../models/show-properties-actions';
-import {environment} from '../../../../environments/environment';
-import {WktService} from '../../services/wkt.service';
 import {ID} from '@datorama/akita';
 
 @Component({
@@ -14,16 +12,15 @@ import {ID} from '@datorama/akita';
 })
 export class MapObjectPropertiesComponent implements OnInit {
 
-    environment = environment;
+    model: MapObjectModel;
+    mapId: string;
 
-    model: MapObjectModel = undefined;
-    type: string;
     constructor(public dialogRef: MatDialogRef<MapObjectPropertiesComponent, DialogResult<{ result: ShowPropertiesActions, mapObjectId: ID }>>,
-                @Inject(MAT_DIALOG_DATA) data: any,
-                private wktService: WktService) {
+                @Inject(MAT_DIALOG_DATA) data: any) {
 
-        this.model = (data as { model: MapObjectModel }).model;
-        this.type = this.wktService.getWktType(this.model.wktString);
+        const strongTypedData = (data as { model: MapObjectModel, mapId: string });
+        this.model = data.model;
+        this.mapId = strongTypedData.mapId;
     }
 
     ngOnInit() {

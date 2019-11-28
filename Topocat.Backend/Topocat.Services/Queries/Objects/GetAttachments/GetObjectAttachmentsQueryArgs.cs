@@ -1,6 +1,6 @@
 ﻿namespace Topocat.Services.Queries.Objects.GetAttachments
 {
-    public class GetObjectAttachmentsArgs
+    public class GetObjectAttachmentsQueryArgs
     {
         public string MapId { get; set; }
 

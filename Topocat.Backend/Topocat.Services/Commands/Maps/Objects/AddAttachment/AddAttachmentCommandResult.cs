@@ -2,8 +2,8 @@
 {
     public class AddAttachmentCommandResult
     {
-        public string UploadUrl { get; set; }
+        public string Id { get; set; }
 
-        public string AccessUrl { get; set; }
+        public string UploadUrl { get; set; }
     }
 }

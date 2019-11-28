@@ -10,6 +10,7 @@ import {MapObjectPropertiesComponent} from '../dialogs/map-object-properties/map
 import {DialogResult} from '../../core/models/dialog-result';
 import {ShowPropertiesActions} from '../models/show-properties-actions';
 import {ID} from '@datorama/akita';
+import {MapQuery} from '../queries/map.query';
 
 @Injectable()
 export class ShowMapObjectPropertiesFlow extends BaseDestroyable implements DataFlow {
@@ -17,6 +18,7 @@ export class ShowMapObjectPropertiesFlow extends BaseDestroyable implements Data
     private openedDialog: MatDialogRef<MapObjectPropertiesComponent> = undefined;
 
     constructor(private mapObjectsQuery: MapObjectsQuery,
+                private mapQuery: MapQuery,
                 private mapService: MapService,
                 private dialog: MatDialog) {
         super();
@@ -27,7 +29,7 @@ export class ShowMapObjectPropertiesFlow extends BaseDestroyable implements Data
             .pipe(
                 filter(mapObjectId => !!mapObjectId),
                 map(mapObjectId => this.mapObjectsQuery.getEntity(mapObjectId)),
-                map(mapObject => this.openPropertiesDialog(mapObject)),
+                map(mapObject => this.openPropertiesDialog(this.mapQuery.getAll()[0].id.toString(), mapObject)),
                 switchMap(dialogRef => dialogRef.afterClosed()),
                 tap(() => this.mapService.closePropertiesWindow()),
                 tap(dialogResult => {
@@ -49,10 +51,11 @@ export class ShowMapObjectPropertiesFlow extends BaseDestroyable implements Data
             ).subscribe();
     }
 
-    private openPropertiesDialog(mapObject: MapObjectModel): MatDialogRef<MapObjectPropertiesComponent, DialogResult<{ result: ShowPropertiesActions, mapObjectId: ID }>> {
+    private openPropertiesDialog(mapId: string, mapObject: MapObjectModel): MatDialogRef<MapObjectPropertiesComponent, DialogResult<{ result: ShowPropertiesActions, mapObjectId: ID }>> {
         this.openedDialog = this.dialog.open(MapObjectPropertiesComponent, {
             data: {
-                model: mapObject
+                model: mapObject,
+                mapId
             }
         });
 

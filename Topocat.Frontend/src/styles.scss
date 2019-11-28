@@ -34,3 +34,9 @@ textarea:focus {
 .d-grid {
     display: grid;
 }
+
+.text-overflow {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}

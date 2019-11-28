@@ -1,0 +1,9 @@
+<div class="h-100">
+    <app-file-list #fileList
+                   class="w-100"
+                   [itemHeight]="itemHeight"
+                   [itemWidth]="itemWidth"
+                   [uploadFunc]="uploadFunc(this)"
+                    (fileRemoved)="onFileRemoved($event)">
+    </app-file-list>
+</div>

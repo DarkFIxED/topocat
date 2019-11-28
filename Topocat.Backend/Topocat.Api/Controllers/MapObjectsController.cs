@@ -12,6 +12,7 @@ using Topocat.Services.Commands.Maps.Objects.RemoveAttachment;
 using Topocat.Services.Commands.Maps.Objects.RemoveObject;
 using Topocat.Services.Commands.Maps.Objects.UpdateObject;
 using Topocat.Services.Queries.Map.GetMapObjects;
+using Topocat.Services.Queries.Objects.GetAttachment;
 using Topocat.Services.Queries.Objects.GetAttachments;
 
 namespace Topocat.API.Controllers
@@ -121,7 +122,7 @@ namespace Topocat.API.Controllers
         {
             var getObjectAttachmentsQuery = _queriesFactory.Get<GetObjectAttachmentsQuery>();
 
-            var result = await getObjectAttachmentsQuery.Ask(new GetObjectAttachmentsArgs
+            var result = await getObjectAttachmentsQuery.Ask(new GetObjectAttachmentsQueryArgs
             {
                 MapId = mapId,
                 ObjectId = objectId,
@@ -148,9 +149,9 @@ namespace Topocat.API.Controllers
             return ApiResponse.Success();
         }
 
-        [Route("/maps/{mapId}/objects/{objectId}/attachments/{attachmentId}")]
-        [HttpPatch]
-        public async Task<ApiResponse> ConfirmAttachment([FromRoute] string mapId, [FromRoute] string objectId, [FromRoute] string attachmentId)
+        [Route("/maps/{mapId}/objects/{objectId}/attachments/{attachmentId}/confirm")]
+        [HttpPost]
+        public async Task<IActionResult> ConfirmAttachment([FromRoute] string mapId, [FromRoute] string objectId, [FromRoute] string attachmentId)
         {
             var updateLineCommand = _commandsFactory.Get<ConfirmAttachmentCommand>();
 
@@ -162,7 +163,24 @@ namespace Topocat.API.Controllers
                 AttachmentId = attachmentId
             });
 
-            return ApiResponse.Success();
+            return RedirectToAction("GetAttachment", new {mapId, objectId, attachmentId});
+        }
+
+        [Route("/maps/{mapId}/objects/{objectId}/attachments/{attachmentId}")]
+        [HttpGet]
+        public async Task<ApiResponse> GetAttachment([FromRoute] string mapId, [FromRoute] string objectId, [FromRoute] string attachmentId)
+        {
+            var updateLineCommand = _queriesFactory.Get<GetObjectAttachmentQuery>();
+
+            var result = await updateLineCommand.Ask(new GetObjectAttachmentQueryArgs
+            {
+                MapId = mapId,
+                ObjectId = objectId,
+                ActionExecutorId = HttpContext.User.GetUserId(),
+                AttachmentId = attachmentId
+            });
+
+            return ApiResponse.Success(result);
         }
     }
 }
