@@ -39,5 +39,10 @@ namespace Topocat.Domain.Entities.Files
         {
             UploadConfirmed = true;
         }
+
+        public void UnConfirmUpload()
+        {
+            UploadConfirmed = false;
+        }
     }
 }

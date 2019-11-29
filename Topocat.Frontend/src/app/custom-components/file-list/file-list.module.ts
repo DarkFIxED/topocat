@@ -1,8 +1,9 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {FileListComponent} from './components/file-list/file-list.component';
-import {MatIconModule, MatProgressBarModule, MatRippleModule} from '@angular/material';
+import {MatCardModule, MatDividerModule, MatIconModule, MatProgressBarModule, MatRippleModule} from '@angular/material';
 import {CoreModule} from '../../core/core.module';
+import {SlideshowModule} from 'ng-simple-slideshow';
 
 
 @NgModule({
@@ -13,6 +14,9 @@ import {CoreModule} from '../../core/core.module';
         MatRippleModule,
         MatProgressBarModule,
         MatIconModule,
+        SlideshowModule,
+        MatDividerModule,
+        MatCardModule,
     ],
     exports: [
         FileListComponent

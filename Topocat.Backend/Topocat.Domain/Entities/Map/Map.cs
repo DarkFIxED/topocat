@@ -94,6 +94,7 @@ namespace Topocat.Domain.Entities.Map
             if (Memberships.All(x => x.InvitedId != actionExecutor.Id))
                 throw new DomainException("Have no access to map.");
 
+            foundMapObject.FileReferencesBindings.ForEach(binding => binding.FileReference.UnConfirmUpload());
             foundMapObject.MarkAsRemoved();
             ObjectsList.Remove(foundMapObject);
             AddEvent(new MapObjectRemoved(foundMapObject));

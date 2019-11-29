@@ -5,7 +5,6 @@
     align-items: flex-start;
     align-content: flex-start;
     overflow-y: auto;
-    border: 1px dashed black
 }
 
 .item {
@@ -19,7 +18,6 @@
     position: absolute;
     top: 0;
     right: 0;
-    color: $selected;
 }
 
 .bar-with-title {
@@ -29,4 +27,38 @@
 .uploading-files-container {
     overflow-y: auto;
     overflow-x: hidden;
+}
+
+.item-overlay {
+    color: $selected;
+
+    div,mat-divider {
+        transition: visibility 0s, opacity 0.2s linear;
+        visibility: hidden;
+        background-color: #33333333;
+        opacity: 0;
+    }
+
+    &:hover {
+        div,mat-divider {
+            visibility: visible;
+            opacity: 1;
+        }
+    }
+}
+
+.add-item-overlay {
+    div {
+        transition: visibility 0s, opacity 0.2s linear;
+        visibility: hidden;
+        background-color: #33333333;
+        opacity: 0;
+    }
+
+    &:hover {
+        div {
+            visibility: visible;
+            opacity: 1;
+        }
+    }
 }

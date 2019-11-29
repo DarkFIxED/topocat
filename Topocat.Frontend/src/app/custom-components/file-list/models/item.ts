@@ -3,4 +3,5 @@ export class Item {
     url: string;
     thumbUrl: string;
     mimeType: string;
+    sourceFileName: string;
 }

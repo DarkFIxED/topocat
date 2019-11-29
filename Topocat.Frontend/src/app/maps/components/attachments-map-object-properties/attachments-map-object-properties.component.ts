@@ -105,13 +105,15 @@ export class AttachmentsMapObjectPropertiesComponent implements OnInit {
     }
 
     private createFileItem(attachment: MapObjectAttachmentModel): Item {
-        const thumbUrl = attachment.previewTemplate.replace('{0}', `${this.itemWidth}x${this.itemHeight}`);
+
+        const thumbUrl = !!attachment.previewTemplate ? attachment.previewTemplate.replace('{0}', `${this.itemWidth}x${this.itemHeight}`) : undefined;
 
         return {
             url: attachment.accessUrl,
             thumbUrl,
             mimeType: attachment.mimeType,
-            id: attachment.id
+            id: attachment.id,
+            sourceFileName: attachment.sourceFileName
         };
     }
 

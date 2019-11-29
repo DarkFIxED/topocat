@@ -9,5 +9,7 @@
         public string MimeType { get; set; }
 
         public string PreviewTemplate { get; set; }
+
+        public string SourceFileName { get; set; }
     }
 }

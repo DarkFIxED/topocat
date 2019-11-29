@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Topocat.Domain.Entities.Map;
 using Topocat.Services.Models;
@@ -12,6 +11,13 @@ namespace Topocat.Services.QueryExtensions
         {
             return query.Include(x => x.ObjectsList)
                 .Include(x => x.Memberships);
+        }
+
+        public static IQueryable<Map> LoadAttachments(this IQueryable<Map> query)
+        {
+            return query.Include(x => x.ObjectsList)
+                .ThenInclude(x => x.FileReferencesBindings)
+                .ThenInclude(x => x.FileReference);
         }
 
         public static IQueryable<Map> WithAccessOf(this IQueryable<Map> query, string actionExecutorId)

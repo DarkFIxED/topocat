@@ -47,7 +47,8 @@ namespace Topocat.Services.Queries.Objects.GetAttachment
                 MimeType = attachment.MimeType,
                 PreviewTemplate = MimeTypesHelper.IsPreviewSupporting(attachment.MimeType)
                     ? _endpointsBuilder.BuildImagePreviewUrl(attachment.ObjectKey)
-                    : null
+                    : null,
+                SourceFileName = attachment.SourceFileName
             };
 
             return result;

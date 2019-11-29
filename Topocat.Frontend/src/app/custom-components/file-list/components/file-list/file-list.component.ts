@@ -4,8 +4,10 @@ import {FileUploadModel} from '../../models/file-upload.model';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import {MatDialog} from '@angular/material';
 import {ConfirmationComponent} from '../../../../core/dialogs/confirmation/confirmation.component';
-import {filter, switchMap, tap} from 'rxjs/operators';
+import {filter, tap} from 'rxjs/operators';
 import {DialogResult} from '../../../../core/models/dialog-result';
+import {SlideshowComponent} from 'ng-simple-slideshow/src/app/modules/slideshow/slideshow.component';
+import {HttpClient} from '@angular/common/http';
 
 @Component({
     selector: 'app-file-list',
@@ -25,6 +27,9 @@ export class FileListComponent implements OnInit {
     @ViewChild('uploadInput', {static: true})
     uploadInputRef: ElementRef;
 
+    @ViewChild('slideShow', {static: true})
+    slideShow: SlideshowComponent;
+
     @Input()
     itemWidth = 75;
 
@@ -35,14 +40,16 @@ export class FileListComponent implements OnInit {
     uploadFunc: (file: FileUploadModel, successCallback: (fileModel: FileUploadModel) => void) => void;
 
     @Output()
-    fileRemoved = new EventEmitter<{id: string}>();
+    fileRemoved = new EventEmitter<{ id: string }>();
 
     files: FileUploadModel[] = [];
+    showCarousel = false;
 
     private items: Item[] = [];
     private uploadInput: HTMLInputElement;
 
-    constructor(private matDialog: MatDialog) {
+    constructor(private matDialog: MatDialog,
+                private httpClient: HttpClient) {
     }
 
     ngOnInit() {
@@ -152,5 +159,37 @@ export class FileListComponent implements OnInit {
 
     onShowImages(startItem: Item) {
         // TODO: add carousel
+        const images = this.items
+            .filter(item => item.mimeType.includes('image/'))
+            .map(item => item.url);
+
+        const startIndex = images.findIndex(image => image === startItem.url);
+
+        this.slideShow.imageUrls = images;
+        this.slideShow.autoPlay = true;
+        this.slideShow.lazyLoad = true;
+        this.slideShow.autoPlayWaitForLazyLoad = true;
+
+
+        const sub = this.slideShow.onFullscreenExit.subscribe(() => {
+            sub.unsubscribe();
+            this.showCarousel = false;
+            this.slideShow.imageUrls = [];
+        });
+
+        this.showCarousel = true;
+        setTimeout(() => {
+            this.slideShow.fullscreen = true;
+            this.slideShow.goToSlide(startIndex);
+        });
+    }
+
+    onDownload(item: Item) {
+        this.httpClient.get(item.url, {responseType: 'blob'})
+            .subscribe(data => {
+                const blob = new Blob([data], {type: item.mimeType});
+                const url = window.URL.createObjectURL(blob);
+                window.open(url);
+            });
     }
 }
