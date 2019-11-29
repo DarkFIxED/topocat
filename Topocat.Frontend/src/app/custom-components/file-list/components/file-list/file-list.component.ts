@@ -45,7 +45,7 @@ export class FileListComponent implements OnInit {
     files: FileUploadModel[] = [];
     showCarousel = false;
 
-    private items: Item[] = [];
+    items: Item[] = [];
     private uploadInput: HTMLInputElement;
 
     constructor(private matDialog: MatDialog,

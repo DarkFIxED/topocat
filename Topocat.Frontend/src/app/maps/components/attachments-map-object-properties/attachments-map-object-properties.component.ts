@@ -4,7 +4,7 @@ import {MapObjectAttachmentsHttpService} from '../../services/map-object-attachm
 import {FileListComponent} from '../../../custom-components/file-list/components/file-list/file-list.component';
 import {FileUploadModel} from '../../../custom-components/file-list/models/file-upload.model';
 import {catchError, filter, last, map, switchMap, tap} from 'rxjs/operators';
-import {Observable, of} from 'rxjs';
+import {Observable, of, Subject} from 'rxjs';
 import {MapObjectAttachmentModel} from '../../models/map-object-attachment.model';
 import {HttpClient, HttpErrorResponse, HttpEventType, HttpRequest} from '@angular/common/http';
 import {Item} from '../../../custom-components/file-list/models/item';
@@ -67,11 +67,14 @@ export class AttachmentsMapObjectPropertiesComponent implements OnInit {
     }
 
     private uploadToAWS(uploadUrl: string, file: FileUploadModel, successCallback: (fileModel: FileUploadModel) => void): Observable<any> {
+        const finish$ = new Subject();
+
         const req = new HttpRequest('PUT', uploadUrl, file.data, {
             reportProgress: true
         });
 
         file.inProgress = true;
+
         const observable = this.http.request(req).pipe(
             map(event => {
                 switch (event.type) {
@@ -86,17 +89,23 @@ export class AttachmentsMapObjectPropertiesComponent implements OnInit {
             catchError((error: HttpErrorResponse) => {
                 file.inProgress = false;
                 file.canRetry = true;
+
+                finish$.next(false);
+                finish$.complete();
+
                 return of(`${file.data.name} upload failed.`);
             }),
             tap((event: any) => {
                 if (typeof (event) === 'object') {
                     successCallback(file);
+                    finish$.next(true);
+                    finish$.complete();
                 }
             })
         );
 
         file.sub = observable.subscribe();
-        return observable;
+        return finish$;
     }
 
     private onFileUploaded(attachment: MapObjectAttachmentModel) {
