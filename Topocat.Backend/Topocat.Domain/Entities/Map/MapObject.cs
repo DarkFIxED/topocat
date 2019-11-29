@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using JetBrains.Annotations;
 using NetTopologySuite.Geometries;
 using Topocat.Common;
 using Topocat.Domain.DomainEvents;
+using Topocat.Domain.Entities.Files;
 using Topocat.Domain.Entities.Map.Events;
 
 namespace Topocat.Domain.Entities.Map
@@ -22,6 +24,8 @@ namespace Topocat.Domain.Entities.Map
             CreatedAt = DateTimeOffset.UtcNow;
             Update(title, geometry);
 
+            FileReferencesBindings = new List<MapObjectFileReferences>();
+
             AddEvent(new MapObjectAdded(this));
         }
 
@@ -39,6 +43,8 @@ namespace Topocat.Domain.Entities.Map
         public Map Map { get; protected set; }
 
         public Geometry Geometry { get; protected set; }
+
+        public List<MapObjectFileReferences> FileReferencesBindings { get; protected set; }
 
         public void Update(string title, Geometry geometry)
         {
@@ -71,5 +77,9 @@ namespace Topocat.Domain.Entities.Map
             return geometry;
         }
 
+        public void AddAttachment(FileReference fileReference)
+        {
+            FileReferencesBindings.Add(new MapObjectFileReferences(this, fileReference));
+        }
     }
 }

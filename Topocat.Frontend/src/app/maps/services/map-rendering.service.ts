@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Injectable, NgZone} from '@angular/core';
 import {google} from 'google-maps';
 import {MapObjectsQuery} from '../queries/map-objects.query';
 import {BehaviorSubject} from 'rxjs';
@@ -6,7 +6,6 @@ import {filter, takeUntil, tap} from 'rxjs/operators';
 import {MapObjectModel} from '../models/map-object.model';
 import {UnifiedMapObjectsFactory} from '../models/unified-map-objects.factory';
 import {MapService} from './map.service';
-import {formatDate} from '@angular/common';
 import {MapInstanceService} from './map-instance.service';
 import {DrawnObjectsStore} from '../stores/drawn-objects.store';
 import {BaseDestroyable} from '../../core/services/base-destroyable';
@@ -23,7 +22,8 @@ export class MapRenderingService extends BaseDestroyable {
                 private mapService: MapService,
                 private unifiedMapObjectsFactory: UnifiedMapObjectsFactory,
                 private mapInstanceService: MapInstanceService,
-                private wktService: WktService) {
+                private wktService: WktService,
+                private zone: NgZone) {
         super();
         this.initialize();
     }
@@ -33,7 +33,12 @@ export class MapRenderingService extends BaseDestroyable {
             filter(instance => !!instance),
             tap(() => {
                 const infoWindow = new google.maps.InfoWindow();
-                infoWindow.addListener('closeclick', () => this.mapService.clearActive());
+                infoWindow.addListener('closeclick', () => {
+                    this.mapService.clearActive();
+
+                    // @ts-ignore
+                    window.onDetailsClick = undefined;
+                });
                 this.infoWindowInstance$.next(infoWindow);
             })
         ).subscribe();
@@ -89,15 +94,26 @@ export class MapRenderingService extends BaseDestroyable {
         const infoWindow = this.infoWindowInstance$.getValue();
         const unifiedMapObject = this.drawnObjectsStore.drawnObjects.find(x => x.id === active.id);
 
+        const self = this;
+        // @ts-ignore
+        window.onDetailsClick = function() {
+            self.zone.run(() => {
+                self.mapService.openPropertiesWindow(active.id);
+            });
+        };
+
         const content =
-            `<span>Title:&nbsp;${active.title}</span><br>` +
-            `<span>Created&nbsp;at:&nbsp;${formatDate(active.createdAt, 'hh:mm dd-MM-yyyy', 'en-US')}</span><br>` +
-            `<span>Last&nbsp;modified&nbsp;at:&nbsp;${formatDate(active.lastModifiedAt, 'hh:mm dd-MM-yyyy', 'en-US')}</span>`;
+            `<div class="info-window-content">` +
+                `<span class="text-overflow d-inline-block info-window-row" title="${active.title}">${active.title}</span><br>` +
+                `<div class="d-flex mt-1">` +
+                    `<button class="ml-auto float-right info-window-open-properties-button mdi mdi-map-marker-question-outline" ` +
+                             `title="Details..." ` +
+                             `onClick="window.onDetailsClick()">Details...</button>` +
+                `</div>` +
+            `</div>`;
 
         infoWindow.setContent(content);
         infoWindow.setPosition(unifiedMapObject.getInfoWindowPosition());
         infoWindow.open(map);
     }
-
-
 }

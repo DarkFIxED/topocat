@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <AssemblyName>Topocat.Infrastructure.FileStorage.AWS</AssemblyName>
+    <RootNamespace>Topocat.Infrastructure.FileStorage.AWS</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AWSSDK.S3" Version="3.3.108.3" />
+  </ItemGroup>
+
+</Project>

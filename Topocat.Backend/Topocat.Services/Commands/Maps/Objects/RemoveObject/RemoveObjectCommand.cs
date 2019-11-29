@@ -36,6 +36,7 @@ namespace Topocat.Services.Commands.Maps.Objects.RemoveObject
                 .WithId(args.MapId)
                 .WithAccessOf(actionExecutor.Id)
                 .LoadAggregate()
+                .LoadAttachments()
                 .FirstOrDefaultAsync();
 
             if (map == null)

@@ -25,6 +25,11 @@ import { ConfirmDrawingComponent } from './components/confirm-drawing/confirm-dr
 import { SelectNewObjectTypeComponent } from './dialogs/select-new-object-type/select-new-object-type.component';
 import { MenuComponent } from './components/menu/menu.component';
 import { MapsSettingsComponent } from './components/maps-settings/maps-settings.component';
+import { MapObjectPropertiesComponent } from './dialogs/map-object-properties/map-object-properties.component';
+import {FileListModule} from '../custom-components/file-list/file-list.module';
+import {MapObjectAttachmentsHttpService} from './services/map-object-attachments.http.service';
+import { GeneralMapObjectPropertiesComponent } from './components/general-map-object-properties/general-map-object-properties.component';
+import { AttachmentsMapObjectPropertiesComponent } from './components/attachments-map-object-properties/attachments-map-object-properties.component';
 
 const routes: Routes = [
     {
@@ -48,7 +53,10 @@ const routes: Routes = [
         ConfirmDrawingComponent,
         SelectNewObjectTypeComponent,
         MenuComponent,
-        MapsSettingsComponent
+        MapsSettingsComponent,
+        MapObjectPropertiesComponent,
+        GeneralMapObjectPropertiesComponent,
+        AttachmentsMapObjectPropertiesComponent
     ],
     imports: [
         CommonModule,
@@ -71,21 +79,24 @@ const routes: Routes = [
         ReactiveFormsModule,
         MatRadioModule,
         MatTabsModule,
+        FileListModule
     ],
     entryComponents: [
         EditMapObjectComponent,
-        SelectNewObjectTypeComponent
+        SelectNewObjectTypeComponent,
+        MapObjectPropertiesComponent
     ],
     providers: [
         MapObjectsStore,
         MapStore,
         MapService,
         MapsHttpService,
+        MapObjectAttachmentsHttpService,
         MapObjectsQuery,
         WktService,
         UnifiedMapObjectsFactory,
         MapsSignalRService,
-        MapQuery
+        MapQuery,
     ]
 })
 export class MapsModule {

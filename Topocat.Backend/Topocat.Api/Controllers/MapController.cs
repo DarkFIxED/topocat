@@ -6,11 +6,7 @@ using Topocat.API.Models;
 using Topocat.API.Models.Maps;
 using Topocat.Services;
 using Topocat.Services.Commands.Maps.Create;
-using Topocat.Services.Commands.Maps.Objects.AddObject;
-using Topocat.Services.Commands.Maps.Objects.RemoveObject;
-using Topocat.Services.Commands.Maps.Objects.UpdateObject;
 using Topocat.Services.Commands.Maps.Update;
-using Topocat.Services.Queries.Map.GetMapObjects;
 using Topocat.Services.Queries.Map.GetMapQuery;
 using Topocat.Services.Queries.Map.GetMapsListQuery;
 
@@ -71,74 +67,6 @@ namespace Topocat.API.Controllers
                 NewTitle = model.Title,
                 MapId = mapId,
                 ActionExecutorId = HttpContext.User.GetUserId()
-            });
-
-            return ApiResponse.Success();
-        }
-
-        [Route("/maps/{mapId}/objects")]
-        [HttpGet]
-        public async Task<ApiResponse> GetMapObjects([FromRoute] string mapId)
-        {
-            var query = _queriesFactory.Get<GetMapObjectsQuery>();
-
-            var args = new GetMapObjectsQueryArgs
-            {
-                ActionExecutorId = HttpContext.User.GetUserId(),
-                MapId = mapId
-            };
-
-            var result = await query.Ask(args);
-
-            return ApiResponse.Success(result);
-        }
-
-        [Route("/maps/{mapId}/objects")]
-        [HttpPost]
-        public async Task<ApiResponse> AddPoint([FromRoute] string mapId, [FromBody] AddFeatureRequestModel model)
-        {
-            var addPointCommand = _commandsFactory.Get<AddObjectCommand>();
-
-            var result = await addPointCommand.Execute(new AddObjectCommandArgs
-            {
-                Title = model.Title,
-                MapId = mapId,
-                WktString = model.WktString,
-                ActionExecutorId = HttpContext.User.GetUserId(),
-            });
-
-            return ApiResponse.Success(result);
-        }
-
-        [Route("/maps/{mapId}/objects/{objectId}")]
-        [HttpPut]
-        public async Task<ApiResponse> UpdateObject([FromRoute] string mapId, [FromRoute] string objectId, [FromBody] UpdateObjectRequestModel model)
-        {
-            var updateLineCommand = _commandsFactory.Get<UpdateObjectCommand>();
-
-            await updateLineCommand.Execute(new UpdateObjectCommandArgs
-            {
-                Title = model.Title,
-                MapId = mapId,
-                ObjectId = objectId,
-                ActionExecutorId = HttpContext.User.GetUserId(),
-                WktString = model.WktString
-            });
-
-            return ApiResponse.Success();
-        }
-
-        [Route("/maps/{mapId}/objects/{objectId}")]
-        [HttpDelete]
-        public async Task<ApiResponse> RemoveObject([FromRoute] string mapId, [FromRoute] string objectId)
-        {
-            var updateLineCommand = _commandsFactory.Get<RemoveObjectCommand>();
-
-            await updateLineCommand.Execute(new RemoveObjectCommandArgs
-            {
-                MapId = mapId,
-                ObjectId = objectId,
-                ActionExecutorId = HttpContext.User.GetUserId(),
             });
 
             return ApiResponse.Success();

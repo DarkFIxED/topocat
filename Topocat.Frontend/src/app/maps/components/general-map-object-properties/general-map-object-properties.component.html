@@ -1,0 +1,12 @@
+<div class="container pt-3 pb-3">
+    <div class="d-flex">
+        <div class="mr-2 text-overflow" [title]="model.title">{{model.title}}</div>
+        <span>({{type}})</span>
+    </div>
+    <div>
+        <span>Created at: {{model.createdAt | date:environment.defaultDateFormat}}</span>
+    </div>
+    <div>
+        <span>Last modified at: {{model.lastModifiedAt | date:environment.defaultDateFormat}}</span>
+    </div>
+</div>

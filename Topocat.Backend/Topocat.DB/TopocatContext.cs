@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Topocat.Common;
-using Topocat.Domain;
+using Topocat.Domain.Entities.Files;
 using Topocat.Domain.Entities.Map;
 using Topocat.Domain.Entities.Users;
 
@@ -15,9 +16,17 @@ namespace Topocat.DB
         {
         }
 
+        [UsedImplicitly]
         public DbSet<Map> Maps { get; set; }
 
+        [UsedImplicitly]
         public DbSet<MapObject> MapObjects { get; set; }
+
+        [UsedImplicitly]
+        public DbSet<MapObjectFileReferences> MapObjectFileReferences { get; set; }
+
+        [UsedImplicitly]
+        public DbSet<FileReference> FileReferences { get; set; }
 
         public IEnumerable<IDomainEvent> GetDomainEvents()
         {

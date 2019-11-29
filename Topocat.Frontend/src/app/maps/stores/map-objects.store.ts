@@ -16,6 +16,9 @@ export interface MapObjectsState extends EntityState<MapObjectModel> {
     editing: {
         mapObjectId: ID
     };
+    showPropertiesWindow: {
+        mapObjectId: ID
+    };
     adding: boolean;
 }
 
@@ -27,6 +30,9 @@ function initialState(): Partial<MapObjectsState> {
             result: false,
         },
         editing: {
+            mapObjectId: undefined
+        },
+        showPropertiesWindow: {
             mapObjectId: undefined
         },
         adding: false

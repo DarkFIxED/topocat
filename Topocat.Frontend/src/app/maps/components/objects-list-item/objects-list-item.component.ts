@@ -26,19 +26,16 @@ export class ObjectsListItemComponent implements OnInit {
         this.type = this.wktService.getWktType(this.object.wktString);
     }
 
-    openInfoWindow(event: MouseEvent) {
+    onDetailsClick(event: MouseEvent) {
         event.stopImmediatePropagation();
-        this.mapService.setActive(this.object.id);
-    }
-
-    onEditClick(event: MouseEvent) {
-        event.stopImmediatePropagation();
-        this.mapService.editMapObject(this.object);
+        this.mapService.openPropertiesWindow(this.object.id);
     }
 
     center() {
         const unifiedMapObject = this.drawnObjectsStore.find(this.object.id);
         const center = unifiedMapObject.getInfoWindowPosition();
         this.mapService.setPosition(center.lat, center.lng);
+
+        this.mapService.setActive(this.object.id);
     }
 }

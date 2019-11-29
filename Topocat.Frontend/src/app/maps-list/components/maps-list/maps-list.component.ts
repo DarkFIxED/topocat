@@ -101,9 +101,7 @@ export class MapsListComponent implements OnInit {
     private openEditDialog(model: NewMapModel, isNewMap: boolean): MatDialogRef<NewMapComponent, DialogResult<NewMapModel>> {
         return this.dialog.open(NewMapComponent, {
             width: '250px',
-            hasBackdrop: true,
             data: {model, isNewMap},
-            disableClose: true
         });
 
     }

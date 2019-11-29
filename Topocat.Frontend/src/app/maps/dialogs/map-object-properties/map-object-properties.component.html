@@ -1,0 +1,47 @@
+<div mat-dialog-content>
+    <mat-tab-group animationDuration="0ms" mat-stretch-tabs>
+        <mat-tab>
+            <ng-template mat-tab-label>
+                <span class="mdi mdi-24px mdi-information-outline mr-2"></span>
+                General
+            </ng-template>
+            <ng-template matTabContent>
+                <div class="content">
+                    <app-general-map-object-properties [model]="model"></app-general-map-object-properties>
+                </div>
+            </ng-template>
+        </mat-tab>
+        <mat-tab>
+            <ng-template mat-tab-label>
+                <span class="mdi mdi-24px mdi-file-multiple-outline mr-2"></span>
+                Attachments
+            </ng-template>
+            <ng-template matTabContent>
+                <div class="content">
+                    <app-attachments-map-object-properties [model]="model"
+                                                           [mapId]="mapId">
+                    </app-attachments-map-object-properties>
+                </div>
+            </ng-template>
+        </mat-tab>
+    </mat-tab-group>
+
+</div>
+<div mat-dialog-actions>
+    <div class="d-flex w-100 pb-1">
+        <button class="float-left mr-auto"
+                type="button"
+                mat-raised-button
+                (click)="onEditClick()"
+                tabindex="2">Edit
+        </button>
+        <button class="float-right"
+                type="submit"
+                mat-raised-button
+                color="primary"
+                tabindex="1"
+                cdkFocusInitial
+                (click)="onCloseClick()">Close
+        </button>
+    </div>
+</div>

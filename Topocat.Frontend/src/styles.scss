@@ -34,3 +34,21 @@ textarea:focus {
 .d-grid {
     display: grid;
 }
+
+.text-overflow {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.text-align-center {
+    text-align: center;
+}
+
+.info-window-content {
+    min-width: 150px;
+
+    .info-window-row {
+        max-width: 230px;
+    }
+}

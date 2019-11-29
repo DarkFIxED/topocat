@@ -124,6 +124,31 @@ namespace Topocat.DB.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("Topocat.Domain.Entities.Files.FileReference", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("MimeType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ObjectKey")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SourceFileName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("UploadConfirmed")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FileReferences");
+                });
+
             modelBuilder.Entity("Topocat.Domain.Entities.Map.Map", b =>
                 {
                     b.Property<string>("Id")
@@ -204,6 +229,26 @@ namespace Topocat.DB.Migrations
                     b.HasIndex("MapId");
 
                     b.ToTable("MapObjects");
+                });
+
+            modelBuilder.Entity("Topocat.Domain.Entities.Map.MapObjectFileReferences", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("FileReferenceId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("MapObjectId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FileReferenceId");
+
+                    b.HasIndex("MapObjectId");
+
+                    b.ToTable("MapObjectFileReferences");
                 });
 
             modelBuilder.Entity("Topocat.Domain.Entities.Users.Role", b =>
@@ -389,6 +434,17 @@ namespace Topocat.DB.Migrations
                     b.HasOne("Topocat.Domain.Entities.Map.Map", "Map")
                         .WithMany("ObjectsList")
                         .HasForeignKey("MapId");
+                });
+
+            modelBuilder.Entity("Topocat.Domain.Entities.Map.MapObjectFileReferences", b =>
+                {
+                    b.HasOne("Topocat.Domain.Entities.Files.FileReference", "FileReference")
+                        .WithMany()
+                        .HasForeignKey("FileReferenceId");
+
+                    b.HasOne("Topocat.Domain.Entities.Map.MapObject", "MapObject")
+                        .WithMany("FileReferencesBindings")
+                        .HasForeignKey("MapObjectId");
                 });
 
             modelBuilder.Entity("Topocat.Domain.Entities.Users.UserNotificationSettings", b =>

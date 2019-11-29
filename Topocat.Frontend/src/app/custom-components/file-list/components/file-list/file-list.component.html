@@ -1,0 +1,83 @@
+<div class="h-100 pt-2">
+    <div class="h-75 w-100 pl-1 pr-1">
+        <mat-card class="h-100 w-100 p-0">
+            <mat-card-content class="h-100 d-flex flex-row flex-wrap items-container">
+                <div *ngFor="let item of items"
+                     class="item"
+                     [ngStyle]="{'width': itemWidth+'px', 'height': itemHeight+'px'}">
+
+                    <div class="item-overlay position-absolute w-100 h-100">
+                        <div mat-ripple
+                             [title]="item.sourceFileName"
+                             class="w-100 h-50">
+                            <div *ngIf="item.mimeType.includes('image/')"
+                                 class="h-100 mdi mdi-24px mdi-view-carousel text-align-center"
+                                 title="Show"
+                                 (click)="onShowImages(item)">
+                            </div>
+                        </div>
+                        <mat-divider></mat-divider>
+                        <div mat-ripple
+                             class="w-100 h-50">
+                            <div class="h-100 mdi mdi-24px mdi-cloud-download-outline text-align-center"
+                                 title="Download file..."
+                                 (click)="download.click();">
+                                <a #download
+                                   target="_blank"
+                                   [href]="item.url"
+                                   [download]="item.sourceFileName">
+                                </a>
+                            </div>
+                        </div>
+
+                        <div mat-ripple
+                             class="item-menu mdi mdi-18px mdi-trash-can-outline"
+                             (click)="onDelete($event, item)">
+                        </div>
+                    </div>
+
+                    <img *ngIf="item.mimeType.includes('image/')"
+                         [src]="item.thumbUrl"
+                         [alt]="item.sourceFileName"/>
+
+                    <div *ngIf="!item.mimeType.includes('image/')"
+                         class="h-100 d-flex justify-content-center align-items-center">
+                        <span class="text-overflow pl-2 pr-2">{{item.sourceFileName}}</span>
+                    </div>
+
+                </div>
+                <div mat-ripple
+                     class="item add-item"
+                     title="Upload file..."
+                     (click)="openUploadDialog()"
+                     [ngStyle]="{'width': itemWidth+'px', 'height': itemHeight+'px'}">
+
+                    <div class="add-item-overlay mdi mdi-36px mdi-plus d-flex justify-content-center"
+                         [ngStyle]="{'line-height': itemHeight+'px'}">
+                        <div class="h-100 w-100 position-absolute"></div>
+                    </div>
+
+                    <input #uploadInput class="d-none" type="file" name="fileUpload" multiple="multiple"/>
+                </div>
+            </mat-card-content>
+        </mat-card>
+
+    </div>
+    <div class="h-25 uploading-files-container">
+        <div class="d-flex mt-2" *ngFor="let file of files" [@fadeInOut]="file.state">
+            <div class="mr-2 bar-with-title">
+                <mat-progress-bar [value]="file.progress"></mat-progress-bar>
+                <div class="text-overflow" [title]="file.data.name">{{file.data.name}}</div>
+            </div>
+            <span class="cursor-pointer">
+                <a title="Retry" (click)="retryFile(file)" *ngIf="file.canRetry">
+                        <mat-icon>refresh</mat-icon>
+                </a>
+                <a title="Cancel" (click)="cancelFile(file)" *ngIf="file.canCancel">
+                    <mat-icon>cancel</mat-icon>
+                </a>
+            </span>
+        </div>
+    </div>
+    <slideshow #slideShow [ngClass]="{'d-none': !showCarousel}"></slideshow>
+</div>

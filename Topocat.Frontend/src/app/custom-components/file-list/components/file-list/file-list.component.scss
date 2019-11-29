@@ -1,0 +1,64 @@
+@import "src/variables";
+
+.items-container {
+    justify-content: flex-start;
+    align-items: flex-start;
+    align-content: flex-start;
+    overflow-y: auto;
+}
+
+.item {
+    background-color: darkgray;
+    margin-left: 10px;
+    margin-top: 10px;
+    position: relative;
+}
+
+.item-menu {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.bar-with-title {
+    width: calc(100% - 31px);
+}
+
+.uploading-files-container {
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.item-overlay {
+    color: $selected;
+
+    div,mat-divider {
+        transition: visibility 0s, opacity 0.2s linear;
+        visibility: hidden;
+        background-color: #33333333;
+        opacity: 0;
+    }
+
+    &:hover {
+        div,mat-divider {
+            visibility: visible;
+            opacity: 1;
+        }
+    }
+}
+
+.add-item-overlay {
+    div {
+        transition: visibility 0s, opacity 0.2s linear;
+        visibility: hidden;
+        background-color: #33333333;
+        opacity: 0;
+    }
+
+    &:hover {
+        div {
+            visibility: visible;
+            opacity: 1;
+        }
+    }
+}

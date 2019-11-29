@@ -14,16 +14,9 @@
     <div class="p-0 toggle-visibility float-right d-flex">
         <div mat-ripple
              class="p-0 icon-wrapper cursor-pointer"
-             (click)="openInfoWindow($event)"
-             title="Show info">
-            <span class="mdi mdi-24px mdi-tooltip-text-outline"></span>
-        </div>
-
-        <div mat-ripple
-             class="p-0 icon-wrapper cursor-pointer"
-             (click)="onEditClick($event)"
-             title="Edit object">
-            <span class="mdi mdi-24px mdi-pencil-outline"></span>
+             (click)="onDetailsClick($event)"
+             title="Details...">
+            <span class="mdi mdi-24px mdi-map-marker-question-outline"></span>
         </div>
     </div>
 </div>

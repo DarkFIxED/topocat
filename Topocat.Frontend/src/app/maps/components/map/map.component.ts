@@ -13,6 +13,8 @@ import {DrawnObjectsStore} from '../../stores/drawn-objects.store';
 import {MapObjectsQuery} from '../../queries/map-objects.query';
 import {CreateMapObjectFlow} from '../../flows/create-map-object.flow';
 import {MapPositionFlow} from '../../flows/map-position.flow';
+import {MapFlowsService} from '../../services/map-flows.service';
+import {ShowMapObjectPropertiesFlow} from '../../flows/show-map-object-properties.flow';
 
 @Component({
     selector: 'app-map',
@@ -26,7 +28,9 @@ import {MapPositionFlow} from '../../flows/map-position.flow';
         ObjectsDrawingFlow,
         DrawnObjectsStore,
         CreateMapObjectFlow,
-        MapPositionFlow
+        MapPositionFlow,
+        ShowMapObjectPropertiesFlow,
+        MapFlowsService
     ]
 })
 export class MapComponent extends BaseDestroyable implements OnInit {
@@ -44,16 +48,9 @@ export class MapComponent extends BaseDestroyable implements OnInit {
                 private mapInstanceService: MapInstanceService,
                 private mapObjectsDrawer: MapRenderingService,
                 private mapObjectsQuery: MapObjectsQuery,
-                private editMapObjectFlow: EditMapObjectFlow,
-                private objectsDrawingFlow: ObjectsDrawingFlow,
-                private createMapObjectFlow: CreateMapObjectFlow,
-                private mapPositionFlow: MapPositionFlow) {
+                private mapFlowsService: MapFlowsService) {
         super();
-
-        this.editMapObjectFlow.setUp();
-        this.objectsDrawingFlow.setUp();
-        this.createMapObjectFlow.setUp();
-        this.mapPositionFlow.setUp();
+        this.mapFlowsService.setUp();
     }
 
     ngOnInit() {

@@ -13,6 +13,12 @@
     <Compile Remove="Migrations\20191014213306_AddMapObjects.Designer.cs" />
     <Compile Remove="Migrations\20191016175517_AddedMapObjects.cs" />
     <Compile Remove="Migrations\20191016175517_AddedMapObjects.Designer.cs" />
+    <Compile Remove="Migrations\20191126124041_AddedFiles.cs" />
+    <Compile Remove="Migrations\20191126124041_AddedFiles.Designer.cs" />
+    <Compile Remove="Migrations\20191127145102_AddMimeType.cs" />
+    <Compile Remove="Migrations\20191127145102_AddMimeType.Designer.cs" />
+    <Compile Remove="Migrations\20191128154453_ChangeConstraintsOnFileReferences.cs" />
+    <Compile Remove="Migrations\20191128154453_ChangeConstraintsOnFileReferences.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
