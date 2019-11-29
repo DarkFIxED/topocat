@@ -6,7 +6,6 @@ import {filter, takeUntil, tap} from 'rxjs/operators';
 import {MapObjectModel} from '../models/map-object.model';
 import {UnifiedMapObjectsFactory} from '../models/unified-map-objects.factory';
 import {MapService} from './map.service';
-import {formatDate} from '@angular/common';
 import {MapInstanceService} from './map-instance.service';
 import {DrawnObjectsStore} from '../stores/drawn-objects.store';
 import {BaseDestroyable} from '../../core/services/base-destroyable';
