@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {Injectable, NgZone} from '@angular/core';
 import {google} from 'google-maps';
 import {MapObjectsQuery} from '../queries/map-objects.query';
 import {BehaviorSubject} from 'rxjs';
@@ -23,7 +23,8 @@ export class MapRenderingService extends BaseDestroyable {
                 private mapService: MapService,
                 private unifiedMapObjectsFactory: UnifiedMapObjectsFactory,
                 private mapInstanceService: MapInstanceService,
-                private wktService: WktService) {
+                private wktService: WktService,
+                private zone: NgZone) {
         super();
         this.initialize();
     }
@@ -33,7 +34,12 @@ export class MapRenderingService extends BaseDestroyable {
             filter(instance => !!instance),
             tap(() => {
                 const infoWindow = new google.maps.InfoWindow();
-                infoWindow.addListener('closeclick', () => this.mapService.clearActive());
+                infoWindow.addListener('closeclick', () => {
+                    this.mapService.clearActive();
+
+                    // @ts-ignore
+                    window.onDetailsClick = undefined;
+                });
                 this.infoWindowInstance$.next(infoWindow);
             })
         ).subscribe();
@@ -89,12 +95,26 @@ export class MapRenderingService extends BaseDestroyable {
         const infoWindow = this.infoWindowInstance$.getValue();
         const unifiedMapObject = this.drawnObjectsStore.drawnObjects.find(x => x.id === active.id);
 
-        const content = `<span>${active.title}</span><br>`;
+        const self = this;
+        // @ts-ignore
+        window.onDetailsClick = function() {
+            self.zone.run(() => {
+                self.mapService.openPropertiesWindow(active.id);
+            });
+        };
+
+        const content =
+            `<div class="info-window-content">` +
+                `<span class="text-overflow d-inline-block info-window-row" title="${active.title}">${active.title}</span><br>` +
+                `<div class="d-flex mt-1">` +
+                    `<button class="ml-auto float-right info-window-open-properties-button mdi mdi-map-marker-question-outline" ` +
+                             `title="Details..." ` +
+                             `onClick="window.onDetailsClick()">Details...</button>` +
+                `</div>` +
+            `</div>`;
 
         infoWindow.setContent(content);
         infoWindow.setPosition(unifiedMapObject.getInfoWindowPosition());
         infoWindow.open(map);
     }
-
-
 }

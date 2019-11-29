@@ -44,3 +44,11 @@ textarea:focus {
 .text-align-center {
     text-align: center;
 }
+
+.info-window-content {
+    min-width: 150px;
+
+    .info-window-row {
+        max-width: 230px;
+    }
+}

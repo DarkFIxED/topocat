@@ -26,14 +26,9 @@ export class ObjectsListItemComponent implements OnInit {
         this.type = this.wktService.getWktType(this.object.wktString);
     }
 
-    onShowInfoClick(event: MouseEvent) {
+    onDetailsClick(event: MouseEvent) {
         event.stopImmediatePropagation();
         this.mapService.openPropertiesWindow(this.object.id);
-    }
-
-    onEditClick(event: MouseEvent) {
-        event.stopImmediatePropagation();
-        this.mapService.editMapObject(this.object);
     }
 
     center() {
