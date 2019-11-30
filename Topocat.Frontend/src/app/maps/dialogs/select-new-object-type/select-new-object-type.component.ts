@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, Inject, OnInit, Optional} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {WktPrimitives} from '../../models/wkt-primitives';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material';
@@ -18,7 +18,7 @@ export class SelectNewObjectTypeComponent implements OnInit {
     });
 
     constructor(public dialogRef: MatDialogRef<SelectNewObjectTypeComponent, DialogResult<string>>,
-                @Inject(MAT_DIALOG_DATA) data: any) {
+                @Optional() @Inject(MAT_DIALOG_DATA) data: any) {
         this.typeForm.patchValue({
             type: WktPrimitives.Point
         });
