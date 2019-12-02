@@ -9,6 +9,8 @@ namespace Topocat.Services.BackgroundJobs.Simple
     [RegisterScoped]
     public class SendObjectRemovedNotification : SimpleBackgroundTask<string, string>
     {
+        private const string MethodName = "ObjectRemoved";
+
         private readonly IHubContext<MapHub> _mapHubContext;
 
         public SendObjectRemovedNotification(IHubContext<MapHub> mapHubContext)
@@ -18,7 +20,7 @@ namespace Topocat.Services.BackgroundJobs.Simple
 
         public override async Task Run(string args1, string args2)
         {
-            await _mapHubContext.Clients.Group(args1).SendAsync("objectRemoved", args2);
+            await _mapHubContext.Clients.Group(args1).SendAsync(MethodName, args2);
         }
     }
 }

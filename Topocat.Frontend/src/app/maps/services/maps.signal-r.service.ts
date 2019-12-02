@@ -9,6 +9,9 @@ export class MapsSignalRService {
     private isConnected = new BehaviorSubject<boolean>(false);
     isConnected$ = this.isConnected.asObservable();
 
+    private objectAdded = new Subject<MapObjectModel>();
+    objectAdded$ = this.objectAdded.asObservable();
+
     private objectUpdated = new Subject<MapObjectModel>();
     objectUpdated$ = this.objectUpdated.asObservable();
 
@@ -40,14 +43,19 @@ export class MapsSignalRService {
                 this.isConnected.next(false);
             });
 
-        this.hubConnection.on('objectUpdated', (data) => {
+        this.hubConnection.on('objectUpdated', data => {
             console.log(data);
             this.objectUpdated.next(data);
         });
 
-        this.hubConnection.on('objectRemoved', (id) => {
+        this.hubConnection.on('objectRemoved', id => {
             console.log(id);
             this.objectRemoved.next(id);
+        });
+
+        this.hubConnection.on('objectAdded', data => {
+           console.log(data);
+           this.objectAdded.next(data);
         });
     }
 

@@ -146,6 +146,12 @@ export class EditMapObjectFlow extends BaseDestroyable implements DataFlow {
                 tap(id => this.mapService.removeObject(id)),
                 takeUntil(this.componentAlive$)
             ).subscribe();
+
+        this.mapsSignalRService.objectAdded$
+            .pipe(
+                tap(model => this.mapService.addObject(model)),
+                takeUntil(this.componentAlive$)
+            ).subscribe();
     }
 
     private openEditDialog(model: MapObjectModel, isNewObject: boolean): MatDialogRef<EditMapObjectComponent, DialogResult<{ action: EditObjectTypesActions, data: MapObjectModel }>> {

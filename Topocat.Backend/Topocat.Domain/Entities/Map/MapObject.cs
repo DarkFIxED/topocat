@@ -17,6 +17,8 @@ namespace Topocat.Domain.Entities.Map
 
         public MapObject(Map map, string title, Geometry geometry)
         {
+            AddEvent(new MapObjectAdded(this));
+
             Map = map;
             MapId = map.Id;
             
@@ -25,8 +27,6 @@ namespace Topocat.Domain.Entities.Map
             Update(title, geometry);
 
             FileReferencesBindings = new List<MapObjectFileReferences>();
-
-            AddEvent(new MapObjectAdded(this));
         }
 
         public string Id { get; protected set; }

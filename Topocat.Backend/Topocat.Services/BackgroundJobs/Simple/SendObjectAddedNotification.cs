@@ -10,6 +10,8 @@ namespace Topocat.Services.BackgroundJobs.Simple
     [RegisterScoped]
     public class SendObjectAddedNotification : SimpleBackgroundTask<string, MapObjectModel>
     {
+        private const string MethodName = "ObjectAdded";
+
         private readonly IHubContext<MapHub> _mapHubContext;
 
         public SendObjectAddedNotification(IHubContext<MapHub> mapHubContext)
@@ -19,7 +21,7 @@ namespace Topocat.Services.BackgroundJobs.Simple
 
         public override async Task Run(string args1, MapObjectModel args2)
         {
-            await _mapHubContext.Clients.Group(args1).SendAsync("ObjectAdded", args2);
+            await _mapHubContext.Clients.Group(args1).SendAsync(MethodName, args2);
         }
     }
 }
