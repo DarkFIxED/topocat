@@ -10,14 +10,14 @@ using Topocat.Services.Services;
 namespace Topocat.Services.BackgroundJobs
 {
     [RegisterScoped]
-    public class CleanUpUnconfirmedFileReferences : IBackgroundJob
+    public class CleanUpUnconfirmedOrScheduledToRemoveFileReferences : IBackgroundJob
     {
         private readonly TimeSpan _clearancePeriod = new TimeSpan(-1, 0, 0, 0);
 
         private readonly IRepository _repository;
         private readonly IFileStorageClient _fileStorageClient;
 
-        public CleanUpUnconfirmedFileReferences(IRepository repository, IFileStorageClient fileStorageClient)
+        public CleanUpUnconfirmedOrScheduledToRemoveFileReferences(IRepository repository, IFileStorageClient fileStorageClient)
         {
             _repository = repository;
             _fileStorageClient = fileStorageClient;
@@ -27,7 +27,7 @@ namespace Topocat.Services.BackgroundJobs
         {
             var clearanceThreshold = DateTimeOffset.UtcNow.Add(_clearancePeriod);
             var outdatedFileReferences = await _repository.AsQueryable<FileReference>()
-                .Where(x => x.CreatedAt <= clearanceThreshold && !x.UploadConfirmed)
+                .Where(x => (x.CreatedAt <= clearanceThreshold && !x.UploadConfirmed) || x.ScheduledToRemove)
                 .ToListAsync();
 
             foreach (var outdatedFileReference in outdatedFileReferences)

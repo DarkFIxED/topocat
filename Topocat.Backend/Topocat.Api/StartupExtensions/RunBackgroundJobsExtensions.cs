@@ -9,7 +9,7 @@ namespace Topocat.API.StartupExtensions
         public static void RunBackgroundJobs(this IApplicationBuilder app)
         {
             
-            RecurringJob.AddOrUpdate<CleanUpUnconfirmedFileReferences>(job => job.Run(), Cron.Daily);
+            RecurringJob.AddOrUpdate<CleanUpUnconfirmedOrScheduledToRemoveFileReferences>(job => job.Run(), Cron.Daily);
         }
     }
 }

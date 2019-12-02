@@ -1,11 +1,6 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.SignalR;
-using Microsoft.Extensions.DependencyInjection;
-using Topocat.Common;
+﻿using Topocat.Common;
 using Topocat.Domain.Entities.Map.Events;
-using Topocat.Services.Hubs;
+using Topocat.Services.BackgroundJobs.Simple;
 using Topocat.Services.Models;
 using Topocat.Services.Services.Background;
 
@@ -14,31 +9,25 @@ namespace Topocat.Services.DomainEventHandlers
     [RegisterScoped(typeof(IDomainEventHandler<MapObjectUpdated>))]
     public class MapObjectUpdatedEventHandler : IDomainEventHandler<MapObjectUpdated>
     {
-        private readonly IBackgroundTaskQueue _backgroundTaskQueue;
+        private readonly IBackgroundService _backgroundService;
 
-        public MapObjectUpdatedEventHandler(IBackgroundTaskQueue backgroundTaskQueue)
+        public MapObjectUpdatedEventHandler(IBackgroundService backgroundService)
         {
-            _backgroundTaskQueue = backgroundTaskQueue;
+            _backgroundService = backgroundService;
         }
 
         public void Handle(MapObjectUpdated @event)
         {
-            async Task WorkItem(CancellationToken token, IServiceProvider provider)
+            var mapObjectModel = new MapObjectModel
             {
-                var hubContext = provider.GetService<IHubContext<MapHub>>();
-                var mapObjectModel = new MapObjectModel
-                {
-                    Id = @event.MapObject.Id,
-                    CreatedAt = @event.MapObject.CreatedAt,
-                    LastModifiedAt = @event.MapObject.LastModifiedAt,
-                    Title = @event.MapObject.Title,
-                    WktString = @event.MapObject.Geometry.ToString()
-                };
+                Id = @event.MapObject.Id,
+                CreatedAt = @event.MapObject.CreatedAt,
+                LastModifiedAt = @event.MapObject.LastModifiedAt,
+                Title = @event.MapObject.Title,
+                WktString = @event.MapObject.Geometry.ToString()
+            };
 
-                await hubContext.Clients.Group(@event.MapObject.MapId).SendAsync("ObjectUpdated", mapObjectModel, token);
-            }
-
-            _backgroundTaskQueue.QueueBackgroundWorkItem(WorkItem);
+            _backgroundService.RunInBackground<SendObjectUpdatedNotification, string, MapObjectModel>(@event.MapObject.MapId, mapObjectModel);
         }
     }
 }

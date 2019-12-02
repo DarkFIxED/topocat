@@ -6,7 +6,6 @@
 
   <ItemGroup>
     <PackageReference Include="AWSSDK.S3" Version="3.3.108.3" />
-    <PackageReference Include="DalSoft.Hosting.BackgroundQueue" Version="1.0.4" />
     <PackageReference Include="Hangfire.Core" Version="1.7.7" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.0.0" />
     <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="5.5.0" />

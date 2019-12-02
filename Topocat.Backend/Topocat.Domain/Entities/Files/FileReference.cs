@@ -21,6 +21,7 @@ namespace Topocat.Domain.Entities.Files
             MimeType = mimeType;
 
             UploadConfirmed = false;
+            ScheduledToRemove = false;
         }
 
         public string Id { get; protected set; }
@@ -31,6 +32,8 @@ namespace Topocat.Domain.Entities.Files
 
         public bool UploadConfirmed { get; protected set; }
 
+        public bool ScheduledToRemove { get; protected set; }
+
         public string SourceFileName { get; protected set; }
 
         public string MimeType { get; protected set; }
@@ -40,9 +43,9 @@ namespace Topocat.Domain.Entities.Files
             UploadConfirmed = true;
         }
 
-        public void UnConfirmUpload()
+        public void ScheduleToRemove()
         {
-            UploadConfirmed = false;
+            ScheduledToRemove = true;
         }
     }
 }

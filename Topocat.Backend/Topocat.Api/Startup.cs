@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Text;
-using DalSoft.Hosting.BackgroundQueue.DependencyInjection;
 using Hangfire;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -85,7 +84,6 @@ namespace Topocat.API
             services.RegisterSwagger();
             services.RegisterHangfire();
            
-            services.AddBackgroundQueue(exc => { });
             services.AddSignalR();
 
             services.RegisterDI(AppConfiguration, tokenValidationParams);
