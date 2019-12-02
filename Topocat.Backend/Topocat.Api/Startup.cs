@@ -83,7 +83,7 @@ namespace Topocat.API
 
             
             services.RegisterSwagger();
-            services.RegisterHangfire(AppConfiguration.GetConnectionString("Database"));
+            services.RegisterHangfire();
            
             services.AddBackgroundQueue(exc => { });
             services.AddSignalR();
