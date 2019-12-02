@@ -8,6 +8,7 @@ import {Router} from '@angular/router';
 import {DialogResult} from '../../../core/models/dialog-result';
 import {NewMapModel} from '../../models/new-map.model';
 import {CredentialsStore} from '../../../core/stores/credentials.store';
+import {ConfirmationComponent} from '../../../core/dialogs/confirmation/confirmation.component';
 
 @Component({
     selector: 'app-maps-list',
@@ -104,5 +105,15 @@ export class MapsListComponent implements OnInit {
             data: {model, isNewMap},
         });
 
+    }
+
+    removeMap(id: string) {
+        this.dialog.open(ConfirmationComponent, {})
+            .afterClosed()
+            .pipe(
+                filter(dialogResult => !dialogResult.isCancelled),
+                switchMap(() => this.mapsListHttpService.removeMap(id)),
+                tap(() => this.load())
+            ).subscribe();
     }
 }

@@ -4,7 +4,6 @@ import {Observable} from 'rxjs';
 import {ApiResponse} from '../../core/models/api.response';
 import {MapModel} from '../../maps/models/map.model';
 import {MapObjectModel} from '../../maps/models/map-object.model';
-import {ID} from '@datorama/akita';
 
 @Injectable()
 export class MapsHttpService {

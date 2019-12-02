@@ -10,7 +10,7 @@ using Topocat.Domain.Exceptions;
 
 namespace Topocat.Domain.Entities.Map
 {
-    public class Map : DomainEntity, IHasIdentifier<string>, ICreatedAt, ILastModifiedAt, IAggregationRoot
+    public class Map : DomainEntity, IHasIdentifier<string>, ICreatedAt, ILastModifiedAt, IAggregationRoot, IMarkAsRemoved
     {
         [UsedImplicitly]
         protected Map()
@@ -34,6 +34,8 @@ namespace Topocat.Domain.Entities.Map
             {
                 MapMembership.CreateOwnerMembership(this)
             };
+
+            IsRemoved = false;
         }
 
         public string Id { get; protected set; }
@@ -52,6 +54,8 @@ namespace Topocat.Domain.Entities.Map
         public List<MapObject> ObjectsList { get; protected set; }
 
         public List<MapMembership> Memberships { get; protected set; }
+
+        public bool IsRemoved { get; protected set; }
 
         public void Add(MapObject mapObject)
         {
@@ -110,6 +114,12 @@ namespace Topocat.Domain.Entities.Map
 
             existingMembership.MarkAsRemoved();
             Memberships.Remove(existingMembership);
+        }
+
+        public void MarkAsRemoved()
+        {
+            IsRemoved = true;
+            AddEvent(new MapRemoved(this));
         }
     }
 }

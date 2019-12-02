@@ -6,10 +6,10 @@ namespace Topocat.API.StartupExtensions
 {
     public static class RunBackgroundJobsExtensions
     {
-        public static void RunBackgroundJobs(this IApplicationBuilder app)
+        public static void RunBackgroundJobs(this IApplicationBuilder _)
         {
-            
-            RecurringJob.AddOrUpdate<CleanUpUnconfirmedOrScheduledToRemoveFileReferences>(job => job.Run(), Cron.Daily);
+            RecurringJob.AddOrUpdate<CleanUpRemovedMaps>(job => job.Run(), Cron.Daily);
+            RecurringJob.AddOrUpdate<CleanUpUnconfirmedOrScheduledToRemoveFileReferences>(job => job.Run(), Cron.Daily(0, 30));
         }
     }
 }

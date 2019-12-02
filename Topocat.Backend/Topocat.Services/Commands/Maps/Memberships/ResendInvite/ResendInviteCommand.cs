@@ -34,6 +34,7 @@ namespace Topocat.Services.Commands.Maps.Memberships.ResendInvite
             var actionExecutor = await _userManager.FindByIdAsync(args.ActionExecutorId);
 
             var map = await _repository.AsQueryable<Map>()
+                .NotRemoved()
                 .WithAdminPermissions(actionExecutor.Id)
                 .WithId(args.MapId)
                 .LoadAggregate()

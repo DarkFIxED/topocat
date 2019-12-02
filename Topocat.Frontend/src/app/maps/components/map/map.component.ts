@@ -15,6 +15,7 @@ import {CreateMapObjectFlow} from '../../flows/create-map-object.flow';
 import {MapPositionFlow} from '../../flows/map-position.flow';
 import {MapFlowsService} from '../../services/map-flows.service';
 import {ShowMapObjectPropertiesFlow} from '../../flows/show-map-object-properties.flow';
+import {MapRemovedFlow} from '../../flows/map-removed.flow';
 
 @Component({
     selector: 'app-map',
@@ -30,7 +31,8 @@ import {ShowMapObjectPropertiesFlow} from '../../flows/show-map-object-propertie
         CreateMapObjectFlow,
         MapPositionFlow,
         ShowMapObjectPropertiesFlow,
-        MapFlowsService
+        MapFlowsService,
+        MapRemovedFlow
     ]
 })
 export class MapComponent extends BaseDestroyable implements OnInit {

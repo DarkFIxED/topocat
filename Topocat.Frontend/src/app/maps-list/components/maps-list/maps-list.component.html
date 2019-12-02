@@ -33,6 +33,10 @@
                                     (click)="changeMap(element)"
                                     title="Manage map membership...">Edit...
                             </button>
+                            <button mat-menu-item
+                                    (click)="removeMap(element.id)"
+                                    title="Remove...">Remove...
+                            </button>
                         </mat-menu>
 
                         <button *ngIf="currentUserId === element.createdBy.id"

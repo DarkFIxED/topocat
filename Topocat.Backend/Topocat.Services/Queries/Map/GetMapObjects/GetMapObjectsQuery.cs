@@ -21,6 +21,7 @@ namespace Topocat.Services.Queries.Map.GetMapObjects
         public async Task<GetMapObjectsQueryResult> Ask(GetMapObjectsQueryArgs args)
         {
             var result = await _repository.AsQueryable<Domain.Entities.Map.Map>()
+                .NotRemoved()
                 .WithId(args.MapId)
                 .WithAccessOf(args.ActionExecutorId)
                 .SelectMany(x=>x.ObjectsList)

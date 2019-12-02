@@ -15,6 +15,7 @@ import {SignUpComponent} from './components/sign-up/sign-up.component';
 import {LoaderComponent} from './components/loader/loader.component';
 import {AboutComponent} from './components/about/about.component';
 import {AcceptInviteComponent} from './components/accept-invite/accept-invite.component';
+import { MessageComponent } from './components/message/message.component';
 
 @NgModule({
     declarations: [
@@ -27,7 +28,8 @@ import {AcceptInviteComponent} from './components/accept-invite/accept-invite.co
         SignUpComponent,
         LoaderComponent,
         AboutComponent,
-        AcceptInviteComponent
+        AcceptInviteComponent,
+        MessageComponent
     ],
     imports: [
         CommonModule,

@@ -6,6 +6,7 @@ using Topocat.API.Models;
 using Topocat.API.Models.Maps;
 using Topocat.Services;
 using Topocat.Services.Commands.Maps.Create;
+using Topocat.Services.Commands.Maps.Remove;
 using Topocat.Services.Commands.Maps.Update;
 using Topocat.Services.Queries.Map.GetMapQuery;
 using Topocat.Services.Queries.Map.GetMapsListQuery;
@@ -85,6 +86,21 @@ namespace Topocat.API.Controllers
             });
 
             return ApiResponse.Success(result);
+        }
+
+        [Route("/maps/{mapId}")]
+        [HttpDelete]
+        public async Task<ApiResponse> RemoveMap([FromRoute] string mapId)
+        {
+            var command = _commandsFactory.Get<RemoveMapCommand>();
+
+            await command.Execute(new RemoveMapCommandArgs
+            {
+                MapId = mapId,
+                ActionExecutorId = HttpContext.User.GetUserId(),
+            });
+
+            return ApiResponse.Success();
         }
     }
 }

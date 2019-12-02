@@ -18,6 +18,9 @@ export class MapsSignalRService {
     private objectRemoved = new Subject<ID>();
     objectRemoved$ = this.objectRemoved.asObservable();
 
+    private mapRemoved = new Subject<ID>();
+    mapRemoved$ = this.mapRemoved.asObservable();
+
     private hubConnection: signalR.HubConnection;
 
     constructor() {
@@ -56,6 +59,11 @@ export class MapsSignalRService {
         this.hubConnection.on('objectAdded', data => {
            console.log(data);
            this.objectAdded.next(data);
+        });
+
+        this.hubConnection.on('mapRemoved', id => {
+            console.log(id);
+            this.mapRemoved.next(id);
         });
     }
 

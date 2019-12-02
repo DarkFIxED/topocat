@@ -37,6 +37,7 @@ namespace Topocat.Services.Commands.Maps.Objects.UpdateObject
                 throw new ArgumentException("User not found", nameof(actionExecutor));
 
             var map = await _repository.AsQueryable<Map>()
+                .NotRemoved()
                 .WithId(args.MapId)
                 .WithAccessOf(actionExecutor.Id)
                 .LoadAggregate()
