@@ -16,6 +16,7 @@ import {LoaderComponent} from './components/loader/loader.component';
 import {AboutComponent} from './components/about/about.component';
 import {AcceptInviteComponent} from './components/accept-invite/accept-invite.component';
 import { MessageComponent } from './components/message/message.component';
+import {SuppressNullPipe} from './pipes/suppress-null.pipe';
 
 @NgModule({
     declarations: [
@@ -29,7 +30,8 @@ import { MessageComponent } from './components/message/message.component';
         LoaderComponent,
         AboutComponent,
         AcceptInviteComponent,
-        MessageComponent
+        MessageComponent,
+        SuppressNullPipe
     ],
     imports: [
         CommonModule,
@@ -58,7 +60,8 @@ import { MessageComponent } from './components/message/message.component';
                 width: '450px',
                 disableClose: true
             }
-        }
+        },
+        SuppressNullPipe
     ]
 })
 export class CoreModule {

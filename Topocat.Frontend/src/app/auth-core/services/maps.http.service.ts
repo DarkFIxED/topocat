@@ -21,6 +21,7 @@ export class MapsHttpService {
     updateMapObject(mapId: string, data: MapObjectModel): Observable<ApiResponse<any>> {
         return this.authHttpService.put<ApiResponse<any>>(`maps/${mapId}/objects/${data.id}`, {
             title: data.title,
+            description: data.description,
             wktString: data.wktString
         });
     }
@@ -28,6 +29,7 @@ export class MapsHttpService {
     createMapObject(mapId: string, data: MapObjectModel): Observable<ApiResponse<any>> {
         return this.authHttpService.post<ApiResponse<any>>(`maps/${mapId}/objects`, {
             title: data.title,
+            description: data.description,
             wktString: data.wktString
         });
     }

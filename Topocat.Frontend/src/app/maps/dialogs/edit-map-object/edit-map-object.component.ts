@@ -18,6 +18,7 @@ export class EditMapObjectComponent {
         createdAt: new FormControl(Date.now().toString(), [Validators.required]),
         lastModifiedAt: new FormControl(Date.now().toString(), [Validators.required]),
         title: new FormControl(undefined, [Validators.required]),
+        description: new FormControl(undefined),
         wktString: new FormControl(undefined, [Validators.required])
     });
 

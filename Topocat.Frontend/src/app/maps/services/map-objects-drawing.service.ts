@@ -138,6 +138,7 @@ export class MapObjectsDrawingService {
                 createdAt: mapObject.createdAt,
                 lastModifiedAt: mapObject.lastModifiedAt,
                 title: mapObject.title,
+                description: mapObject.description,
                 wktString
             });
         });
@@ -163,6 +164,7 @@ export class MapObjectsDrawingService {
                 createdAt: mapObject.createdAt,
                 lastModifiedAt: mapObject.lastModifiedAt,
                 title: mapObject.title,
+                description: mapObject.description,
                 wktString
             });
         });
@@ -188,6 +190,7 @@ export class MapObjectsDrawingService {
                 createdAt: mapObject.createdAt,
                 lastModifiedAt: mapObject.lastModifiedAt,
                 title: mapObject.title,
+                description: mapObject.description,
                 wktString
             });
         });

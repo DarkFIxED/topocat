@@ -4,6 +4,7 @@ export class MapObjectModel {
 
     id: ID;
     title: string;
+    description: string;
     createdAt: Date;
     lastModifiedAt: Date;
     wktString: string;
