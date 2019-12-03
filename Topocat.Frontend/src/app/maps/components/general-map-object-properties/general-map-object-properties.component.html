@@ -3,6 +3,10 @@
         <div class="mr-2 text-overflow" [title]="model.title">{{model.title}}</div>
         <span>({{type}})</span>
     </div>
+    <div class="d-flex">
+        <div class="text-overflow" [title]="model.description">Description: {{model.description}}</div>
+        <div *ngIf="!model.description" class="font-italic">Not specified</div>
+    </div>
     <div>
         <span>Created at: {{model.createdAt | date:environment.defaultDateFormat}}</span>
     </div>

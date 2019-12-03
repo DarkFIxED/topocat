@@ -24,6 +24,7 @@ namespace Topocat.Services.DomainEventHandlers
                 CreatedAt = @event.MapObject.CreatedAt,
                 LastModifiedAt = @event.MapObject.LastModifiedAt,
                 Title = @event.MapObject.Title,
+                Description = @event.MapObject.Description,
                 WktString = @event.MapObject.Geometry.ToString()
             };
 

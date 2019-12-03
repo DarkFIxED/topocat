@@ -56,6 +56,7 @@ namespace Topocat.API.Controllers
             var result = await addPointCommand.Execute(new AddObjectCommandArgs
             {
                 Title = model.Title,
+                Description = model.Description,
                 MapId = mapId,
                 WktString = model.WktString,
                 ActionExecutorId = HttpContext.User.GetUserId(),
@@ -73,6 +74,7 @@ namespace Topocat.API.Controllers
             await updateLineCommand.Execute(new UpdateObjectCommandArgs
             {
                 Title = model.Title,
+                Description = model.Description,
                 MapId = mapId,
                 ObjectId = objectId,
                 ActionExecutorId = HttpContext.User.GetUserId(),

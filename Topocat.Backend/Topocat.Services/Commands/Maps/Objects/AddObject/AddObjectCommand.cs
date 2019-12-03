@@ -46,7 +46,7 @@ namespace Topocat.Services.Commands.Maps.Objects.AddObject
 
             var geometry = _geometryConverter.FromWktString(args.WktString);
 
-            var mapObject = new MapObject(map, args.Title, geometry);
+            var mapObject = new MapObject(map, args.Title, args.Description, geometry);
             map.Add(mapObject);
 
             _repository.Update(map);

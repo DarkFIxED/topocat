@@ -13,6 +13,7 @@ export class MapObjectHelper {
         return {
             id: UUID.UUID().toString(),
             title: undefined,
+            description: undefined,
             createdAt: new Date(),
             lastModifiedAt: new Date(),
             wktString: undefined
