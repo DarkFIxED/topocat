@@ -37,8 +37,7 @@
                     </div>
 
                     <img *ngIf="item.mimeType.includes('image/')"
-                         [src]="item.thumbUrl"
-                         [alt]="item.sourceFileName"/>
+                         [src]="item.thumbUrl"/>
 
                     <div *ngIf="!item.mimeType.includes('image/')"
                          class="h-100 d-flex justify-content-center align-items-center">
