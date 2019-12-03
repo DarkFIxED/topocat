@@ -19,15 +19,15 @@ export class MapPositionFlow extends BaseDestroyable implements DataFlow {
     setUp() {
         this.mapInstanceService.mapInstance$.pipe(
             filter(mapInstance => !!mapInstance),
-            tap(mapInstance => {
+            tap(() => {
                const position = this.mapQuery.getValue().position;
-               this.mapService.setPosition(position.lat, position.lng, position.zoom, true);
+               this.mapService.setMapPosition(position.lat, position.lng, position.zoom, true);
             }),
             tap(mapInstance => {
                 mapInstance.addListener('idle', () => {
                     const latLng = mapInstance.getCenter();
                     const zoom = mapInstance.getZoom();
-                    this.mapService.setPosition(latLng.lat(), latLng.lng(), zoom, false);
+                    this.mapService.setMapPosition(latLng.lat(), latLng.lng(), zoom, false);
                 });
             }),
             takeUntil(this.componentAlive$)

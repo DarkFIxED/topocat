@@ -9,7 +9,7 @@ import {MatDialog, MatDialogRef} from '@angular/material';
 import {DialogResult} from '../../core/models/dialog-result';
 import {SelectNewObjectTypeComponent} from '../dialogs/select-new-object-type/select-new-object-type.component';
 import {MapObjectHelper} from '../helpers/map-object.helper';
-import {MapService} from '../services/map.service';
+import {MapObjectsService} from '../services/map-objects.service';
 import {MapObjectsDrawingService} from '../services/map-objects-drawing.service';
 import {EditMapObjectComponent} from '../dialogs/edit-map-object/edit-map-object.component';
 import {EditObjectTypesActions} from '../models/edit-object-types-actions';
@@ -22,7 +22,7 @@ export class CreateMapObjectFlow extends BaseDestroyable implements DataFlow {
 
     constructor(private mapObjectsQuery: MapObjectsQuery,
                 private matDialog: MatDialog,
-                private mapService: MapService,
+                private mapObjectsService: MapObjectsService,
                 private mapObjectsDrawingService: MapObjectsDrawingService,
                 private wktService: WktService,
                 private mapsHttpService: MapsHttpService,
@@ -41,7 +41,7 @@ export class CreateMapObjectFlow extends BaseDestroyable implements DataFlow {
                 switchMap(dialog => dialog.afterClosed()),
                 tap(dialogResult => {
                    if (dialogResult.isInterrupted || dialogResult.isCancelled)
-                       this.mapService.stopAddNewMapObject();
+                       this.mapObjectsService.stopAddingMapObjectProcess();
                 }),
                 filter(dialogResult => !dialogResult.isCancelled && !dialogResult.isInterrupted),
                 map(dialogResult => dialogResult.data),
@@ -58,7 +58,7 @@ export class CreateMapObjectFlow extends BaseDestroyable implements DataFlow {
             switchMap(dialogRef => dialogRef.afterClosed()),
             tap(dialogResult => {
                 if (dialogResult.isCancelled || dialogResult.isInterrupted) {
-                    this.mapService.stopAddNewMapObject();
+                    this.mapObjectsService.stopAddingMapObjectProcess();
                 }
             }),
             filter(dialogResult => !dialogResult.isCancelled && !dialogResult.isCancelled),
@@ -72,7 +72,7 @@ export class CreateMapObjectFlow extends BaseDestroyable implements DataFlow {
             filter(dialogResult => dialogResult.data.action !== EditObjectTypesActions.RedrawRequested),
             map(dialogResult => dialogResult.data.data),
             switchMap(mapObjectModel => this.mapsHttpService.createMapObject(this.mapQuery.getAll()[0].id.toString(), mapObjectModel)),
-            tap(() => this.mapService.stopAddNewMapObject())
+            tap(() => this.mapObjectsService.stopAddingMapObjectProcess())
         ).subscribe();
     }
 

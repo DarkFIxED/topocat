@@ -1,7 +1,6 @@
 import {MapObjectModel} from './map-object.model';
 import {UnifiedMapObject} from './unified-map-object';
 import {Point} from './point';
-import * as Terraformer from 'terraformer';
 import {Line} from './line';
 import {Polygon} from './polygon';
 import {Injectable} from '@angular/core';

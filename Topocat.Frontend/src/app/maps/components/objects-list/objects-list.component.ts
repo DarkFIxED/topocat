@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {MapObjectsQuery} from '../../queries/map-objects.query';
 import {debounceTime, map} from 'rxjs/operators';
 import {BehaviorSubject, combineLatest} from 'rxjs';
-import {MapService} from '../../services/map.service';
+import {MapObjectsService} from '../../services/map-objects.service';
 
 @Component({
     selector: 'app-objects-list',
@@ -41,7 +41,7 @@ export class ObjectsListComponent implements OnInit {
     loading$ = this.mapsQuery.select(state => state.loading);
 
     constructor(private mapsQuery: MapObjectsQuery,
-                private mapService: MapService) {
+                private mapObjectsService: MapObjectsService) {
     }
 
     ngOnInit() {
@@ -52,6 +52,6 @@ export class ObjectsListComponent implements OnInit {
     }
 
     newMapObject() {
-        this.mapService.addNewMapObject();
+        this.mapObjectsService.startAddingMapObjectProcess();
     }
 }

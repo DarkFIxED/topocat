@@ -5,7 +5,7 @@ import {BehaviorSubject} from 'rxjs';
 import {filter, takeUntil, tap} from 'rxjs/operators';
 import {MapObjectModel} from '../models/map-object.model';
 import {UnifiedMapObjectsFactory} from '../models/unified-map-objects.factory';
-import {MapService} from './map.service';
+import {MapObjectsService} from './map-objects.service';
 import {MapInstanceService} from './map-instance.service';
 import {DrawnObjectsStore} from '../stores/drawn-objects.store';
 import {BaseDestroyable} from '../../core/services/base-destroyable';
@@ -20,7 +20,7 @@ export class MapRenderingService extends BaseDestroyable {
 
     constructor(private drawnObjectsStore: DrawnObjectsStore,
                 private mapObjectsQuery: MapObjectsQuery,
-                private mapService: MapService,
+                private mapObjectsService: MapObjectsService,
                 private unifiedMapObjectsFactory: UnifiedMapObjectsFactory,
                 private mapInstanceService: MapInstanceService,
                 private wktService: WktService,
@@ -36,7 +36,7 @@ export class MapRenderingService extends BaseDestroyable {
             tap(() => {
                 const infoWindow = new google.maps.InfoWindow();
                 infoWindow.addListener('closeclick', () => {
-                    this.mapService.clearActive();
+                    this.mapObjectsService.clearActiveObject();
 
                     // @ts-ignore
                     window.onDetailsClick = undefined;
@@ -48,7 +48,7 @@ export class MapRenderingService extends BaseDestroyable {
         this.drawnObjectsStore.objectAdded$
             .pipe(
                 tap(object => {
-                    const subs = object.click$.subscribe(id => this.mapService.setActive(id));
+                    const subs = object.click$.subscribe(id => this.mapObjectsService.setActiveObject(id));
                     this.drawnObjectsStore.addSubscription(object.id, subs);
                 }),
                 takeUntil(this.componentAlive$)
@@ -100,7 +100,7 @@ export class MapRenderingService extends BaseDestroyable {
         // @ts-ignore
         window.onDetailsClick = function() {
             self.zone.run(() => {
-                self.mapService.openPropertiesWindow(active.id);
+                self.mapObjectsService.openPropertiesWindow(active.id);
             });
         };
 

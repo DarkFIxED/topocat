@@ -1,12 +1,12 @@
 import {Injectable} from '@angular/core';
 import {DataFlow} from '../../core/services/data.flow';
 import {BaseDestroyable} from '../../core/services/base-destroyable';
-import {MapService} from '../services/map.service';
 import {MapInstanceService} from '../services/map-instance.service';
 import {MapQuery} from '../queries/map.query';
 import {combineLatest} from 'rxjs';
 import {LocalPreferencesService} from '../../core/services/local-preferences.service';
 import {filter, takeUntil, tap} from 'rxjs/operators';
+import {MapService} from '../services/map.service';
 
 @Injectable()
 export class MapModeFlow extends BaseDestroyable implements DataFlow {

@@ -3,7 +3,7 @@ import {filter, map, switchMap, takeUntil, tap} from 'rxjs/operators';
 import {EditMapObjectComponent} from '../dialogs/edit-map-object/edit-map-object.component';
 import {MapObjectsQuery} from '../queries/map-objects.query';
 import {MatDialog, MatDialogRef} from '@angular/material';
-import {MapService} from '../services/map.service';
+import {MapObjectsService} from '../services/map-objects.service';
 import {MapsHttpService} from '../../auth-core/services/maps.http.service';
 import {MapQuery} from '../queries/map.query';
 import {BaseDestroyable} from '../../core/services/base-destroyable';
@@ -27,7 +27,7 @@ export class EditMapObjectFlow extends BaseDestroyable implements DataFlow {
     constructor(private mapObjectsQuery: MapObjectsQuery,
                 private mapQuery: MapQuery,
                 private matDialog: MatDialog,
-                private mapService: MapService,
+                private mapObjectsService: MapObjectsService,
                 private mapsHttpService: MapsHttpService,
                 private mapsSignalRService: MapsSignalRService,
                 private mapObjectsDrawingService: MapObjectsDrawingService) {
@@ -81,7 +81,7 @@ export class EditMapObjectFlow extends BaseDestroyable implements DataFlow {
                 filter(data => data.dialogResult.data.action === EditObjectTypesActions.Finished),
                 switchMap(data => this.mapsHttpService.updateMapObject(this.getActualMapId(), data.dialogResult.data.data).pipe(
                     tap(() => {
-                        this.mapService.stopEditMapObject();
+                        this.mapObjectsService.stopEditMapObjectProcess();
                         this.onEditFinished(data.dialogResult.data.data);
                     })
                 )),
@@ -97,7 +97,7 @@ export class EditMapObjectFlow extends BaseDestroyable implements DataFlow {
 
         this.startDraw$
             .pipe(
-                tap(() => this.mapService.startDrawing()),
+                tap(() => this.mapObjectsService.startObjectDrawingProcess()),
                 switchMap(model => this.drawUntilConfirmedOrCancelled(model, drawFinished$)),
                 tap(data => {
                     if (!data.isConfirmed) {
@@ -130,26 +130,26 @@ export class EditMapObjectFlow extends BaseDestroyable implements DataFlow {
                         tap(data => this.openEditDialog$.next(data))
                     ),
                 of({source: result.source, changed: result.changed}).pipe(
-                    tap(() => this.mapService.stopEditMapObject()),
+                    tap(() => this.mapObjectsService.stopEditMapObjectProcess()),
                     switchMap(data => this.mapsHttpService.deleteMapObject(this.getActualMapId(), data.source))
                 )))
         ).subscribe();
 
         this.mapsSignalRService.objectUpdated$
             .pipe(
-                tap(model => this.mapService.updateObject(model)),
+                tap(model => this.mapObjectsService.updateObject(model)),
                 takeUntil(this.componentAlive$)
             ).subscribe();
 
         this.mapsSignalRService.objectRemoved$
             .pipe(
-                tap(id => this.mapService.removeObject(id)),
+                tap(id => this.mapObjectsService.removeObject(id)),
                 takeUntil(this.componentAlive$)
             ).subscribe();
 
         this.mapsSignalRService.objectAdded$
             .pipe(
-                tap(model => this.mapService.addObject(model)),
+                tap(model => this.mapObjectsService.addObject(model)),
                 takeUntil(this.componentAlive$)
             ).subscribe();
     }
@@ -194,12 +194,12 @@ export class EditMapObjectFlow extends BaseDestroyable implements DataFlow {
     }
 
     private cancelEdit(sourceObject: MapObjectModel) {
-        this.mapService.updateObject(sourceObject);
-        this.mapService.stopEditMapObject();
-        this.mapService.openPropertiesWindow(sourceObject.id);
+        this.mapObjectsService.updateObject(sourceObject);
+        this.mapObjectsService.stopEditMapObjectProcess();
+        this.mapObjectsService.openPropertiesWindow(sourceObject.id);
     }
 
     private onEditFinished(modifiedObject: MapObjectModel) {
-        this.mapService.openPropertiesWindow(modifiedObject.id);
+        this.mapObjectsService.openPropertiesWindow(modifiedObject.id);
     }
 }

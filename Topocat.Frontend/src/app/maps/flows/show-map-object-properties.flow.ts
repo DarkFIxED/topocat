@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {DataFlow} from '../../core/services/data.flow';
-import {MapService} from '../services/map.service';
+import {MapObjectsService} from '../services/map-objects.service';
 import {MapObjectsQuery} from '../queries/map-objects.query';
 import {filter, map, switchMap, takeUntil, tap} from 'rxjs/operators';
 import {BaseDestroyable} from '../../core/services/base-destroyable';
@@ -19,7 +19,7 @@ export class ShowMapObjectPropertiesFlow extends BaseDestroyable implements Data
 
     constructor(private mapObjectsQuery: MapObjectsQuery,
                 private mapQuery: MapQuery,
-                private mapService: MapService,
+                private mapObjectsService: MapObjectsService,
                 private dialog: MatDialog) {
         super();
     }
@@ -31,11 +31,11 @@ export class ShowMapObjectPropertiesFlow extends BaseDestroyable implements Data
                 map(mapObjectId => this.mapObjectsQuery.getEntity(mapObjectId)),
                 map(mapObject => this.openPropertiesDialog(this.mapQuery.getAll()[0].id.toString(), mapObject)),
                 switchMap(dialogRef => dialogRef.afterClosed()),
-                tap(() => this.mapService.closePropertiesWindow()),
+                tap(() => this.mapObjectsService.closePropertiesWindow()),
                 tap(dialogResult => {
                     if (dialogResult.data.result === ShowPropertiesActions.EditRequested) {
                         const mapObject = this.mapObjectsQuery.getEntity(dialogResult.data.mapObjectId);
-                        this.mapService.editMapObject(mapObject);
+                        this.mapObjectsService.startEditMapObjectProcess(mapObject);
                     }
                 }),
                 takeUntil(this.componentAlive$)

@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {MapService} from '../../services/map.service';
+import {MapObjectsService} from '../../services/map-objects.service';
 import {ActivatedRoute} from '@angular/router';
 import {MapRenderingService} from '../../services/map-rendering.service';
 import {MapsSignalRService} from '../../services/maps.signal-r.service';
@@ -17,6 +17,7 @@ import {MapFlowsService} from '../../services/map-flows.service';
 import {ShowMapObjectPropertiesFlow} from '../../flows/show-map-object-properties.flow';
 import {MapRemovedFlow} from '../../flows/map-removed.flow';
 import {MapModeFlow} from '../../flows/map-mode.flow';
+import {MapService} from '../../services/map.service';
 
 @Component({
     selector: 'app-map',
@@ -46,12 +47,13 @@ export class MapComponent extends BaseDestroyable implements OnInit {
 
     drawing$ = this.mapObjectsQuery.select(state => state.drawing.isEnabled);
 
-    constructor(private mapService: MapService,
+    constructor(private mapObjectsService: MapObjectsService,
                 private route: ActivatedRoute,
                 private mapsSignalRService: MapsSignalRService,
                 private mapInstanceService: MapInstanceService,
                 private mapObjectsDrawer: MapRenderingService,
                 private mapObjectsQuery: MapObjectsQuery,
+                private mapService: MapService,
                 private mapFlowsService: MapFlowsService) {
         super();
         this.mapFlowsService.setUp();
@@ -65,6 +67,7 @@ export class MapComponent extends BaseDestroyable implements OnInit {
                 throw new Error();
             }
 
+            this.mapObjectsService.load(this.mapId);
             this.mapService.load(this.mapId);
 
             this.mapsSignalRService.isConnected$.pipe(
@@ -73,19 +76,22 @@ export class MapComponent extends BaseDestroyable implements OnInit {
             ).subscribe();
         });
 
-        this.componentAlive$.subscribe(() => this.mapService.reset());
+        this.componentAlive$.subscribe(() => {
+            this.mapObjectsService.reset();
+            this.mapService.reset();
+        });
     }
 
     onMapReady(mapInstance: google.maps.Map) {
         this.mapInstanceService.setInstance(mapInstance);
-        this.mapService.setMapInstanceLoaded();
+        this.mapService.setInstanceLoadedFlag();
         this.trySetCurrentPosition();
     }
 
     private trySetCurrentPosition() {
         if (!!navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(position => {
-               this.mapService.setPosition(position.coords.latitude, position.coords.longitude, this.defaultZoomLevelForUserPosition);
+               this.mapService.setMapPosition(position.coords.latitude, position.coords.longitude, this.defaultZoomLevelForUserPosition);
             });
         }
     }
