@@ -9,6 +9,7 @@ import {RestorePasswordComponent} from './core/components/restore-password/resto
 import {SignUpComponent} from './core/components/sign-up/sign-up.component';
 import {AboutComponent} from './core/components/about/about.component';
 import {AcceptInviteComponent} from './core/components/accept-invite/accept-invite.component';
+import {MessageComponent} from './core/components/message/message.component';
 
 
 const routes: Routes = [
@@ -43,6 +44,10 @@ const routes: Routes = [
             {
                 path: '',
                 component: IndexComponent
+            },
+            {
+                path: 'message',
+                component: MessageComponent
             }
         ]
     },

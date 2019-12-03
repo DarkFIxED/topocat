@@ -27,6 +27,7 @@ namespace Topocat.Services.Commands.Maps.Memberships.SetInviteDecision
         public async Task Execute(SetInviteDecisionCommandArgs args)
         {
             var map = await _repository.AsQueryable<Map>()
+                .NotRemoved()
                 .WithId(args.MapId)
                 .LoadAggregate()
                 .FirstOrDefaultAsync();

@@ -4,7 +4,6 @@ import {Observable} from 'rxjs';
 import {ApiResponse} from '../../core/models/api.response';
 import {MapModel} from '../../maps/models/map.model';
 import {MapObjectModel} from '../../maps/models/map-object.model';
-import {ID} from '@datorama/akita';
 
 @Injectable()
 export class MapsHttpService {
@@ -22,6 +21,7 @@ export class MapsHttpService {
     updateMapObject(mapId: string, data: MapObjectModel): Observable<ApiResponse<any>> {
         return this.authHttpService.put<ApiResponse<any>>(`maps/${mapId}/objects/${data.id}`, {
             title: data.title,
+            description: data.description,
             wktString: data.wktString
         });
     }
@@ -29,6 +29,7 @@ export class MapsHttpService {
     createMapObject(mapId: string, data: MapObjectModel): Observable<ApiResponse<any>> {
         return this.authHttpService.post<ApiResponse<any>>(`maps/${mapId}/objects`, {
             title: data.title,
+            description: data.description,
             wktString: data.wktString
         });
     }

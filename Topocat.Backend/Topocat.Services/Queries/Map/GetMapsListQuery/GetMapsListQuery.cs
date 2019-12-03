@@ -8,6 +8,7 @@ using Topocat.DB;
 using Topocat.Domain.Entities.Map;
 using Topocat.Domain.Entities.Users;
 using Topocat.Services.Models;
+using Topocat.Services.QueryExtensions;
 
 namespace Topocat.Services.Queries.Map.GetMapsListQuery
 {
@@ -31,6 +32,7 @@ namespace Topocat.Services.Queries.Map.GetMapsListQuery
                 throw new ArgumentNullException(nameof(user), "User not found");
 
             var items = await _repository.AsQueryable<Domain.Entities.Map.Map>()
+                .NotRemoved()
                 .Where(x => x.Memberships.Any(m => m.InvitedId == user.Id && m.Status == MapMembershipStatus.Accepted))
                 .Select(x => new GetMapsListResultItem
                 {

@@ -3,7 +3,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Topocat.API.Extensions;
 using Topocat.Services.Models;
-using Topocat.Services.Services.Background;
 
 namespace Topocat.API.StartupExtensions
 {
@@ -20,8 +19,6 @@ namespace Topocat.API.StartupExtensions
             services.Configure<ImageResizerOptions>(appConfiguration.GetSection("ImageResizerOptions"));
 
             services.AddSingleton(tokenValidationParams);
-            services.AddHostedService<QueuedHostedService>();
-            services.AddSingleton<IBackgroundTaskQueue, BackgroundTaskQueue>();
         }
     }
 }

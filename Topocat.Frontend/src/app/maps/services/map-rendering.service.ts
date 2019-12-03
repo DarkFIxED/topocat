@@ -11,6 +11,7 @@ import {DrawnObjectsStore} from '../stores/drawn-objects.store';
 import {BaseDestroyable} from '../../core/services/base-destroyable';
 import {ID} from '@datorama/akita';
 import {WktService} from './wkt.service';
+import {SuppressNullPipe} from '../../core/pipes/suppress-null.pipe';
 
 @Injectable()
 export class MapRenderingService extends BaseDestroyable {
@@ -23,7 +24,8 @@ export class MapRenderingService extends BaseDestroyable {
                 private unifiedMapObjectsFactory: UnifiedMapObjectsFactory,
                 private mapInstanceService: MapInstanceService,
                 private wktService: WktService,
-                private zone: NgZone) {
+                private zone: NgZone,
+                private suppressNullPipe: SuppressNullPipe) {
         super();
         this.initialize();
     }
@@ -102,14 +104,22 @@ export class MapRenderingService extends BaseDestroyable {
             });
         };
 
-        const content =
+        const description = this.suppressNullPipe.transform(active.description);
+
+        let content =
             `<div class="info-window-content">` +
-                `<span class="text-overflow d-inline-block info-window-row" title="${active.title}">${active.title}</span><br>` +
-                `<div class="d-flex mt-1">` +
-                    `<button class="ml-auto float-right info-window-open-properties-button mdi mdi-map-marker-question-outline" ` +
+                `<span class="text-overflow d-inline-block info-window-row" title="${active.title}">${active.title}</span><br>`;
+
+        if (!!description) {
+            content += `<span class="text-overflow d-inline-block info-window-row" title="${active.description}">${active.description}</span><br>`;
+        }
+
+
+        content += `<div class="d-flex mt-1">` +
+                        `<button class="ml-auto float-right info-window-open-properties-button mdi mdi-map-marker-question-outline" ` +
                              `title="Details..." ` +
                              `onClick="window.onDetailsClick()">Details...</button>` +
-                `</div>` +
+                    `</div>` +
             `</div>`;
 
         infoWindow.setContent(content);

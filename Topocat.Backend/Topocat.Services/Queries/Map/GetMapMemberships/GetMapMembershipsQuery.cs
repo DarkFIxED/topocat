@@ -21,6 +21,7 @@ namespace Topocat.Services.Queries.Map.GetMapMemberships
         {
             var items = await _repository.AsQueryable<MapMembership>()
                 .Where(x => x.MapId == args.MapId)
+                .Where(x => !x.Map.IsRemoved)
                 .Where(x => x.Map.CreatedById == args.ActionExecutorId)
                 .Select(x => new GetMapMembershipsQueryResultItem
                 {

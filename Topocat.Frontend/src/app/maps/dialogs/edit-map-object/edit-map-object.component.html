@@ -16,6 +16,17 @@
                 </mat-error>
             </mat-form-field>
         </div>
+        <div class="d-flex align-items-center">
+            <mat-form-field class="w-100">
+                <textarea matInput mat-autosize
+                          [matAutosizeMaxRows]="5"
+                          [matAutosizeMinRows]="1"
+                          formControlName="description"
+                          placeholder="Description"
+                          tabindex="2">
+                </textarea>
+            </mat-form-field>
+        </div>
         <div class="d-flex w-100 pb-1">
             <button class="float-left mr-3"
                     type="button"

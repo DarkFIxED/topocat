@@ -10,8 +10,8 @@ export class MapsListHttpService {
     constructor(private authHttpService: AuthHttpService) {
     }
 
-    getMapsList(): Observable<ApiResponse<{maps: MapModel[]}>> {
-        return this.authHttpService.get<ApiResponse<{maps: MapModel[]}>>('maps');
+    getMapsList(): Observable<ApiResponse<{ maps: MapModel[] }>> {
+        return this.authHttpService.get<ApiResponse<{ maps: MapModel[] }>>('maps');
     }
 
     createMap(newMapModel: NewMapModel): Observable<ApiResponse<any>> {
@@ -20,5 +20,9 @@ export class MapsListHttpService {
 
     updateMap(id: string, data: NewMapModel): Observable<ApiResponse<any>> {
         return this.authHttpService.put<ApiResponse<any>>(`maps/${id}`, data);
+    }
+
+    removeMap(mapId: string): Observable<ApiResponse<any>> {
+        return this.authHttpService.delete<ApiResponse<any>>(`maps/${mapId}`);
     }
 }

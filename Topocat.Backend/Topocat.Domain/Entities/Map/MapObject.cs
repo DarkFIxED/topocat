@@ -15,23 +15,25 @@ namespace Topocat.Domain.Entities.Map
         [UsedImplicitly]
         protected MapObject() { }
 
-        public MapObject(Map map, string title, Geometry geometry)
+        public MapObject(Map map, string title, string description, Geometry geometry)
         {
+            AddEvent(new MapObjectAdded(this));
+
             Map = map;
             MapId = map.Id;
             
             Id = Guid.NewGuid().ToString("D");
             CreatedAt = DateTimeOffset.UtcNow;
-            Update(title, geometry);
+            Update(title, description, geometry);
 
             FileReferencesBindings = new List<MapObjectFileReferences>();
-
-            AddEvent(new MapObjectAdded(this));
         }
 
         public string Id { get; protected set; }
 
         public string Title { get; protected set; }
+
+        public string Description { get; protected set; }
 
         public DateTimeOffset LastModifiedAt { get; protected set; }
 
@@ -46,9 +48,10 @@ namespace Topocat.Domain.Entities.Map
 
         public List<MapObjectFileReferences> FileReferencesBindings { get; protected set; }
 
-        public void Update(string title, Geometry geometry)
+        public void Update(string title, string description, Geometry geometry)
         {
             Title = title;
+            Description = description;
             Geometry = FixClockWiseOrientationIfRequired(geometry);
             LastModifiedAt = DateTimeOffset.UtcNow;
 
@@ -61,10 +64,15 @@ namespace Topocat.Domain.Entities.Map
             if (!HasEventsOfType<EntityRemoved>())
                 AddOrReplaceEvent(new EntityRemoved(this));
         }
-
+        
+        public void AddAttachment(FileReference fileReference)
+        {
+            FileReferencesBindings.Add(new MapObjectFileReferences(this, fileReference));
+        }
+        
         private static Geometry FixClockWiseOrientationIfRequired(Geometry geometry)
         {
-            if (geometry.OgcGeometryType != OgcGeometryType.Polygon) 
+            if (geometry.OgcGeometryType != OgcGeometryType.Polygon)
                 return geometry;
 
             var polygon = geometry as Polygon;
@@ -77,9 +85,5 @@ namespace Topocat.Domain.Entities.Map
             return geometry;
         }
 
-        public void AddAttachment(FileReference fileReference)
-        {
-            FileReferencesBindings.Add(new MapObjectFileReferences(this, fileReference));
-        }
     }
 }

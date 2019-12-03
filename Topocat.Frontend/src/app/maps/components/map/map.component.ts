@@ -15,6 +15,8 @@ import {CreateMapObjectFlow} from '../../flows/create-map-object.flow';
 import {MapPositionFlow} from '../../flows/map-position.flow';
 import {MapFlowsService} from '../../services/map-flows.service';
 import {ShowMapObjectPropertiesFlow} from '../../flows/show-map-object-properties.flow';
+import {MapRemovedFlow} from '../../flows/map-removed.flow';
+import {MapModeFlow} from '../../flows/map-mode.flow';
 
 @Component({
     selector: 'app-map',
@@ -30,7 +32,9 @@ import {ShowMapObjectPropertiesFlow} from '../../flows/show-map-object-propertie
         CreateMapObjectFlow,
         MapPositionFlow,
         ShowMapObjectPropertiesFlow,
-        MapFlowsService
+        MapFlowsService,
+        MapRemovedFlow,
+        MapModeFlow
     ]
 })
 export class MapComponent extends BaseDestroyable implements OnInit {
@@ -74,7 +78,7 @@ export class MapComponent extends BaseDestroyable implements OnInit {
 
     onMapReady(mapInstance: google.maps.Map) {
         this.mapInstanceService.setInstance(mapInstance);
-
+        this.mapService.setMapInstanceLoaded();
         this.trySetCurrentPosition();
     }
 

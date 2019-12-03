@@ -138,6 +138,9 @@ namespace Topocat.DB.Migrations
                     b.Property<string>("ObjectKey")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("ScheduledToRemove")
+                        .HasColumnType("bit");
+
                     b.Property<string>("SourceFileName")
                         .HasColumnType("nvarchar(max)");
 
@@ -159,6 +162,9 @@ namespace Topocat.DB.Migrations
 
                     b.Property<string>("CreatedById")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("IsRemoved")
+                        .HasColumnType("bit");
 
                     b.Property<DateTimeOffset>("LastModifiedAt")
                         .HasColumnType("datetimeoffset");
@@ -211,6 +217,9 @@ namespace Topocat.DB.Migrations
 
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Geometry>("Geometry")
                         .HasColumnType("geography");

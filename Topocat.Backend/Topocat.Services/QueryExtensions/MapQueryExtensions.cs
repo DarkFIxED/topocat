@@ -45,5 +45,15 @@ namespace Topocat.Services.QueryExtensions
                 }
             });
         }
+
+        public static IQueryable<Map> NotRemoved(this IQueryable<Map> query)
+        {
+            return query.Where(x => !x.IsRemoved);
+        }
+
+        public static IQueryable<Map> Removed(this IQueryable<Map> query)
+        {
+            return query.Where(x => x.IsRemoved);
+        }
     }
 }

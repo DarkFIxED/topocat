@@ -1,28 +1,26 @@
-﻿using DalSoft.Hosting.BackgroundQueue;
-using Microsoft.Extensions.Options;
-using SendGrid;
+﻿using Microsoft.Extensions.Options;
 using SendGrid.Helpers.Mail;
 using Topocat.Common;
+using Topocat.Services.BackgroundJobs.Simple;
 using Topocat.Services.Models;
+using Topocat.Services.Services.Background;
 
 namespace Topocat.Services.Services
 {
-    //TODO: Uncomment when FakeEmailService will be gone.
     [RegisterScoped(typeof(IEmailService))]
     public class EmailService : IEmailService
     {
         private readonly SendGridOptions _sendGridOptions;
-        private readonly BackgroundQueue _backgroundQueue;
+        private readonly IBackgroundService _backgroundService;
 
-        public EmailService(IOptions<SendGridOptions> sendGridOptions, BackgroundQueue backgroundQueue)
+        public EmailService(IOptions<SendGridOptions> sendGridOptions, IBackgroundService backgroundService)
         {
-            _backgroundQueue = backgroundQueue;
+            _backgroundService = backgroundService;
             _sendGridOptions = sendGridOptions.Value;
         }
 
         public void SendEmail(EmailMessage message)
         {
-            var client = new SendGridClient(_sendGridOptions.ApiKey);
             var msg = new SendGridMessage
             {
                 From = new EmailAddress(_sendGridOptions.SenderEmail, _sendGridOptions.Sender),
@@ -35,10 +33,7 @@ namespace Topocat.Services.Services
                 msg.AddTo(new EmailAddress(messageAddress));
             }
             
-            _backgroundQueue.Enqueue(async cancellationToken =>
-            {
-                await client.SendEmailAsync(msg, cancellationToken);
-            });
+            _backgroundService.RunInBackground<SendEmail, SendGridMessage>(msg);
         }
     }
 }
