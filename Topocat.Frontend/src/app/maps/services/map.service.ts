@@ -59,6 +59,18 @@ export class MapService {
             });
     }
 
+    setMapInstanceLoaded() {
+       this.mapStore.update({
+           instanceLoaded: true
+       });
+    }
+
+    setMapMode(mode: string) {
+        this.mapStore.update({
+            mapMode: mode
+        });
+    }
+
     addObject(object: MapObjectModel) {
         this.mapObjectsStore.add(object);
     }
