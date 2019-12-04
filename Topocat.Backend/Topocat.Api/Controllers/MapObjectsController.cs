@@ -60,6 +60,7 @@ namespace Topocat.API.Controllers
                 MapId = mapId,
                 WktString = model.WktString,
                 ActionExecutorId = HttpContext.User.GetUserId(),
+                Tags = model.Tags
             });
 
             return ApiResponse.Success(result);
@@ -78,7 +79,8 @@ namespace Topocat.API.Controllers
                 MapId = mapId,
                 ObjectId = objectId,
                 ActionExecutorId = HttpContext.User.GetUserId(),
-                WktString = model.WktString
+                WktString = model.WktString,
+                Tags = model.Tags
             });
 
             return ApiResponse.Success();

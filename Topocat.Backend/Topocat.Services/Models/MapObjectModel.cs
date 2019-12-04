@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Topocat.Services.Models
 {
@@ -15,5 +16,7 @@ namespace Topocat.Services.Models
         public DateTimeOffset LastModifiedAt { get; set; }
 
         public string WktString { get; set; }
+
+        public List<string> Tags { get; set; }
     }
 }
