@@ -14,6 +14,7 @@ using Topocat.Services.Commands.Maps.Objects.UpdateObject;
 using Topocat.Services.Queries.Map.GetMapObjects;
 using Topocat.Services.Queries.Objects.GetAttachment;
 using Topocat.Services.Queries.Objects.GetAttachments;
+using Topocat.Services.Queries.Objects.TagsSearch;
 
 namespace Topocat.API.Controllers
 {
@@ -182,6 +183,22 @@ namespace Topocat.API.Controllers
                 ObjectId = objectId,
                 ActionExecutorId = HttpContext.User.GetUserId(),
                 AttachmentId = attachmentId
+            });
+
+            return ApiResponse.Success(result);
+        }
+
+        [Route("/maps/{mapId}/objects/tags")]
+        [HttpGet]
+        public async Task<ApiResponse> GetAttachment([FromRoute] string mapId, [FromQuery] string search)
+        {
+            var updateLineCommand = _queriesFactory.Get<TagsSearchQuery>();
+
+            var result = await updateLineCommand.Ask(new TagsSearchQueryArgs
+            {
+                MapId = mapId,
+                ActionExecutorId = HttpContext.User.GetUserId(),
+                SearchString = search
             });
 
             return ApiResponse.Success(result);
