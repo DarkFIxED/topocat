@@ -1,11 +1,19 @@
 <div class="container pt-3 pb-3">
     <div class="d-flex">
-        <div class="mr-2 text-overflow" [title]="model.title">{{model.title}}</div>
+        <div class="mr-2 text-overflow font-weight-bold" [title]="model.title">{{model.title}}</div>
         <span>({{type}})</span>
     </div>
-    <div class="d-flex">
-        <div class="text-overflow" [title]="model.description">Description: {{model.description}}</div>
-        <div *ngIf="!model.description" class="font-italic">Not specified</div>
+    <div class="d-flex mt-2">
+        <div *ngIf="!model.description" class="text-overflow" [title]="model.description">Description: Not specified</div>
+        <div *ngIf="model.description" class="w-100">
+           <span>Description:</span>
+            <textarea class="w-100 description-area mb-2 p-2"
+                      matInput
+                      readonly
+                      mat-autosize
+                      [matAutosizeMaxRows]="5"
+                      [matAutosizeMinRows]="3">{{model.description}}</textarea>
+        </div>
     </div>
     <div>
         <span>Created at: {{model.createdAt | date:environment.defaultDateFormat}}</span>

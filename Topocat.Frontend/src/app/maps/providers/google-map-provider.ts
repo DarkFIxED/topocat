@@ -76,7 +76,7 @@ export class GoogleMapProvider extends MapProvider {
 
         let content =
             `<div class="info-window-content">` +
-            `<span class="text-overflow d-inline-block info-window-row" title="${mapObject.title}">${mapObject.title}</span><br>`;
+            `<span class="text-overflow d-inline-block info-window-row font-weight-bold" title="${mapObject.title}">${mapObject.title}</span><br>`;
 
         if (!!description) {
             content += `<span class="text-overflow d-inline-block info-window-row" title="${mapObject.description}">${mapObject.description}</span><br>`;
