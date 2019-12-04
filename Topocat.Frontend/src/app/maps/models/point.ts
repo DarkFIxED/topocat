@@ -3,6 +3,7 @@ import {ID} from '@datorama/akita';
 import {MapObjectModel} from './map-object.model';
 import {BaseUnifiedMapObject} from './base-unified-map-object';
 import {Coordinates} from '../../core/models/coordinates';
+import {WktPrimitives} from './wkt-primitives';
 
 export class Point extends BaseUnifiedMapObject<google.maps.Marker> implements UnifiedMapObject {
 
@@ -19,6 +20,10 @@ export class Point extends BaseUnifiedMapObject<google.maps.Marker> implements U
     dispose() {
         this.underlyingObject.unbindAll();
         this.underlyingObject.setMap(null);
+    }
+
+    getType(): string {
+        return WktPrimitives.Point;
     }
 
     update(object: MapObjectModel, newCoords: Coordinates) {

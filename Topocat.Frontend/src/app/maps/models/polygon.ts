@@ -4,6 +4,7 @@ import {MapObjectModel} from './map-object.model';
 import {BaseUnifiedMapObject} from './base-unified-map-object';
 import {google} from 'google-maps';
 import {Coordinates} from '../../core/models/coordinates';
+import {WktPrimitives} from './wkt-primitives';
 
 export class Polygon extends BaseUnifiedMapObject<google.maps.Polygon> implements UnifiedMapObject {
 
@@ -26,6 +27,10 @@ export class Polygon extends BaseUnifiedMapObject<google.maps.Polygon> implement
     dispose() {
         this.underlyingObject.unbindAll();
         this.underlyingObject.setMap(null);
+    }
+
+    getType(): string {
+        return WktPrimitives.Polygon;
     }
 
     update(object: MapObjectModel, newCoords: Coordinates[][]) {

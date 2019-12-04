@@ -4,6 +4,7 @@ import {MapObjectModel} from './map-object.model';
 import {google} from 'google-maps';
 import {BaseUnifiedMapObject} from './base-unified-map-object';
 import {Coordinates} from '../../core/models/coordinates';
+import {WktPrimitives} from './wkt-primitives';
 
 export class Line extends BaseUnifiedMapObject<google.maps.Polyline> implements UnifiedMapObject {
 
@@ -19,6 +20,10 @@ export class Line extends BaseUnifiedMapObject<google.maps.Polyline> implements 
     dispose() {
         this.underlyingObject.unbindAll();
         this.underlyingObject.setMap(null);
+    }
+
+    getType(): string {
+        return WktPrimitives.LineString;
     }
 
     update(object: MapObjectModel, newCoords: Coordinates[]) {
@@ -72,4 +77,5 @@ export class Line extends BaseUnifiedMapObject<google.maps.Polyline> implements 
         const path = this.underlyingObject.getPath().getArray().map(latLng => new Coordinates(latLng.lat(), latLng.lng()));
         this.drag.next(path);
     }
+
 }

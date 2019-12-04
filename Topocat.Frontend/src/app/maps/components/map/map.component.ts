@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, NgZone, OnInit} from '@angular/core';
 import {MapObjectsService} from '../../services/map-objects.service';
 import {ActivatedRoute} from '@angular/router';
 import {MapRenderingService} from '../../services/map-rendering.service';
@@ -6,7 +6,6 @@ import {MapsSignalRService} from '../../services/maps.signal-r.service';
 import {filter, tap} from 'rxjs/operators';
 import {BaseDestroyable} from '../../../core/services/base-destroyable';
 import {MapObjectsDrawingService} from '../../services/map-objects-drawing.service';
-import {MapInstanceService} from '../../services/map-instance.service';
 import {EditMapObjectFlow} from '../../flows/edit-map-object.flow';
 import {ObjectsDrawingFlow} from '../../flows/objects-drawing.flow';
 import {DrawnObjectsStore} from '../../stores/drawn-objects.store';
@@ -18,6 +17,9 @@ import {ShowMapObjectPropertiesFlow} from '../../flows/show-map-object-propertie
 import {MapRemovedFlow} from '../../flows/map-removed.flow';
 import {MapModeFlow} from '../../flows/map-mode.flow';
 import {MapService} from '../../services/map.service';
+import {MapProviderService} from '../../services/map-provider.service';
+import {GoogleMapProvider} from '../../providers/google-map-provider';
+import {WktService} from '../../services/wkt.service';
 
 @Component({
     selector: 'app-map',
@@ -26,7 +28,6 @@ import {MapService} from '../../services/map.service';
     providers: [
         MapRenderingService,
         MapObjectsDrawingService,
-        MapInstanceService,
         EditMapObjectFlow,
         ObjectsDrawingFlow,
         DrawnObjectsStore,
@@ -35,7 +36,8 @@ import {MapService} from '../../services/map.service';
         ShowMapObjectPropertiesFlow,
         MapFlowsService,
         MapRemovedFlow,
-        MapModeFlow
+        MapModeFlow,
+        MapProviderService
     ]
 })
 export class MapComponent extends BaseDestroyable implements OnInit {
@@ -50,11 +52,13 @@ export class MapComponent extends BaseDestroyable implements OnInit {
     constructor(private mapObjectsService: MapObjectsService,
                 private route: ActivatedRoute,
                 private mapsSignalRService: MapsSignalRService,
-                private mapInstanceService: MapInstanceService,
-                private mapObjectsDrawer: MapRenderingService,
+                private mapRenderingService: MapRenderingService,
                 private mapObjectsQuery: MapObjectsQuery,
                 private mapService: MapService,
-                private mapFlowsService: MapFlowsService) {
+                private mapFlowsService: MapFlowsService,
+                private mapProviderService: MapProviderService,
+                private zone: NgZone,
+                private wktService: WktService) {
         super();
         this.mapFlowsService.setUp();
     }
@@ -83,7 +87,7 @@ export class MapComponent extends BaseDestroyable implements OnInit {
     }
 
     onMapReady(mapInstance: google.maps.Map) {
-        this.mapInstanceService.setInstance(mapInstance);
+        this.mapProviderService.setProvider(new GoogleMapProvider(mapInstance, this.zone, this.wktService));
         this.mapService.setInstanceLoadedFlag();
         this.trySetCurrentPosition();
     }

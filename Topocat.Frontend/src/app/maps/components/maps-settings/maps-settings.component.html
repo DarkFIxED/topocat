@@ -5,9 +5,10 @@
                      tabindex="1"
                      [value]="(mapMode$ | async)"
                      (change)="onMapTypeIdChange($event)">
-        <mat-radio-button [value]="MapTypeId.ROADMAP" color="primary" cdkFocusInitial>Roadmap</mat-radio-button>
-        <mat-radio-button [value]="MapTypeId.HYBRID" color="primary">Hybrid</mat-radio-button>
-        <mat-radio-button [value]="MapTypeId.SATELLITE" color="primary">Satellite</mat-radio-button>
-        <mat-radio-button [value]="MapTypeId.TERRAIN" color="primary">Terrain</mat-radio-button>
+        <mat-radio-button *ngFor="let mode of availableModes$ | async"
+                          [value]="mode.value"
+                          color="primary">
+            {{mode.title}}
+        </mat-radio-button>
     </mat-radio-group>
 </div>

@@ -16,7 +16,6 @@ import {ObjectsListComponent} from './components/objects-list/objects-list.compo
 import {MatButtonModule, MatCardModule, MatDialogModule, MatInputModule, MatListModule, MatRadioModule, MatRippleModule, MatTabsModule} from '@angular/material';
 import {ObjectsListItemComponent} from './components/objects-list-item/objects-list-item.component';
 import {WktService} from './services/wkt.service';
-import {UnifiedMapObjectsFactory} from './models/unified-map-objects.factory';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MapsSignalRService} from './services/maps.signal-r.service';
 import {EditMapObjectComponent} from './dialogs/edit-map-object/edit-map-object.component';
@@ -96,7 +95,6 @@ const routes: Routes = [
         MapObjectAttachmentsHttpService,
         MapObjectsQuery,
         WktService,
-        UnifiedMapObjectsFactory,
         MapsSignalRService,
         MapQuery,
     ]
