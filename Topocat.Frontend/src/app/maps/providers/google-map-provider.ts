@@ -7,6 +7,7 @@ import {google} from 'google-maps';
 import {NgZone} from '@angular/core';
 import {MapObjectModel} from '../models/map-object.model';
 import {WktPrimitives} from '../models/wkt-primitives';
+import {SupportedMapTypes} from '../models/supported-map-types';
 
 export class GoogleMapProvider extends MapProvider {
 
@@ -23,6 +24,10 @@ export class GoogleMapProvider extends MapProvider {
         super();
 
         this.initialize();
+    }
+    
+    getType(): SupportedMapTypes {
+        return SupportedMapTypes.Google;
     }
 
     getAvailableMapModes(): { title: string; value: string }[] {
