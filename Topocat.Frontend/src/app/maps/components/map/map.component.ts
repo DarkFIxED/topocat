@@ -20,6 +20,7 @@ import {MapModeFlow} from '../../flows/map-mode.flow';
 import {MapService} from '../../services/map.service';
 import {MapProviderService} from '../../services/map-provider.service';
 import {GoogleMapProvider} from '../../providers/google-map-provider';
+import {WktService} from '../../services/wkt.service';
 
 @Component({
     selector: 'app-map',
@@ -53,13 +54,13 @@ export class MapComponent extends BaseDestroyable implements OnInit {
     constructor(private mapObjectsService: MapObjectsService,
                 private route: ActivatedRoute,
                 private mapsSignalRService: MapsSignalRService,
-                private mapInstanceService: MapInstanceService,
                 private mapObjectsDrawer: MapRenderingService,
                 private mapObjectsQuery: MapObjectsQuery,
                 private mapService: MapService,
                 private mapFlowsService: MapFlowsService,
                 private mapProviderService: MapProviderService,
-                private zone: NgZone) {
+                private zone: NgZone,
+                private wktService: WktService) {
         super();
         this.mapFlowsService.setUp();
     }
@@ -88,8 +89,7 @@ export class MapComponent extends BaseDestroyable implements OnInit {
     }
 
     onMapReady(mapInstance: google.maps.Map) {
-        this.mapProviderService.setProvider(new GoogleMapProvider(mapInstance, this.zone));
-        this.mapInstanceService.setInstance(mapInstance);
+        this.mapProviderService.setProvider(new GoogleMapProvider(mapInstance, this.zone, this.wktService));
         this.mapService.setInstanceLoadedFlag();
         this.trySetCurrentPosition();
     }

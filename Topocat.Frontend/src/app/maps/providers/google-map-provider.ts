@@ -8,6 +8,8 @@ import {NgZone} from '@angular/core';
 import {MapObjectModel} from '../models/map-object.model';
 import {WktPrimitives} from '../models/wkt-primitives';
 import {SupportedMapTypes} from '../models/supported-map-types';
+import {GoogleUnifiedMapObjectsFactory} from './google-unified-map-objects-factory.service';
+import {WktService} from '../services/wkt.service';
 
 export class GoogleMapProvider extends MapProvider {
 
@@ -20,7 +22,8 @@ export class GoogleMapProvider extends MapProvider {
     private drawingManager: google.maps.drawing.DrawingManager;
 
     constructor(private mapInstance: google.maps.Map,
-                private zone: NgZone) {
+                private zone: NgZone,
+                private wktService: WktService) {
         super();
 
         this.initialize();
@@ -55,7 +58,6 @@ export class GoogleMapProvider extends MapProvider {
     }
 
     openInfoWindow(mapObject: MapObjectModel, unifiedMapObject: UnifiedMapObject) {
-
         if (mapObject.id !== unifiedMapObject.id) {
             throw new Error();
         }
@@ -121,6 +123,8 @@ export class GoogleMapProvider extends MapProvider {
     private initialize() {
         this.infoWindowClosed$ = this.infoWindowClosed.asObservable();
         this.onDetailsOpenRequired$ = this.onDetailsOpenRequired.asObservable();
+
+        this.unifiedObjectsFactory = new GoogleUnifiedMapObjectsFactory(this.wktService, this.mapInstance);
 
         this.setUpMapObservables();
         this.setUpInfoWindow();

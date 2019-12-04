@@ -4,6 +4,7 @@ import {UnifiedMapObject} from '../models/unified-map-object';
 import {BaseDestroyable} from '../../core/services/base-destroyable';
 import {MapObjectModel} from '../models/map-object.model';
 import {SupportedMapTypes} from '../models/supported-map-types';
+import {UnifiedMapObjectsFactory} from './unified-map-objects.factory';
 
 export abstract class MapProvider extends BaseDestroyable {
 
@@ -11,6 +12,8 @@ export abstract class MapProvider extends BaseDestroyable {
     zoom$: Observable<number>;
     infoWindowClosed$: Observable<any>;
     onDetailsOpenRequired$: Observable<string>;
+
+    unifiedObjectsFactory: UnifiedMapObjectsFactory;
 
     abstract getType(): SupportedMapTypes;
 

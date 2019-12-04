@@ -16,6 +16,7 @@ import {DataFlow} from '../../core/services/data.flow';
 import {MapObjectHelper} from '../helpers/map-object.helper';
 import {EditObjectTypesActions} from '../models/edit-object-types-actions';
 import {ConfirmationComponent} from '../../core/dialogs/confirmation/confirmation.component';
+import {MapProviderService} from '../services/map-provider.service';
 
 @Injectable()
 export class EditMapObjectFlow extends BaseDestroyable implements DataFlow {
@@ -30,7 +31,8 @@ export class EditMapObjectFlow extends BaseDestroyable implements DataFlow {
                 private mapObjectsService: MapObjectsService,
                 private mapsHttpService: MapsHttpService,
                 private mapsSignalRService: MapsSignalRService,
-                private mapObjectsDrawingService: MapObjectsDrawingService) {
+                private mapObjectsDrawingService: MapObjectsDrawingService,
+                private mapProviderService: MapProviderService) {
         super();
     }
 

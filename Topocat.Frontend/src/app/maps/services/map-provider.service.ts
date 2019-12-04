@@ -14,4 +14,8 @@ export class MapProviderService {
     setProvider(provider: MapProvider) {
         this.provider.next(provider);
     }
+
+    getProvider(): MapProvider {
+        return this.provider.getValue();
+    }
 }

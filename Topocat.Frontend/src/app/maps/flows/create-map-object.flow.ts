@@ -10,12 +10,12 @@ import {DialogResult} from '../../core/models/dialog-result';
 import {SelectNewObjectTypeComponent} from '../dialogs/select-new-object-type/select-new-object-type.component';
 import {MapObjectHelper} from '../helpers/map-object.helper';
 import {MapObjectsService} from '../services/map-objects.service';
-import {MapObjectsDrawingService} from '../services/map-objects-drawing.service';
 import {EditMapObjectComponent} from '../dialogs/edit-map-object/edit-map-object.component';
 import {EditObjectTypesActions} from '../models/edit-object-types-actions';
 import {WktService} from '../services/wkt.service';
 import {MapsHttpService} from '../../auth-core/services/maps.http.service';
 import {MapQuery} from '../queries/map.query';
+import {MapProviderService} from '../services/map-provider.service';
 
 @Injectable()
 export class CreateMapObjectFlow extends BaseDestroyable implements DataFlow {
@@ -23,10 +23,10 @@ export class CreateMapObjectFlow extends BaseDestroyable implements DataFlow {
     constructor(private mapObjectsQuery: MapObjectsQuery,
                 private matDialog: MatDialog,
                 private mapObjectsService: MapObjectsService,
-                private mapObjectsDrawingService: MapObjectsDrawingService,
                 private wktService: WktService,
                 private mapsHttpService: MapsHttpService,
-                private mapQuery: MapQuery
+                private mapQuery: MapQuery,
+                private mapProviderService: MapProviderService
                 ) {
         super();
     }
@@ -53,7 +53,12 @@ export class CreateMapObjectFlow extends BaseDestroyable implements DataFlow {
             ).subscribe();
 
         this.startDrawing$.pipe(
-            switchMap(model => this.mapObjectsDrawingService.drawFigure(model.type, model.model)),
+            switchMap(async model => {
+                const coords = await this.mapProviderService.getProvider().drawFigure(model.type);
+                const newWktString = this.wktService.createWktString(model.type, coords);
+
+                return MapObjectHelper.copyWithAnotherWktString(model.model, newWktString);
+            }),
             map(model => this.openEditDialog(model, true)),
             switchMap(dialogRef => dialogRef.afterClosed()),
             tap(dialogResult => {
