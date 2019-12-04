@@ -1,6 +1,5 @@
 import {DataFlow} from '../../core/services/data.flow';
 import {Injectable} from '@angular/core';
-import {MapInstanceService} from '../services/map-instance.service';
 import {MapQuery} from '../queries/map.query';
 import {BaseDestroyable} from '../../core/services/base-destroyable';
 import {filter, takeUntil, tap} from 'rxjs/operators';

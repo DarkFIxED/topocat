@@ -6,7 +6,6 @@ import {MapsSignalRService} from '../../services/maps.signal-r.service';
 import {filter, tap} from 'rxjs/operators';
 import {BaseDestroyable} from '../../../core/services/base-destroyable';
 import {MapObjectsDrawingService} from '../../services/map-objects-drawing.service';
-import {MapInstanceService} from '../../services/map-instance.service';
 import {EditMapObjectFlow} from '../../flows/edit-map-object.flow';
 import {ObjectsDrawingFlow} from '../../flows/objects-drawing.flow';
 import {DrawnObjectsStore} from '../../stores/drawn-objects.store';
@@ -29,7 +28,6 @@ import {WktService} from '../../services/wkt.service';
     providers: [
         MapRenderingService,
         MapObjectsDrawingService,
-        MapInstanceService,
         EditMapObjectFlow,
         ObjectsDrawingFlow,
         DrawnObjectsStore,
@@ -54,7 +52,7 @@ export class MapComponent extends BaseDestroyable implements OnInit {
     constructor(private mapObjectsService: MapObjectsService,
                 private route: ActivatedRoute,
                 private mapsSignalRService: MapsSignalRService,
-                private mapObjectsDrawer: MapRenderingService,
+                private mapRenderingService: MapRenderingService,
                 private mapObjectsQuery: MapObjectsQuery,
                 private mapService: MapService,
                 private mapFlowsService: MapFlowsService,
