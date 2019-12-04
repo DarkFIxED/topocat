@@ -49,6 +49,7 @@ export class MapObjectsDrawingService {
                 foundObject = drawnObject;
                 drawnObject.allowChange();
             } else {
+                // TODO: extract. Not in responsibility.
                 drawnObject.disable();
             }
         });
@@ -58,8 +59,10 @@ export class MapObjectsDrawingService {
         }
 
         const type = this.wktService.getWktType(mapObject.wktString);
+
+        // noinspection JSUnusedAssignment
         return foundObject.drag$.pipe(
-            map(coords => this.mapWktString(type, coords)),
+            map(coords => this.wktService.createWktString(type, coords)),
             map(wktString => {
                 return MapObjectHelper.copyWithAnotherWktString(mapObject, wktString);
             })
@@ -71,30 +74,13 @@ export class MapObjectsDrawingService {
             if (drawnObject.id === mapObject.id) {
                 drawnObject.disallowChange();
             } else {
+                // TODO: extract. Not in responsibility.
                 drawnObject.enable();
             }
         });
     }
 
-    private mapWktString(type: string, coords: Coordinates | Coordinates[] | Coordinates[][]): string {
-        switch (type) {
-            case WktPrimitives.Point:
-                const pointCoords = coords as Coordinates;
-                return this.wktService.getPoint(pointCoords.lat, pointCoords.lng);
-
-            case WktPrimitives.LineString:
-                const path = coords as Coordinates[];
-                return this.wktService.getLineString(path);
-
-            case WktPrimitives.Polygon:
-                const paths = coords as Coordinates[][];
-                return this.wktService.getPolygon(paths);
-
-            default:
-                throw new Error();
-        }
-    }
-
+    // TODO: in map provider, all lines below
     drawFigure(type: string, mapObject: MapObjectModel): Promise<MapObjectModel> {
         return new Promise<MapObjectModel>((resolve => {
             const drawingManager = this.drawingManager.getValue();

@@ -11,7 +11,6 @@ import {DrawnObjectsStore} from '../stores/drawn-objects.store';
 import {BaseDestroyable} from '../../core/services/base-destroyable';
 import {ID} from '@datorama/akita';
 import {WktService} from './wkt.service';
-import {SuppressNullPipe} from '../../core/pipes/suppress-null.pipe';
 
 @Injectable()
 export class MapRenderingService extends BaseDestroyable {
@@ -24,8 +23,7 @@ export class MapRenderingService extends BaseDestroyable {
                 private unifiedMapObjectsFactory: UnifiedMapObjectsFactory,
                 private mapInstanceService: MapInstanceService,
                 private wktService: WktService,
-                private zone: NgZone,
-                private suppressNullPipe: SuppressNullPipe) {
+                private zone: NgZone) {
         super();
         this.initialize();
     }
@@ -104,7 +102,9 @@ export class MapRenderingService extends BaseDestroyable {
             });
         };
 
-        const description = this.suppressNullPipe.transform(active.description);
+        const description = !active.description
+            ? ''
+            : active.description;
 
         let content =
             `<div class="info-window-content">` +

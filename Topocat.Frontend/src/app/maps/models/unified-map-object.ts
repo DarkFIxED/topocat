@@ -11,6 +11,8 @@ export interface UnifiedMapObject {
 
     dispose();
 
+    getType(): string;
+
     update(object: MapObjectModel, newCoords: Coordinates | Coordinates[] | Coordinates[][]);
 
     getInfoWindowPosition(): Coordinates;
