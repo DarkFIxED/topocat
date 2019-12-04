@@ -25,7 +25,7 @@ export class GoogleMapProvider extends MapProvider {
 
         this.initialize();
     }
-    
+
     getType(): SupportedMapTypes {
         return SupportedMapTypes.Google;
     }
@@ -49,7 +49,9 @@ export class GoogleMapProvider extends MapProvider {
 
     panTo(coords: Coordinates, zoom: number) {
         this.mapInstance.panTo({lat: coords.lat, lng: coords.lng});
-        this.mapInstance.setZoom(zoom);
+
+        if (this.mapInstance.getZoom() !== zoom)
+            this.mapInstance.setZoom(zoom);
     }
 
     openInfoWindow(mapObject: MapObjectModel, unifiedMapObject: UnifiedMapObject) {

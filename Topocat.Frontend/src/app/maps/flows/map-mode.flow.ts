@@ -1,12 +1,12 @@
 import {Injectable} from '@angular/core';
 import {DataFlow} from '../../core/services/data.flow';
 import {BaseDestroyable} from '../../core/services/base-destroyable';
-import {MapInstanceService} from '../services/map-instance.service';
 import {MapQuery} from '../queries/map.query';
 import {combineLatest} from 'rxjs';
 import {LocalPreferencesService} from '../../core/services/local-preferences.service';
 import {filter, takeUntil, tap} from 'rxjs/operators';
 import {MapService} from '../services/map.service';
+import {MapProviderService} from '../services/map-provider.service';
 
 @Injectable()
 export class MapModeFlow extends BaseDestroyable implements DataFlow {
@@ -14,38 +14,34 @@ export class MapModeFlow extends BaseDestroyable implements DataFlow {
     private readonly key = 'map-mode';
 
     constructor(private mapService: MapService,
-                private mapInstanceService: MapInstanceService,
                 private mapQuery: MapQuery,
-                private localPreferencesService: LocalPreferencesService) {
+                private localPreferencesService: LocalPreferencesService,
+                private mapProviderService: MapProviderService) {
         super();
     }
 
     setUp() {
-        const instance$ = this.mapInstanceService.mapInstance$.pipe(
-            filter(map => !!map)
-        );
-
         const mode$ = this.mapQuery.mapMode$.pipe(
             filter(mode => !!mode)
         );
 
-        combineLatest(instance$, mode$)
+        combineLatest(this.mapProviderService.provider$, mode$)
             .pipe(
                 tap(results => this.localPreferencesService.setValue(this.key, results[1])),
                 tap(results => {
-                    const currentMapMode = results[0].getMapTypeId();
+                    const currentMapMode = results[0].getMapMode();
                     if (!!currentMapMode && currentMapMode !== results[1])
-                        results[0].setMapTypeId(results[1]);
+                        results[0].setMapMode(results[1]);
                 }),
                 takeUntil(this.componentAlive$)
             ).subscribe();
 
-        instance$.pipe(
-            tap(mapInstance => {
+        this.mapProviderService.provider$.pipe(
+            tap(mapProvider => {
                 let value = this.localPreferencesService.getValue(this.key);
 
-                if (!value) {
-                    value = mapInstance.getMapTypeId();
+                if (!value || !mapProvider.getAvailableMapModes().some(availableMode => availableMode.value === value)) {
+                    value = mapProvider.getMapMode();
                     this.localPreferencesService.setValue(this.key, value);
                 }
 

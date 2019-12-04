@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, NgZone, OnInit} from '@angular/core';
 import {MapObjectsService} from '../../services/map-objects.service';
 import {ActivatedRoute} from '@angular/router';
 import {MapRenderingService} from '../../services/map-rendering.service';
@@ -18,6 +18,8 @@ import {ShowMapObjectPropertiesFlow} from '../../flows/show-map-object-propertie
 import {MapRemovedFlow} from '../../flows/map-removed.flow';
 import {MapModeFlow} from '../../flows/map-mode.flow';
 import {MapService} from '../../services/map.service';
+import {MapProviderService} from '../../services/map-provider.service';
+import {GoogleMapProvider} from '../../providers/google-map-provider';
 
 @Component({
     selector: 'app-map',
@@ -35,7 +37,8 @@ import {MapService} from '../../services/map.service';
         ShowMapObjectPropertiesFlow,
         MapFlowsService,
         MapRemovedFlow,
-        MapModeFlow
+        MapModeFlow,
+        MapProviderService
     ]
 })
 export class MapComponent extends BaseDestroyable implements OnInit {
@@ -54,7 +57,9 @@ export class MapComponent extends BaseDestroyable implements OnInit {
                 private mapObjectsDrawer: MapRenderingService,
                 private mapObjectsQuery: MapObjectsQuery,
                 private mapService: MapService,
-                private mapFlowsService: MapFlowsService) {
+                private mapFlowsService: MapFlowsService,
+                private mapProviderService: MapProviderService,
+                private zone: NgZone) {
         super();
         this.mapFlowsService.setUp();
     }
@@ -83,6 +88,7 @@ export class MapComponent extends BaseDestroyable implements OnInit {
     }
 
     onMapReady(mapInstance: google.maps.Map) {
+        this.mapProviderService.setProvider(new GoogleMapProvider(mapInstance, this.zone));
         this.mapInstanceService.setInstance(mapInstance);
         this.mapService.setInstanceLoadedFlag();
         this.trySetCurrentPosition();
