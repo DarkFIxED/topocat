@@ -16,7 +16,6 @@ import {DataFlow} from '../../core/services/data.flow';
 import {MapObjectHelper} from '../helpers/map-object.helper';
 import {EditObjectTypesActions} from '../models/edit-object-types-actions';
 import {ConfirmationComponent} from '../../core/dialogs/confirmation/confirmation.component';
-import {MapProviderService} from '../services/map-provider.service';
 
 @Injectable()
 export class EditMapObjectFlow extends BaseDestroyable implements DataFlow {
@@ -31,8 +30,7 @@ export class EditMapObjectFlow extends BaseDestroyable implements DataFlow {
                 private mapObjectsService: MapObjectsService,
                 private mapsHttpService: MapsHttpService,
                 private mapsSignalRService: MapsSignalRService,
-                private mapObjectsDrawingService: MapObjectsDrawingService,
-                private mapProviderService: MapProviderService) {
+                private mapObjectsDrawingService: MapObjectsDrawingService) {
         super();
     }
 
@@ -55,7 +53,7 @@ export class EditMapObjectFlow extends BaseDestroyable implements DataFlow {
 
         this.openEditDialog$
             .pipe(
-                switchMap(data => this.openEditDialog(data.changed, false)
+                switchMap(data => this.openEditDialog(data.changed, false, this.mapQuery.getAll()[0].id.toString())
                     .afterClosed()
                     .pipe(
                         map(dialogResult => {
@@ -156,9 +154,10 @@ export class EditMapObjectFlow extends BaseDestroyable implements DataFlow {
             ).subscribe();
     }
 
-    private openEditDialog(model: MapObjectModel, isNewObject: boolean): MatDialogRef<EditMapObjectComponent, DialogResult<{ action: EditObjectTypesActions, data: MapObjectModel }>> {
+    private openEditDialog(model: MapObjectModel, isNewObject: boolean, mapId: string)
+        : MatDialogRef<EditMapObjectComponent, DialogResult<{ action: EditObjectTypesActions, data: MapObjectModel }>> {
         return this.matDialog.open(EditMapObjectComponent, {
-            data: {model, isNewObject},
+            data: {model, isNewObject, mapId},
         });
     }
 

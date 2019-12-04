@@ -52,3 +52,12 @@ textarea:focus {
         max-width: 230px;
     }
 }
+
+.tag-chip {
+    cursor: pointer;
+    color: #673ab7;
+
+    &:hover{
+        text-decoration: underline;
+    }
+}

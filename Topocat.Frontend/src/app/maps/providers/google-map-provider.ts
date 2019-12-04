@@ -82,6 +82,13 @@ export class GoogleMapProvider extends MapProvider {
             content += `<span class="text-overflow d-inline-block info-window-row" title="${mapObject.description}">${mapObject.description}</span><br>`;
         }
 
+        if (!!mapObject.tags.length) {
+            let tagsString = mapObject.tags.map(tag => `<div class="tag-chip">#${tag}</div>`).join('&nbsp;');
+            tagsString = `<div class="d-flex flex-wrap info-window-row">${tagsString}</div>`;
+
+            content += tagsString;
+        }
+
         content += `<div class="d-flex mt-1">` +
             `<button class="ml-auto float-right info-window-open-properties-button mdi mdi-map-marker-question-outline" ` +
             `title="Details..." ` +
