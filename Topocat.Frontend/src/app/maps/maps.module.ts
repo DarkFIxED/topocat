@@ -24,7 +24,7 @@ import {
     MatListModule,
     MatRadioModule,
     MatRippleModule,
-    MatTabsModule
+    MatTabsModule, MatTooltipModule
 } from '@angular/material';
 import {ObjectsListItemComponent} from './components/objects-list-item/objects-list-item.component';
 import {WktService} from './services/wkt.service';
@@ -94,7 +94,8 @@ const routes: Routes = [
         FileListModule,
         MatChipsModule,
         MatIconModule,
-        MatAutocompleteModule
+        MatAutocompleteModule,
+        MatTooltipModule
     ],
     entryComponents: [
         EditMapObjectComponent,

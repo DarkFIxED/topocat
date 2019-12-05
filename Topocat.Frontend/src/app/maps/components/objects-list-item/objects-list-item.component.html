@@ -7,8 +7,15 @@
         </span>
     </div>
 
-    <div class="p-0 mr-auto title">
-        <span [title]="object.title">{{object.title}}</span>
+    <div class="p-0 mr-auto w-100" style="width: calc(100% - 80px) !important;">
+        <div class="w-100 lh-20px d-flex">
+            <span class="title" [title]="object.title">{{object.title}}</span>
+        </div>
+        <div class="w-100 lh-20px d-flex tags-row">
+            <span class="mr-2">Tags:</span>
+            <span *ngIf="!object || !object.tags.length" class="font-italic">No tags specified yet</span>
+            <span *ngIf="!!object && !!object.tags.length" class="title" [title]="object.tags.join('&nbsp;')">{{object.tags.join('&nbsp;')}}</span>
+        </div>
     </div>
 
     <div class="p-0 toggle-visibility float-right d-flex">

@@ -16,7 +16,8 @@ export class GoogleMapProvider extends MapProvider {
     private position: BehaviorSubject<Coordinates>;
     private zoom: BehaviorSubject<number>;
     private infoWindowClosed = new Subject();
-    private onDetailsOpenRequired = new Subject<string>();
+    private openDetailsRequired = new Subject<string>();
+    private tagSearchRequired = new Subject<string>();
 
     private infoWindow: google.maps.InfoWindow;
     private drawingManager: google.maps.drawing.DrawingManager;
@@ -53,8 +54,9 @@ export class GoogleMapProvider extends MapProvider {
     panTo(coords: Coordinates, zoom: number) {
         this.mapInstance.panTo({lat: coords.lat, lng: coords.lng});
 
-        if (this.mapInstance.getZoom() !== zoom)
+        if (this.mapInstance.getZoom() !== zoom) {
             this.mapInstance.setZoom(zoom);
+        }
     }
 
     openInfoWindow(mapObject: MapObjectModel, unifiedMapObject: UnifiedMapObject) {
@@ -66,7 +68,14 @@ export class GoogleMapProvider extends MapProvider {
         // @ts-ignore
         window.onDetailsClick = function() {
             self.zone.run(() => {
-                self.onDetailsOpenRequired.next(mapObject.id.toString());
+                self.openDetailsRequired.next(mapObject.id.toString());
+            });
+        };
+
+        // @ts-ignore
+        window.onTagSearchClick = function(tag: string) {
+            self.zone.run(() => {
+                self.tagSearchRequired.next(tag);
             });
         };
 
@@ -83,7 +92,7 @@ export class GoogleMapProvider extends MapProvider {
         }
 
         if (!!mapObject.tags.length) {
-            let tagsString = mapObject.tags.map(tag => `<div class="tag-chip">#${tag}</div>`).join('&nbsp;');
+            let tagsString = mapObject.tags.map(tag => `<div class="tag-chip" onClick="window.onTagSearchClick('${tag}')">#${tag}</div>`).join('&nbsp;');
             tagsString = `<div class="d-flex flex-wrap info-window-row">${tagsString}</div>`;
 
             content += tagsString;
@@ -129,7 +138,8 @@ export class GoogleMapProvider extends MapProvider {
 
     private initialize() {
         this.infoWindowClosed$ = this.infoWindowClosed.asObservable();
-        this.onDetailsOpenRequired$ = this.onDetailsOpenRequired.asObservable();
+        this.openDetailsRequired$ = this.openDetailsRequired.asObservable();
+        this.tagSearchRequired$ = this.tagSearchRequired.asObservable();
 
         this.unifiedObjectsFactory = new GoogleUnifiedMapObjectsFactory(this.wktService, this.mapInstance);
 
