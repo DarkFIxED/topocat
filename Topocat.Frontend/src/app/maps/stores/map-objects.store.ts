@@ -6,6 +6,7 @@ export interface MapObjectUI {
 }
 
 export interface MapObjectsUIState extends EntityState<MapObjectUI> {
+    searchString: string;
 }
 
 export interface MapObjectsState extends EntityState<MapObjectModel> {
@@ -35,7 +36,7 @@ function initialState(): Partial<MapObjectsState> {
         showPropertiesWindow: {
             mapObjectId: undefined
         },
-        adding: false
+        adding: false,
     };
 }
 
@@ -47,6 +48,8 @@ export class MapObjectsStore extends EntityStore<MapObjectsState, MapObjectModel
 
     constructor() {
         super(initialState());
-        this.createUIStore();
+        this.createUIStore({
+            searchString: undefined
+        });
     }
 }

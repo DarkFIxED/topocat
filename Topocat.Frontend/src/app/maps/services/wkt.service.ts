@@ -6,10 +6,30 @@ import * as Terraformer from 'terraformer';
 
 @Injectable()
 export class WktService {
+
     getWktType(wktString: string): string {
         const primitive = WKT.parse(wktString);
 
         return primitive.type;
+    }
+
+    createWktString(type: string, coords: Coordinates | Coordinates[] | Coordinates[][]): string {
+        switch (type) {
+            case WktPrimitives.Point:
+                const pointCoords = coords as Coordinates;
+                return this.getPoint(pointCoords.lat, pointCoords.lng);
+
+            case WktPrimitives.LineString:
+                const path = coords as Coordinates[];
+                return this.getLineString(path);
+
+            case WktPrimitives.Polygon:
+                const paths = coords as Coordinates[][];
+                return this.getPolygon(paths);
+
+            default:
+                throw new Error();
+        }
     }
 
     getWktCoords(wktString: string): Coordinates | Coordinates[] | Coordinates[][] {

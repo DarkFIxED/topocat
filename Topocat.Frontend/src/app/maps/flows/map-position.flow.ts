@@ -1,50 +1,45 @@
 import {DataFlow} from '../../core/services/data.flow';
 import {Injectable} from '@angular/core';
-import {MapInstanceService} from '../services/map-instance.service';
 import {MapQuery} from '../queries/map.query';
 import {BaseDestroyable} from '../../core/services/base-destroyable';
 import {filter, takeUntil, tap} from 'rxjs/operators';
 import {combineLatest} from 'rxjs';
 import {MapService} from '../services/map.service';
+import {MapProviderService} from '../services/map-provider.service';
 
 @Injectable()
 export class MapPositionFlow extends BaseDestroyable implements DataFlow {
 
-    constructor(private mapInstanceService: MapInstanceService,
-                private mapQuery: MapQuery,
-                private mapService: MapService) {
+    constructor(private mapQuery: MapQuery,
+                private mapService: MapService,
+                private mapProviderService: MapProviderService) {
         super();
     }
 
     setUp() {
-        this.mapInstanceService.mapInstance$.pipe(
-            filter(mapInstance => !!mapInstance),
-            tap(mapInstance => {
+        this.mapProviderService.provider$.pipe(
+            tap(() => {
                const position = this.mapQuery.getValue().position;
-               this.mapService.setPosition(position.lat, position.lng, position.zoom, true);
+               this.mapService.setMapPosition(position.lat, position.lng, position.zoom, true);
             }),
-            tap(mapInstance => {
-                mapInstance.addListener('idle', () => {
-                    const latLng = mapInstance.getCenter();
-                    const zoom = mapInstance.getZoom();
-                    this.mapService.setPosition(latLng.lat(), latLng.lng(), zoom, false);
-                });
+            tap(mapProvider => {
+                combineLatest(mapProvider.position$, mapProvider.zoom$).pipe(
+                    tap(results => {
+                        this.mapService.setMapPosition(results[0].lat, results[0].lng, results[1], false);
+                    }),
+                    takeUntil(this.componentAlive$)
+                ).subscribe();
             }),
             takeUntil(this.componentAlive$)
         ).subscribe();
 
-        combineLatest(this.mapInstanceService.mapInstance$, this.mapQuery.position$).pipe(
-            filter(results => !!results[0]),
+        combineLatest(this.mapProviderService.provider$, this.mapQuery.position$).pipe(
             filter(results => results[1].setManually),
             tap(results => {
-                const mapInstance = results[0];
+                const mapProvider = results[0];
                 const newPosition = results[1];
 
-
-                mapInstance.panTo({lat: newPosition.lat, lng: newPosition.lng});
-                if (mapInstance.getZoom() !== newPosition.zoom) {
-                    mapInstance.setZoom(newPosition.zoom);
-                }
+                mapProvider.panTo({lat: newPosition.lat, lng: newPosition.lng}, newPosition.zoom);
             }),
             takeUntil(this.componentAlive$)
         ).subscribe();

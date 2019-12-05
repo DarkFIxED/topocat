@@ -1,54 +1,31 @@
-import {Injectable, NgZone} from '@angular/core';
-import {google} from 'google-maps';
+import {Injectable} from '@angular/core';
 import {MapObjectsQuery} from '../queries/map-objects.query';
-import {BehaviorSubject} from 'rxjs';
-import {filter, takeUntil, tap} from 'rxjs/operators';
+import {takeUntil, tap} from 'rxjs/operators';
 import {MapObjectModel} from '../models/map-object.model';
-import {UnifiedMapObjectsFactory} from '../models/unified-map-objects.factory';
-import {MapService} from './map.service';
-import {MapInstanceService} from './map-instance.service';
+import {MapObjectsService} from './map-objects.service';
 import {DrawnObjectsStore} from '../stores/drawn-objects.store';
 import {BaseDestroyable} from '../../core/services/base-destroyable';
 import {ID} from '@datorama/akita';
 import {WktService} from './wkt.service';
-import {SuppressNullPipe} from '../../core/pipes/suppress-null.pipe';
+import {MapProviderService} from './map-provider.service';
 
 @Injectable()
 export class MapRenderingService extends BaseDestroyable {
 
-    private infoWindowInstance$: BehaviorSubject<google.maps.InfoWindow> = new BehaviorSubject<google.maps.InfoWindow>(undefined);
-
     constructor(private drawnObjectsStore: DrawnObjectsStore,
                 private mapObjectsQuery: MapObjectsQuery,
-                private mapService: MapService,
-                private unifiedMapObjectsFactory: UnifiedMapObjectsFactory,
-                private mapInstanceService: MapInstanceService,
-                private wktService: WktService,
-                private zone: NgZone,
-                private suppressNullPipe: SuppressNullPipe) {
+                private mapObjectsService: MapObjectsService,
+                private mapProviderService: MapProviderService,
+                private wktService: WktService) {
         super();
         this.initialize();
     }
 
     private initialize() {
-        this.mapInstanceService.mapInstance$.pipe(
-            filter(instance => !!instance),
-            tap(() => {
-                const infoWindow = new google.maps.InfoWindow();
-                infoWindow.addListener('closeclick', () => {
-                    this.mapService.clearActive();
-
-                    // @ts-ignore
-                    window.onDetailsClick = undefined;
-                });
-                this.infoWindowInstance$.next(infoWindow);
-            })
-        ).subscribe();
-
         this.drawnObjectsStore.objectAdded$
             .pipe(
                 tap(object => {
-                    const subs = object.click$.subscribe(id => this.mapService.setActive(id));
+                    const subs = object.click$.subscribe(id => this.mapObjectsService.setActiveObject(id));
                     this.drawnObjectsStore.addSubscription(object.id, subs);
                 }),
                 takeUntil(this.componentAlive$)
@@ -60,8 +37,8 @@ export class MapRenderingService extends BaseDestroyable {
         mapObjects.forEach(object => this.update(object));
     }
 
-    drawMany(map: google.maps.Map, objects: MapObjectModel[]) {
-        objects.forEach(object => this.draw(map, object));
+    drawMany(objects: MapObjectModel[]) {
+        objects.forEach(object => this.draw(object));
     }
 
     clearAll() {
@@ -73,8 +50,8 @@ export class MapRenderingService extends BaseDestroyable {
         ids.forEach(id => this.drawnObjectsStore.remove(id));
     }
 
-    draw(map: google.maps.Map, object: MapObjectModel) {
-        const unifiedMapObject = this.unifiedMapObjectsFactory.build(map, object);
+    draw(object: MapObjectModel) {
+        const unifiedMapObject = this.mapProviderService.getProvider().unifiedObjectsFactory.build(object);
         this.drawnObjectsStore.add(unifiedMapObject);
     }
 
@@ -90,40 +67,5 @@ export class MapRenderingService extends BaseDestroyable {
 
     removeMany(ids: ID[]) {
         ids.forEach(id => this.drawnObjectsStore.remove(id));
-    }
-
-    showInfoWindow(map: google.maps.Map, active: MapObjectModel) {
-        const infoWindow = this.infoWindowInstance$.getValue();
-        const unifiedMapObject = this.drawnObjectsStore.drawnObjects.find(x => x.id === active.id);
-
-        const self = this;
-        // @ts-ignore
-        window.onDetailsClick = function() {
-            self.zone.run(() => {
-                self.mapService.openPropertiesWindow(active.id);
-            });
-        };
-
-        const description = this.suppressNullPipe.transform(active.description);
-
-        let content =
-            `<div class="info-window-content">` +
-                `<span class="text-overflow d-inline-block info-window-row" title="${active.title}">${active.title}</span><br>`;
-
-        if (!!description) {
-            content += `<span class="text-overflow d-inline-block info-window-row" title="${active.description}">${active.description}</span><br>`;
-        }
-
-
-        content += `<div class="d-flex mt-1">` +
-                        `<button class="ml-auto float-right info-window-open-properties-button mdi mdi-map-marker-question-outline" ` +
-                             `title="Details..." ` +
-                             `onClick="window.onDetailsClick()">Details...</button>` +
-                    `</div>` +
-            `</div>`;
-
-        infoWindow.setContent(content);
-        infoWindow.setPosition(unifiedMapObject.getInfoWindowPosition());
-        infoWindow.open(map);
     }
 }

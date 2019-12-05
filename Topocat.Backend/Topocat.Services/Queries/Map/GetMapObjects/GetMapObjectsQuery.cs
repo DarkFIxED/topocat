@@ -32,7 +32,8 @@ namespace Topocat.Services.Queries.Map.GetMapObjects
                     LastModifiedAt = x.LastModifiedAt,
                     Title = x.Title,
                     Description = x.Description,
-                    WktString = x.Geometry.ToText()
+                    WktString = x.Geometry.ToText(),
+                    Tags = x.Tags.Select(tag => tag.Tag).ToList()
                 })
                 .ToListAsync();
 

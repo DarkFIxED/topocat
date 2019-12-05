@@ -1,9 +1,10 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {MapObjectModel} from '../../models/map-object.model';
-import {MapService} from '../../services/map.service';
+import {MapObjectsService} from '../../services/map-objects.service';
 import {WktService} from '../../services/wkt.service';
 import {WktPrimitives} from '../../models/wkt-primitives';
 import {DrawnObjectsStore} from '../../stores/drawn-objects.store';
+import {MapService} from '../../services/map.service';
 
 @Component({
     selector: 'app-objects-list-item',
@@ -17,7 +18,8 @@ export class ObjectsListItemComponent implements OnInit {
     @Input()
     object: MapObjectModel;
 
-    constructor(private mapService: MapService,
+    constructor(private mapObjectsService: MapObjectsService,
+                private mapService: MapService,
                 private wktService: WktService,
                 private drawnObjectsStore: DrawnObjectsStore) {
     }
@@ -28,14 +30,13 @@ export class ObjectsListItemComponent implements OnInit {
 
     onDetailsClick(event: MouseEvent) {
         event.stopImmediatePropagation();
-        this.mapService.openPropertiesWindow(this.object.id);
+        this.mapObjectsService.openPropertiesWindow(this.object.id);
     }
 
     center() {
         const unifiedMapObject = this.drawnObjectsStore.find(this.object.id);
         const center = unifiedMapObject.getInfoWindowPosition();
-        this.mapService.setPosition(center.lat, center.lng);
-
-        this.mapService.setActive(this.object.id);
+        this.mapService.setMapPosition(center.lat, center.lng);
+        this.mapObjectsService.setActiveObject(this.object.id);
     }
 }

@@ -16,7 +16,8 @@ export class MapObjectHelper {
             description: undefined,
             createdAt: new Date(),
             lastModifiedAt: new Date(),
-            wktString: undefined
+            wktString: undefined,
+            tags: []
         };
     }
 

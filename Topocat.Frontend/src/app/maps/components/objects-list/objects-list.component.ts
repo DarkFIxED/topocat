@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {MapObjectsQuery} from '../../queries/map-objects.query';
-import {debounceTime, map} from 'rxjs/operators';
-import {BehaviorSubject, combineLatest} from 'rxjs';
-import {MapService} from '../../services/map.service';
+import {debounceTime, map, tap} from 'rxjs/operators';
+import {combineLatest} from 'rxjs';
+import {MapObjectsService} from '../../services/map-objects.service';
 
 @Component({
     selector: 'app-objects-list',
@@ -12,10 +12,8 @@ import {MapService} from '../../services/map.service';
 export class ObjectsListComponent implements OnInit {
 
     searchString: string = undefined;
-    searchSubject = new BehaviorSubject<string>(undefined);
-    search$ = this.searchSubject.asObservable().pipe(
-        debounceTime(200)
-    );
+
+    search$ = this.mapsQuery.ui.select(state => state.searchString);
 
     editing$ = this.mapsQuery.select(state => state.editing.mapObjectId).pipe(
         map(id => !!id)
@@ -27,12 +25,27 @@ export class ObjectsListComponent implements OnInit {
 
     objects$ = combineLatest(this.search$, this.mapsQuery.selectAll())
         .pipe(
+            tap(results => {
+                if (this.searchString !== results[0]) {
+                    this.searchString = results[0];
+                }
+            }),
+            debounceTime(200),
             map(results => {
-                if (!results[0] || results[0] === '') {
-                    return results[1];
+
+                const searchString = results[0];
+                const mapObjects = results[1];
+
+                if (!searchString || searchString === '') {
+                    return mapObjects;
                 }
 
-                return results[1].filter(object => object.title.toLowerCase().includes(results[0].toLowerCase()));
+                if (searchString.startsWith('#')) {
+                    const pureTag = searchString.substring(1, searchString.length).toLowerCase();
+                    return mapObjects.filter(object => object.tags.some(tag => tag.toLowerCase().startsWith(pureTag)));
+                } else {
+                    return mapObjects.filter(object => object.title.toLowerCase().includes(searchString.toLowerCase()));
+                }
             })
         );
 
@@ -41,17 +54,17 @@ export class ObjectsListComponent implements OnInit {
     loading$ = this.mapsQuery.select(state => state.loading);
 
     constructor(private mapsQuery: MapObjectsQuery,
-                private mapService: MapService) {
+                private mapObjectsService: MapObjectsService) {
     }
 
     ngOnInit() {
     }
 
     emitValue() {
-        this.searchSubject.next(this.searchString);
+        this.mapObjectsService.setSearchString(this.searchString);
     }
 
     newMapObject() {
-        this.mapService.addNewMapObject();
+        this.mapObjectsService.startAddingMapObjectProcess();
     }
 }

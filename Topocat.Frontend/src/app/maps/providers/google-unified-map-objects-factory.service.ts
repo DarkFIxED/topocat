@@ -1,22 +1,20 @@
-import {MapObjectModel} from './map-object.model';
-import {UnifiedMapObject} from './unified-map-object';
-import {Point} from './point';
-import * as Terraformer from 'terraformer';
-import {Line} from './line';
-import {Polygon} from './polygon';
-import {Injectable} from '@angular/core';
-import {WktPrimitives} from './wkt-primitives';
+import {MapObjectModel} from '../models/map-object.model';
+import {UnifiedMapObject} from '../models/unified-map-object';
+import {Point} from '../models/point';
+import {Line} from '../models/line';
+import {Polygon} from '../models/polygon';
+import {WktPrimitives} from '../models/wkt-primitives';
 import {WktService} from '../services/wkt.service';
 import {Coordinates} from '../../core/models/coordinates';
+import {UnifiedMapObjectsFactory} from './unified-map-objects.factory';
 
-@Injectable()
-export class UnifiedMapObjectsFactory {
+export class GoogleUnifiedMapObjectsFactory implements UnifiedMapObjectsFactory {
 
-    constructor(private wktService: WktService) {
+    constructor(private wktService: WktService,
+                private mapInstance: google.maps.Map) {
     }
 
-    build(map: google.maps.Map, mapObject: MapObjectModel): UnifiedMapObject {
-
+    build(mapObject: MapObjectModel): UnifiedMapObject {
         const type = this.wktService.getWktType(mapObject.wktString);
         const coordsSet = this.wktService.getWktCoords(mapObject.wktString);
 
@@ -25,7 +23,7 @@ export class UnifiedMapObjectsFactory {
                 const point = coordsSet as Coordinates;
 
                 return new Point(mapObject.id, {
-                    map,
+                    map: this.mapInstance,
                     position: new google.maps.LatLng(point.lat, point.lng),
                 });
 
@@ -33,7 +31,7 @@ export class UnifiedMapObjectsFactory {
                 const linePath = coordsSet as Coordinates[];
 
                 return new Line(mapObject.id, {
-                    map,
+                    map: this.mapInstance,
                     path: linePath.map(coords => new google.maps.LatLng(coords.lat, coords.lng))
                 });
 
@@ -41,7 +39,7 @@ export class UnifiedMapObjectsFactory {
                 const paths = coordsSet as Coordinates[][];
 
                 return new Polygon(mapObject.id, {
-                    map,
+                    map: this.mapInstance,
                     paths: paths.map(path => path
                         .map(coords => new google.maps.LatLng(coords.lat, coords.lng))
                     )

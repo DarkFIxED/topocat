@@ -10,7 +10,7 @@
                         <div mat-ripple
                              [title]="item.sourceFileName"
                              class="w-100 h-50">
-                            <div *ngIf="item.mimeType.includes('image/')"
+                            <div *ngIf="item.mimeType.includes(imageTypePrefix)"
                                  class="h-100 mdi mdi-24px mdi-view-carousel text-align-center"
                                  title="Show"
                                  (click)="onShowImages(item)">
@@ -36,10 +36,10 @@
                         </div>
                     </div>
 
-                    <img *ngIf="item.mimeType.includes('image/')"
+                    <img *ngIf="item.mimeType.includes(imageTypePrefix)"
                          [src]="item.thumbUrl"/>
 
-                    <div *ngIf="!item.mimeType.includes('image/')"
+                    <div *ngIf="!item.mimeType.includes(imageTypePrefix)"
                          class="h-100 d-flex justify-content-center align-items-center">
                         <span class="text-overflow pl-2 pr-2">{{item.sourceFileName}}</span>
                     </div>

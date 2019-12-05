@@ -24,6 +24,8 @@ import {HttpClient} from '@angular/common/http';
 })
 export class FileListComponent implements OnInit {
 
+    readonly imageTypePrefix = 'image/';
+
     @ViewChild('uploadInput', {static: true})
     uploadInputRef: ElementRef;
 
@@ -46,6 +48,7 @@ export class FileListComponent implements OnInit {
     showCarousel = false;
 
     items: Item[] = [];
+
     private uploadInput: HTMLInputElement;
 
     constructor(private matDialog: MatDialog,
@@ -160,7 +163,7 @@ export class FileListComponent implements OnInit {
     onShowImages(startItem: Item) {
         // TODO: add carousel
         const images = this.items
-            .filter(item => item.mimeType.includes('image/'))
+            .filter(item => item.mimeType.includes(this.imageTypePrefix))
             .map(item => item.url);
 
         const startIndex = images.findIndex(image => image === startItem.url);

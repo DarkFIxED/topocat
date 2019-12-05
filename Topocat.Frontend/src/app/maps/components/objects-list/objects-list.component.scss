@@ -31,3 +31,16 @@ app-objects-list-item.active {
     display: block;
     position: absolute;
 }
+
+.help-icon {
+    background-color: #673ab7 !important;
+    border-radius: 50%;
+    line-height: 18px;
+    min-width: 19px;
+    text-align: center;
+    color: #EEEEEE;
+}
+
+.help-container {
+    flex-direction: column;
+}

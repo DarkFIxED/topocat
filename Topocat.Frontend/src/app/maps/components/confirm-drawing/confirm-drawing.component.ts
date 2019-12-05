@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {MapService} from '../../services/map.service';
+import {MapObjectsService} from '../../services/map-objects.service';
 
 @Component({
     selector: 'app-confirm-drawing',
@@ -8,17 +8,17 @@ import {MapService} from '../../services/map.service';
 })
 export class ConfirmDrawingComponent implements OnInit {
 
-    constructor(private mapService: MapService) {
+    constructor(private mapObjectsService: MapObjectsService) {
     }
 
     ngOnInit() {
     }
 
     onCancelClick() {
-        this.mapService.stopDrawing(false);
+        this.mapObjectsService.stopObjectDrawingProcess(false);
     }
 
     onOkClick() {
-        this.mapService.stopDrawing(true);
+        this.mapObjectsService.stopObjectDrawingProcess(true);
     }
 }

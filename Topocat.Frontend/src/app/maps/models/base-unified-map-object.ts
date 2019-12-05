@@ -3,6 +3,7 @@ import {Subject} from 'rxjs';
 import {ID} from '@datorama/akita';
 import {MapObjectModel} from './map-object.model';
 import {Coordinates} from '../../core/models/coordinates';
+import {WktPrimitives} from './wkt-primitives';
 
 export abstract class BaseUnifiedMapObject<T extends google.maps.MVCObject> implements UnifiedMapObject {
 
@@ -23,6 +24,8 @@ export abstract class BaseUnifiedMapObject<T extends google.maps.MVCObject> impl
     }
 
     abstract dispose();
+
+    abstract getType(): string;
 
     abstract update(object: MapObjectModel, newCoords: Coordinates | Coordinates[] | Coordinates[][]);
 

@@ -55,6 +55,7 @@ namespace Topocat.Services.Commands.Maps.Objects.UpdateObject
             var geometry = _geometryConverter.FromWktString(args.WktString);
 
             mapObject.Update(args.Title, args.Description, geometry);
+            mapObject.ReplaceTags(args.Tags);
 
             _repository.Update(mapObject);
 
