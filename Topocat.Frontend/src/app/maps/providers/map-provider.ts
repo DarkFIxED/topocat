@@ -11,7 +11,8 @@ export abstract class MapProvider extends BaseDestroyable {
     position$: Observable<Coordinates>;
     zoom$: Observable<number>;
     infoWindowClosed$: Observable<any>;
-    onDetailsOpenRequired$: Observable<string>;
+    openDetailsRequired$: Observable<string>;
+    tagSearchRequired$: Observable<string>;
 
     unifiedObjectsFactory: UnifiedMapObjectsFactory;
 

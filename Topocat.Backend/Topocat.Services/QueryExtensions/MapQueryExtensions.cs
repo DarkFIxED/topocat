@@ -10,6 +10,7 @@ namespace Topocat.Services.QueryExtensions
         public static IQueryable<Map> LoadAggregate(this IQueryable<Map> query)
         {
             return query.Include(x => x.ObjectsList)
+                .ThenInclude(x => x.Tags)
                 .Include(x => x.Memberships);
         }
 

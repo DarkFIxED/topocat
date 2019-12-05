@@ -1,11 +1,16 @@
-<div class="pl-3 pr-3 pt-2">
-    <mat-form-field class="w-100">
+<div class="pl-3 pr-3 pt-2 d-flex w-100">
+    <mat-form-field class="w-100 mr-2">
         <input matInput
                placeholder="Search map objects..."
                autocomplete="off"
                (keyup)="emitValue()"
                [(ngModel)]="searchString">
     </mat-form-field>
+    <div class="lh-64px d-flex help-container mt-auto mb-auto">
+        <div mat-ripple class="mdi mdi-help help-icon"
+             matTooltip="For search by tag start typing with '#'.If you want to search by title - start typing as usual.">
+        </div>
+    </div>
 </div>
 <mat-divider [inset]="true"></mat-divider>
 <app-loader *ngIf="(loading$ | async)"></app-loader>

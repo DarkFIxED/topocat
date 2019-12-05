@@ -13,7 +13,19 @@ import {AgmCoreModule} from '@agm/core';
 import {secrets} from '../../environments/secrets';
 import {MapObjectsQuery} from './queries/map-objects.query';
 import {ObjectsListComponent} from './components/objects-list/objects-list.component';
-import {MatButtonModule, MatCardModule, MatDialogModule, MatInputModule, MatListModule, MatRadioModule, MatRippleModule, MatTabsModule} from '@angular/material';
+import {
+    MatAutocompleteModule,
+    MatButtonModule,
+    MatCardModule,
+    MatChipsModule,
+    MatDialogModule,
+    MatIconModule,
+    MatInputModule,
+    MatListModule,
+    MatRadioModule,
+    MatRippleModule,
+    MatTabsModule, MatTooltipModule
+} from '@angular/material';
 import {ObjectsListItemComponent} from './components/objects-list-item/objects-list-item.component';
 import {WktService} from './services/wkt.service';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
@@ -79,7 +91,11 @@ const routes: Routes = [
         ReactiveFormsModule,
         MatRadioModule,
         MatTabsModule,
-        FileListModule
+        FileListModule,
+        MatChipsModule,
+        MatIconModule,
+        MatAutocompleteModule,
+        MatTooltipModule
     ],
     entryComponents: [
         EditMapObjectComponent,

@@ -4,9 +4,10 @@
         <span>({{type}})</span>
     </div>
     <div class="d-flex mt-2">
-        <div *ngIf="!model.description" class="text-overflow" [title]="model.description">Description: Not specified</div>
+        <div *ngIf="!model.description" class="text-overflow" [title]="model.description">Description: Not specified
+        </div>
         <div *ngIf="model.description" class="w-100">
-           <span>Description:</span>
+            <span>Description:</span>
             <textarea class="w-100 description-area mb-2 p-2"
                       matInput
                       readonly
@@ -14,6 +15,12 @@
                       [matAutosizeMaxRows]="5"
                       [matAutosizeMinRows]="3">{{model.description}}</textarea>
         </div>
+    </div>
+    <div *ngIf="model.tags.length" class="mb-2 d-flex">
+        <span class="mr-2">Tags:</span>
+        <mat-chip-list>
+            <mat-chip *ngFor="let tag of model.tags" [selectable]="false">{{tag}}</mat-chip>
+        </mat-chip-list>
     </div>
     <div>
         <span>Created at: {{model.createdAt | date:environment.defaultDateFormat}}</span>

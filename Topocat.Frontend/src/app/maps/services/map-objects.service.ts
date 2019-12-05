@@ -115,4 +115,10 @@ export class MapObjectsService {
             }
         });
     }
+
+    setSearchString(searchString: string) {
+        this.mapObjectsStore.ui.update({
+            searchString
+        });
+    }
 }

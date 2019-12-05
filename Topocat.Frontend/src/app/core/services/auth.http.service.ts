@@ -1,4 +1,4 @@
-import {HttpHeaders} from '@angular/common/http';
+import {HttpHeaders, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {BaseHttpService} from './base.http.service';
 import {Injectable} from '@angular/core';
@@ -19,33 +19,33 @@ export class AuthHttpService {
                 private tokensService: JwtTokensService) {
     }
 
-    get<T>(relativeUrl: string, headers?: HttpHeaders): Observable<T> {
-        return this.makeRequest(relativeUrl, undefined, headers,
-            ((localRelativeUrl, localBody, localHeaders) => this.http.get<T>(localRelativeUrl, localHeaders)));
+    get<T>(relativeUrl: string, headers?: HttpHeaders, params?: HttpParams): Observable<T> {
+        return this.makeRequest(relativeUrl, undefined, headers, params,
+            ((localRelativeUrl, localBody, localHeaders, localParams) => this.http.get<T>(localRelativeUrl, localHeaders, localParams)));
     }
 
-    post<T>(relativeUrl: string, body: any, headers?: HttpHeaders): Observable<T> {
-        return this.makeRequest(relativeUrl, body, headers,
-            ((localRelativeUrl, localBody, localHeaders) => this.http.post<T>(localRelativeUrl, localBody, localHeaders)));
+    post<T>(relativeUrl: string, body: any, headers?: HttpHeaders, params?: HttpParams): Observable<T> {
+        return this.makeRequest(relativeUrl, body, headers, params,
+            ((localRelativeUrl, localBody, localHeaders, localParams) => this.http.post<T>(localRelativeUrl, localBody, localHeaders, localParams)));
     }
 
-    put<T>(relativeUrl: string, body: any, headers?: HttpHeaders): Observable<T> {
-        return this.makeRequest(relativeUrl, body, headers,
-            ((localRelativeUrl, localBody, localHeaders) => this.http.put<T>(localRelativeUrl, localBody, localHeaders)));
+    put<T>(relativeUrl: string, body: any, headers?: HttpHeaders, params?: HttpParams): Observable<T> {
+        return this.makeRequest(relativeUrl, body, headers, params,
+            ((localRelativeUrl, localBody, localHeaders, localParams) => this.http.put<T>(localRelativeUrl, localBody, localHeaders, localParams)));
     }
 
-    delete<T>(relativeUrl: string, headers?: HttpHeaders): Observable<T> {
-        return this.makeRequest(relativeUrl, undefined, headers,
-            ((localRelativeUrl, localBody, localHeaders) => this.http.delete<T>(localRelativeUrl, localHeaders)));
+    delete<T>(relativeUrl: string, headers?: HttpHeaders, params?: HttpParams): Observable<T> {
+        return this.makeRequest(relativeUrl, undefined, headers, params,
+            ((localRelativeUrl, localBody, localHeaders, localParams) => this.http.delete<T>(localRelativeUrl, localHeaders, localParams)));
     }
 
-    patch<T>(relativeUrl: string, body: any, headers?: HttpHeaders): Observable<T> {
-        return this.makeRequest(relativeUrl, body, headers,
-            ((localRelativeUrl, localBody, localHeaders) => this.http.patch<T>(localRelativeUrl, localBody, localHeaders)));
+    patch<T>(relativeUrl: string, body: any, headers?: HttpHeaders, params?: HttpParams): Observable<T> {
+        return this.makeRequest(relativeUrl, body, headers, params,
+            ((localRelativeUrl, localBody, localHeaders, localParams) => this.http.patch<T>(localRelativeUrl, localBody, localHeaders)));
     }
 
-    private makeRequest<T>(relativeUrl: string, body: any, headers: HttpHeaders,
-                           func: (relativeUrl: string, body: any, headers: HttpHeaders) => Observable<T>): Observable<T> {
+    private makeRequest<T>(relativeUrl: string, body: any, headers: HttpHeaders, params: HttpParams,
+                           func: (relativeUrl: string, body: any, headers: HttpHeaders, params: HttpParams) => Observable<T>): Observable<T> {
         if (!headers) {
             headers = new HttpHeaders();
         }
@@ -58,7 +58,7 @@ export class AuthHttpService {
 
         if (!this.tokensService.isTokenExpired(tokenPair.accessToken)) {
             headers = headers.set(this.AuthHeader, `Bearer ${tokenPair.accessToken}`);
-            return func(relativeUrl, body, headers);
+            return func(relativeUrl, body, headers, params);
         }
 
         if (this.tokensService.isTokenExpired(tokenPair.refreshToken)) {
@@ -80,7 +80,7 @@ export class AuthHttpService {
                 tap(accessToken => {
                     headers = headers.set(this.AuthHeader, `Bearer ${accessToken}`);
                 }),
-                switchMap(() => func(relativeUrl, body, headers))
+                switchMap(() => func(relativeUrl, body, headers, params))
             );
     }
 }

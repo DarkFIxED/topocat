@@ -26,6 +26,7 @@ export class ObjectsDrawingFlow extends BaseDestroyable implements DataFlow {
         this.redrawUpdatedObjects();
         this.clearRemovedObjects();
         this.drawInfoWindow();
+        this.searchByTags();
     }
 
     private drawAddedObjects() {
@@ -67,7 +68,7 @@ export class ObjectsDrawingFlow extends BaseDestroyable implements DataFlow {
     private drawInfoWindow() {
         this.mapProviderService.provider$.pipe(
             tap(provider => {
-                provider.onDetailsOpenRequired$
+                provider.openDetailsRequired$
                     .pipe(
                         tap(id => this.mapObjectsService.openPropertiesWindow(id)),
                         takeUntil(this.componentAlive$)
@@ -92,5 +93,18 @@ export class ObjectsDrawingFlow extends BaseDestroyable implements DataFlow {
                 })
             )
             .subscribe();
+    }
+
+    private searchByTags() {
+        this.mapProviderService.provider$.pipe(
+            tap(provider => {
+                provider.tagSearchRequired$
+                    .pipe(
+                        tap(tag => this.mapObjectsService.setSearchString(`#${tag}`)),
+                        takeUntil(this.componentAlive$)
+                    ).subscribe();
+            }),
+            takeUntil(this.componentAlive$)
+        ).subscribe();
     }
 }

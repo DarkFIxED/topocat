@@ -6,5 +6,5 @@ export class MapModel {
     title: string;
     createdAt: Date;
     lastModifiedAt: Date;
-    createdBy: UserModel
+    createdBy: UserModel;
 }

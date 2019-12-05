@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 using JetBrains.Annotations;
 using NetTopologySuite.Geometries;
 using Topocat.Common;
@@ -15,8 +16,11 @@ namespace Topocat.Domain.Entities.Map
         [UsedImplicitly]
         protected MapObject() { }
 
-        public MapObject(Map map, string title, string description, Geometry geometry)
+        public MapObject(Map map, string title, string description, Geometry geometry, List<string> tags)
         {
+            FileReferencesBindings = new List<MapObjectFileReferences>();
+            Tags = new List<MapObjectTag>();
+
             AddEvent(new MapObjectAdded(this));
 
             Map = map;
@@ -24,9 +28,9 @@ namespace Topocat.Domain.Entities.Map
             
             Id = Guid.NewGuid().ToString("D");
             CreatedAt = DateTimeOffset.UtcNow;
-            Update(title, description, geometry);
 
-            FileReferencesBindings = new List<MapObjectFileReferences>();
+            Update(title, description, geometry);
+            ReplaceTags(tags);
         }
 
         public string Id { get; protected set; }
@@ -48,6 +52,8 @@ namespace Topocat.Domain.Entities.Map
 
         public List<MapObjectFileReferences> FileReferencesBindings { get; protected set; }
 
+        public List<MapObjectTag> Tags { get; protected set; }
+
         public void Update(string title, string description, Geometry geometry)
         {
             Title = title;
@@ -68,6 +74,25 @@ namespace Topocat.Domain.Entities.Map
         public void AddAttachment(FileReference fileReference)
         {
             FileReferencesBindings.Add(new MapObjectFileReferences(this, fileReference));
+        }
+
+        public void ReplaceTags(List<string> tags)
+        {
+            var outdatedTags = Tags.Where(mapObjectTag => tags.All(tag => tag != mapObjectTag.Tag)).ToList();
+            var actualTags = Tags.Except(outdatedTags);
+
+            var newTags = tags.Where(tag => actualTags.All(actualTag => actualTag.Tag != tag)).Select(tagValue => new MapObjectTag(this, tagValue));
+
+            outdatedTags.ForEach(outdatedTag =>
+            {
+                Tags.Remove(outdatedTag);
+                outdatedTag.MarkAsRemoved();
+            });
+
+            Tags.AddRange(newTags);
+
+            if (!HasEventsOfType<MapObjectAdded>())
+                AddOrReplaceEvent(new MapObjectUpdated(this));
         }
         
         private static Geometry FixClockWiseOrientationIfRequired(Geometry geometry)

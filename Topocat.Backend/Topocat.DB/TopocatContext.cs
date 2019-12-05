@@ -26,6 +26,9 @@ namespace Topocat.DB
         public DbSet<MapObjectFileReferences> MapObjectFileReferences { get; set; }
 
         [UsedImplicitly]
+        public DbSet<MapObjectTag> MapObjectTags { get; set; }
+
+        [UsedImplicitly]
         public DbSet<FileReference> FileReferences { get; set; }
 
         public IEnumerable<IDomainEvent> GetDomainEvents()

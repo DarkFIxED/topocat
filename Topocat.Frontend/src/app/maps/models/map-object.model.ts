@@ -8,4 +8,5 @@ export class MapObjectModel {
     createdAt: Date;
     lastModifiedAt: Date;
     wktString: string;
+    tags: string[];
 }

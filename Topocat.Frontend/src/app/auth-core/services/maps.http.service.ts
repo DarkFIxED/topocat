@@ -4,6 +4,7 @@ import {Observable} from 'rxjs';
 import {ApiResponse} from '../../core/models/api.response';
 import {MapModel} from '../../maps/models/map.model';
 import {MapObjectModel} from '../../maps/models/map-object.model';
+import {HttpParams} from '@angular/common/http';
 
 @Injectable()
 export class MapsHttpService {
@@ -22,7 +23,8 @@ export class MapsHttpService {
         return this.authHttpService.put<ApiResponse<any>>(`maps/${mapId}/objects/${data.id}`, {
             title: data.title,
             description: data.description,
-            wktString: data.wktString
+            wktString: data.wktString,
+            tags: data.tags
         });
     }
 
@@ -30,11 +32,19 @@ export class MapsHttpService {
         return this.authHttpService.post<ApiResponse<any>>(`maps/${mapId}/objects`, {
             title: data.title,
             description: data.description,
-            wktString: data.wktString
+            wktString: data.wktString,
+            tags: data.tags
         });
     }
 
     deleteMapObject(mapId: string, data: MapObjectModel): Observable<ApiResponse<any>> {
         return this.authHttpService.delete<ApiResponse<any>>(`maps/${mapId}/objects/${data.id}`);
+    }
+
+    searchTags(mapId: string, searchString: string): Observable<ApiResponse<{result: string[]}>> {
+        const queryParams = new HttpParams()
+            .set('search', searchString);
+
+        return this.authHttpService.get<ApiResponse<{result: string[]}>>(`maps/${mapId}/objects/tags`, undefined, queryParams);
     }
 }

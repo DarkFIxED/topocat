@@ -1,4 +1,5 @@
-﻿using Topocat.Common;
+﻿using System.Linq;
+using Topocat.Common;
 using Topocat.Domain.Entities.Map.Events;
 using Topocat.Services.BackgroundJobs.Simple;
 using Topocat.Services.Models;
@@ -25,7 +26,8 @@ namespace Topocat.Services.DomainEventHandlers
                 LastModifiedAt = @event.MapObject.LastModifiedAt,
                 Title = @event.MapObject.Title,
                 Description = @event.MapObject.Description,
-                WktString = @event.MapObject.Geometry.ToString()
+                WktString = @event.MapObject.Geometry.ToString(),
+                Tags = @event.MapObject.Tags.Select(x => x.Tag).ToList()
             };
 
             _backgroundService.RunInBackground<SendObjectAddedNotification, string, MapObjectModel>(@event.MapObject.MapId, mapObjectModel);
