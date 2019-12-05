@@ -5,6 +5,8 @@ import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {CoreModule} from './core/core.module';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {AngularYandexMapsModule} from 'angular8-yandex-maps';
+import {secrets} from '../environments/secrets';
 
 @NgModule({
     declarations: [
@@ -15,7 +17,8 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
         BrowserAnimationsModule,
         AppRoutingModule,
         CoreModule,
-        BrowserAnimationsModule
+        BrowserAnimationsModule,
+        AngularYandexMapsModule.forRoot(secrets.yandexMapsApi),
     ],
     providers: [],
     bootstrap: [AppComponent]

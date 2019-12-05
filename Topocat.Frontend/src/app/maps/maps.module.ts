@@ -43,6 +43,8 @@ import {GeneralMapObjectPropertiesComponent} from './components/general-map-obje
 import {AttachmentsMapObjectPropertiesComponent} from './components/attachments-map-object-properties/attachments-map-object-properties.component';
 import {MapService} from './services/map.service';
 import {GoogleMapContainerComponent} from './components/google-map-container/google-map-container.component';
+import {AngularYandexMapsModule} from 'angular8-yandex-maps';
+import {YandexMapContainerComponent} from './components/yandex-map-container/yandex-map-container.component';
 
 const routes: Routes = [
     {
@@ -56,6 +58,10 @@ const routes: Routes = [
                     {
                         path: 'google',
                         component: GoogleMapContainerComponent
+                    },
+                    {
+                        path: 'yandex',
+                        component: YandexMapContainerComponent
                     }
                 ]
             }
@@ -76,7 +82,8 @@ const routes: Routes = [
         MapObjectPropertiesComponent,
         GeneralMapObjectPropertiesComponent,
         AttachmentsMapObjectPropertiesComponent,
-        GoogleMapContainerComponent
+        GoogleMapContainerComponent,
+        YandexMapContainerComponent
     ],
     imports: [
         CommonModule,
@@ -89,6 +96,7 @@ const routes: Routes = [
                 'drawing'
             ]
         }),
+        AngularYandexMapsModule.forRoot(secrets.yandexMapsApi),
         MatCardModule,
         MatListModule,
         MatButtonModule,
