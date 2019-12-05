@@ -16,10 +16,14 @@
 - Added properties dialog for map objects.
 - Added ability to call properties window from map object through InfoWindow on map.
 
-## v.0.3.4
+## v0.3.4
 - Added decription to map objects.
 - Added auto-saving map mode.
 - Disabled ability to enter to street view mode on Google map.
 - Improved work with background tasks.
 - Added ability to remove map.
 - Fixed some minor bugs.
+
+## v0.3.5
+- Added objects tags.
+- Changed appearance in info window.
