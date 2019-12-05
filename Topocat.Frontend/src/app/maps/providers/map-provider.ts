@@ -1,9 +1,9 @@
 import {Observable} from 'rxjs';
 import {Coordinates} from '../../core/models/coordinates';
-import {UnifiedMapObject} from '../models/unified-map-object';
+import {UnifiedMapObject} from './unified-map-object';
 import {BaseDestroyable} from '../../core/services/base-destroyable';
 import {MapObjectModel} from '../models/map-object.model';
-import {SupportedMapTypes} from '../models/supported-map-types';
+import {SupportedMapTypes} from './supported-map-types';
 import {UnifiedMapObjectsFactory} from './unified-map-objects.factory';
 
 export abstract class MapProvider extends BaseDestroyable {
@@ -31,4 +31,6 @@ export abstract class MapProvider extends BaseDestroyable {
     abstract closeInfoWindow();
 
     abstract drawFigure(type: string): Promise<Coordinates | Coordinates[] | Coordinates[][]>;
+
+    abstract getDefaultZoomLevel(): number;
 }

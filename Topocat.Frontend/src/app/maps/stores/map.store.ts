@@ -9,8 +9,6 @@ export interface MapState extends EntityState<MapModel> {
         zoom: number,
         setManually: boolean
     };
-    // Is underlying map instance loaded.
-    instanceLoaded: boolean;
     mapMode: string;
 }
 
@@ -23,7 +21,6 @@ function initialState(): Partial<MapState> {
             zoom: 5,
             setManually: false
         },
-        instanceLoaded: false,
         mapMode: undefined,
     };
 }

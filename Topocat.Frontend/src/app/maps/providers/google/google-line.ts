@@ -1,12 +1,12 @@
-import {UnifiedMapObject} from './unified-map-object';
+import {UnifiedMapObject} from '../unified-map-object';
 import {ID} from '@datorama/akita';
-import {MapObjectModel} from './map-object.model';
+import {MapObjectModel} from '../../models/map-object.model';
 import {google} from 'google-maps';
-import {BaseUnifiedMapObject} from './base-unified-map-object';
-import {Coordinates} from '../../core/models/coordinates';
-import {WktPrimitives} from './wkt-primitives';
+import {BaseUnifiedMapObject} from '../base-unified-map-object';
+import {Coordinates} from '../../../core/models/coordinates';
+import {WktPrimitives} from '../../models/wkt-primitives';
 
-export class Line extends BaseUnifiedMapObject<google.maps.Polyline> implements UnifiedMapObject {
+export class GoogleLine extends BaseUnifiedMapObject<google.maps.Polyline> implements UnifiedMapObject {
 
     constructor(id: ID, opts?: any) {
         super(id, opts);

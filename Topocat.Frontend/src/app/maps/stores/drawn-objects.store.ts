@@ -1,4 +1,4 @@
-import {UnifiedMapObject} from '../models/unified-map-object';
+import {UnifiedMapObject} from '../providers/unified-map-object';
 import {ID} from '@datorama/akita';
 import {Subject, Subscription} from 'rxjs';
 import {Injectable} from '@angular/core';

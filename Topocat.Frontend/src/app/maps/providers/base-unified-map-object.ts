@@ -1,9 +1,9 @@
 import {UnifiedMapObject} from './unified-map-object';
 import {Subject} from 'rxjs';
 import {ID} from '@datorama/akita';
-import {MapObjectModel} from './map-object.model';
+import {MapObjectModel} from '../models/map-object.model';
 import {Coordinates} from '../../core/models/coordinates';
-import {WktPrimitives} from './wkt-primitives';
+import {WktPrimitives} from '../models/wkt-primitives';
 
 export abstract class BaseUnifiedMapObject<T extends google.maps.MVCObject> implements UnifiedMapObject {
 

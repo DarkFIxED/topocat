@@ -1,17 +1,19 @@
-import {MapProvider} from './map-provider';
-import {UnifiedMapObject} from '../models/unified-map-object';
+import {MapProvider} from '../map-provider';
+import {UnifiedMapObject} from '../unified-map-object';
 import {BehaviorSubject, Subject} from 'rxjs';
-import {Coordinates} from '../../core/models/coordinates';
+import {Coordinates} from '../../../core/models/coordinates';
 import {distinctUntilChanged} from 'rxjs/operators';
 import {google} from 'google-maps';
 import {NgZone} from '@angular/core';
-import {MapObjectModel} from '../models/map-object.model';
-import {WktPrimitives} from '../models/wkt-primitives';
-import {SupportedMapTypes} from '../models/supported-map-types';
+import {MapObjectModel} from '../../models/map-object.model';
+import {WktPrimitives} from '../../models/wkt-primitives';
+import {SupportedMapTypes} from '../supported-map-types';
 import {GoogleUnifiedMapObjectsFactory} from './google-unified-map-objects-factory.service';
-import {WktService} from '../services/wkt.service';
+import {WktService} from '../../services/wkt.service';
 
 export class GoogleMapProvider extends MapProvider {
+
+    private readonly defaultZoomLevel = 12;
 
     private position: BehaviorSubject<Coordinates>;
     private zoom: BehaviorSubject<number>;
@@ -238,5 +240,9 @@ export class GoogleMapProvider extends MapProvider {
             map: null,
             drawingControl: false,
         });
+    }
+
+    getDefaultZoomLevel(): number {
+        return this.defaultZoomLevel;
     }
 }

@@ -1,12 +1,12 @@
-import {MapObjectModel} from '../models/map-object.model';
-import {UnifiedMapObject} from '../models/unified-map-object';
-import {Point} from '../models/point';
-import {Line} from '../models/line';
-import {Polygon} from '../models/polygon';
-import {WktPrimitives} from '../models/wkt-primitives';
-import {WktService} from '../services/wkt.service';
-import {Coordinates} from '../../core/models/coordinates';
-import {UnifiedMapObjectsFactory} from './unified-map-objects.factory';
+import {MapObjectModel} from '../../models/map-object.model';
+import {UnifiedMapObject} from '../unified-map-object';
+import {GooglePoint} from './google-point';
+import {GoogleLine} from './google-line';
+import {GooglePolygon} from './google-polygon';
+import {WktPrimitives} from '../../models/wkt-primitives';
+import {WktService} from '../../services/wkt.service';
+import {Coordinates} from '../../../core/models/coordinates';
+import {UnifiedMapObjectsFactory} from '../unified-map-objects.factory';
 
 export class GoogleUnifiedMapObjectsFactory implements UnifiedMapObjectsFactory {
 
@@ -22,7 +22,7 @@ export class GoogleUnifiedMapObjectsFactory implements UnifiedMapObjectsFactory 
             case WktPrimitives.Point:
                 const point = coordsSet as Coordinates;
 
-                return new Point(mapObject.id, {
+                return new GooglePoint(mapObject.id, {
                     map: this.mapInstance,
                     position: new google.maps.LatLng(point.lat, point.lng),
                 });
@@ -30,7 +30,7 @@ export class GoogleUnifiedMapObjectsFactory implements UnifiedMapObjectsFactory 
             case WktPrimitives.LineString:
                 const linePath = coordsSet as Coordinates[];
 
-                return new Line(mapObject.id, {
+                return new GoogleLine(mapObject.id, {
                     map: this.mapInstance,
                     path: linePath.map(coords => new google.maps.LatLng(coords.lat, coords.lng))
                 });
@@ -38,7 +38,7 @@ export class GoogleUnifiedMapObjectsFactory implements UnifiedMapObjectsFactory 
             case WktPrimitives.Polygon:
                 const paths = coordsSet as Coordinates[][];
 
-                return new Polygon(mapObject.id, {
+                return new GooglePolygon(mapObject.id, {
                     map: this.mapInstance,
                     paths: paths.map(path => path
                         .map(coords => new google.maps.LatLng(coords.lat, coords.lng))

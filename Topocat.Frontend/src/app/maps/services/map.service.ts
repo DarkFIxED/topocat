@@ -45,12 +45,6 @@ export class MapService {
         this.mapStore.update(newPosition);
     }
 
-    setInstanceLoadedFlag() {
-        this.mapStore.update({
-            instanceLoaded: true
-        });
-    }
-
     setMapMode(mode: string) {
         this.mapStore.update({
             mapMode: mode

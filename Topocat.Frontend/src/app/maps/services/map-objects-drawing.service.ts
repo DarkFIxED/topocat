@@ -5,7 +5,7 @@ import {MapObjectsQuery} from '../queries/map-objects.query';
 import {MapObjectModel} from '../models/map-object.model';
 import {WktService} from './wkt.service';
 import {DrawnObjectsStore} from '../stores/drawn-objects.store';
-import {UnifiedMapObject} from '../models/unified-map-object';
+import {UnifiedMapObject} from '../providers/unified-map-object';
 import {MapObjectHelper} from '../helpers/map-object.helper';
 
 @Injectable()

@@ -1,5 +1,5 @@
 import {ID} from '@datorama/akita';
-import {MapObjectModel} from './map-object.model';
+import {MapObjectModel} from '../models/map-object.model';
 import {Observable} from 'rxjs';
 import {Coordinates} from '../../core/models/coordinates';
 

@@ -1,11 +1,11 @@
-import {UnifiedMapObject} from './unified-map-object';
+import {UnifiedMapObject} from '../unified-map-object';
 import {ID} from '@datorama/akita';
-import {MapObjectModel} from './map-object.model';
-import {BaseUnifiedMapObject} from './base-unified-map-object';
-import {Coordinates} from '../../core/models/coordinates';
-import {WktPrimitives} from './wkt-primitives';
+import {MapObjectModel} from '../../models/map-object.model';
+import {BaseUnifiedMapObject} from '../base-unified-map-object';
+import {Coordinates} from '../../../core/models/coordinates';
+import {WktPrimitives} from '../../models/wkt-primitives';
 
-export class Point extends BaseUnifiedMapObject<google.maps.Marker> implements UnifiedMapObject {
+export class GooglePoint extends BaseUnifiedMapObject<google.maps.Marker> implements UnifiedMapObject {
 
     constructor(id: ID, opts?: any) {
         super(id, opts);

@@ -1,3 +1,4 @@
 export enum SupportedMapTypes {
-    Google
+    Google,
+    Yandex,
 }

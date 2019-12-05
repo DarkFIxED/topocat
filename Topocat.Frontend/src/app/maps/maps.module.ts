@@ -42,6 +42,7 @@ import {MapObjectAttachmentsHttpService} from './services/map-object-attachments
 import {GeneralMapObjectPropertiesComponent} from './components/general-map-object-properties/general-map-object-properties.component';
 import {AttachmentsMapObjectPropertiesComponent} from './components/attachments-map-object-properties/attachments-map-object-properties.component';
 import {MapService} from './services/map.service';
+import {GoogleMapContainerComponent} from './components/google-map-container/google-map-container.component';
 
 const routes: Routes = [
     {
@@ -50,7 +51,13 @@ const routes: Routes = [
         children: [
             {
                 path: ':id',
-                component: MapComponent
+                component: MapComponent,
+                children: [
+                    {
+                        path: 'google',
+                        component: GoogleMapContainerComponent
+                    }
+                ]
             }
         ]
     }
@@ -68,7 +75,8 @@ const routes: Routes = [
         MapsSettingsComponent,
         MapObjectPropertiesComponent,
         GeneralMapObjectPropertiesComponent,
-        AttachmentsMapObjectPropertiesComponent
+        AttachmentsMapObjectPropertiesComponent,
+        GoogleMapContainerComponent
     ],
     imports: [
         CommonModule,
