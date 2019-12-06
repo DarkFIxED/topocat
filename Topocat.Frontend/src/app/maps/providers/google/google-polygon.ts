@@ -1,12 +1,12 @@
 import {UnifiedMapObject} from '../unified-map-object';
 import {ID} from '@datorama/akita';
 import {MapObjectModel} from '../../models/map-object.model';
-import {BaseUnifiedMapObject} from '../base-unified-map-object';
 import {google} from 'google-maps';
 import {Coordinates} from '../../../core/models/coordinates';
 import {WktPrimitives} from '../../models/wkt-primitives';
+import {GoogleUnifiedMapObject} from './google-unified-map-object';
 
-export class GooglePolygon extends BaseUnifiedMapObject<google.maps.Polygon> implements UnifiedMapObject {
+export class GooglePolygon extends GoogleUnifiedMapObject<google.maps.Polygon> implements UnifiedMapObject {
 
     constructor(id: ID, opts?: any) {
         super(id, opts);
@@ -85,5 +85,9 @@ export class GooglePolygon extends BaseUnifiedMapObject<google.maps.Polygon> imp
     private handlePathsChanged() {
         const paths = this.underlyingObject.getPaths().getArray().map(path => path.getArray().map(latLng => new Coordinates(latLng.lat(), latLng.lng())));
         this.drag.next(paths);
+    }
+
+    getUnderlyingObject(): any {
+        return this.underlyingObject;
     }
 }

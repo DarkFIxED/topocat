@@ -8,7 +8,7 @@ import {NgZone} from '@angular/core';
 import {MapObjectModel} from '../../models/map-object.model';
 import {WktPrimitives} from '../../models/wkt-primitives';
 import {SupportedMapTypes} from '../supported-map-types';
-import {GoogleUnifiedMapObjectsFactory} from './google-unified-map-objects-factory.service';
+import {GoogleUnifiedMapObjectsFactory} from './google-unified-map-objects-factory';
 import {WktService} from '../../services/wkt.service';
 
 export class GoogleMapProvider extends MapProvider {
@@ -244,5 +244,10 @@ export class GoogleMapProvider extends MapProvider {
 
     getDefaultZoomLevel(): number {
         return this.defaultZoomLevel;
+    }
+
+    removeObjectFromMap(object: UnifiedMapObject) {
+        object.getUnderlyingObject().setMap(null);
+        object.dispose();
     }
 }

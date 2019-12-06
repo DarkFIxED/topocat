@@ -5,6 +5,7 @@ import {BaseDestroyable} from '../../core/services/base-destroyable';
 import {MapObjectModel} from '../models/map-object.model';
 import {SupportedMapTypes} from './supported-map-types';
 import {UnifiedMapObjectsFactory} from './unified-map-objects.factory';
+import {ID} from '@datorama/akita';
 
 export abstract class MapProvider extends BaseDestroyable {
 
@@ -18,7 +19,7 @@ export abstract class MapProvider extends BaseDestroyable {
 
     abstract getType(): SupportedMapTypes;
 
-    abstract getAvailableMapModes(): {title: string, value: string}[];
+    abstract getAvailableMapModes(): { title: string, value: string }[];
 
     abstract getMapMode(): string;
 
@@ -33,4 +34,6 @@ export abstract class MapProvider extends BaseDestroyable {
     abstract drawFigure(type: string): Promise<Coordinates | Coordinates[] | Coordinates[][]>;
 
     abstract getDefaultZoomLevel(): number;
+
+    abstract removeObjectFromMap(unifiedMapObject);
 }

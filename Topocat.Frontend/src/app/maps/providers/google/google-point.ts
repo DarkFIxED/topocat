@@ -1,11 +1,11 @@
 import {UnifiedMapObject} from '../unified-map-object';
 import {ID} from '@datorama/akita';
 import {MapObjectModel} from '../../models/map-object.model';
-import {BaseUnifiedMapObject} from '../base-unified-map-object';
 import {Coordinates} from '../../../core/models/coordinates';
 import {WktPrimitives} from '../../models/wkt-primitives';
+import {GoogleUnifiedMapObject} from './google-unified-map-object';
 
-export class GooglePoint extends BaseUnifiedMapObject<google.maps.Marker> implements UnifiedMapObject {
+export class GooglePoint extends GoogleUnifiedMapObject<google.maps.Marker> implements UnifiedMapObject {
 
     constructor(id: ID, opts?: any) {
         super(id, opts);
@@ -17,9 +17,9 @@ export class GooglePoint extends BaseUnifiedMapObject<google.maps.Marker> implem
         });
     }
 
+    // TODO: to provider.
     dispose() {
         this.underlyingObject.unbindAll();
-        this.underlyingObject.setMap(null);
     }
 
     getType(): string {
@@ -66,5 +66,9 @@ export class GooglePoint extends BaseUnifiedMapObject<google.maps.Marker> implem
         this.underlyingObject.setOptions({
             draggable: true
         });
+    }
+
+    getUnderlyingObject(): any {
+        return this.underlyingObject;
     }
 }

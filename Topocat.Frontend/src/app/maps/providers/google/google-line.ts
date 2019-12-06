@@ -2,11 +2,11 @@ import {UnifiedMapObject} from '../unified-map-object';
 import {ID} from '@datorama/akita';
 import {MapObjectModel} from '../../models/map-object.model';
 import {google} from 'google-maps';
-import {BaseUnifiedMapObject} from '../base-unified-map-object';
 import {Coordinates} from '../../../core/models/coordinates';
 import {WktPrimitives} from '../../models/wkt-primitives';
+import {GoogleUnifiedMapObject} from './google-unified-map-object';
 
-export class GoogleLine extends BaseUnifiedMapObject<google.maps.Polyline> implements UnifiedMapObject {
+export class GoogleLine extends GoogleUnifiedMapObject<google.maps.Polyline> implements UnifiedMapObject {
 
     constructor(id: ID, opts?: any) {
         super(id, opts);
@@ -78,4 +78,7 @@ export class GoogleLine extends BaseUnifiedMapObject<google.maps.Polyline> imple
         this.drag.next(path);
     }
 
+    getUnderlyingObject(): any {
+        return this.underlyingObject;
+    }
 }

@@ -24,4 +24,6 @@ export interface UnifiedMapObject {
     allowChange();
 
     disallowChange();
+
+    getUnderlyingObject(): any;
 }

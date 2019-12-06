@@ -40,7 +40,7 @@ export class DrawnObjectsStore {
         this.drawnObjectsSubscriptions.splice(index, 1);
 
         index = this.drawnObjects.findIndex(x => x.id === id);
-        this.drawnObjects[index].dispose();
+        // this.drawnObjects[index].dispose();
         this.drawnObjects.splice(index, 1);
     }
 
