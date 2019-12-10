@@ -22,7 +22,7 @@ export class GoogleUnifiedMapObjectsFactory implements UnifiedMapObjectsFactory 
             case WktPrimitives.Point:
                 const point = coordsSet as Coordinates;
 
-                return new GooglePoint(mapObject.id, {
+                return new GooglePoint(mapObject.id, this.mapInstance, {
                     map: this.mapInstance,
                     position: new google.maps.LatLng(point.lat, point.lng),
                 });
@@ -30,7 +30,7 @@ export class GoogleUnifiedMapObjectsFactory implements UnifiedMapObjectsFactory 
             case WktPrimitives.LineString:
                 const linePath = coordsSet as Coordinates[];
 
-                return new GoogleLine(mapObject.id, {
+                return new GoogleLine(mapObject.id, this.mapInstance, {
                     map: this.mapInstance,
                     path: linePath.map(coords => new google.maps.LatLng(coords.lat, coords.lng))
                 });
@@ -38,7 +38,7 @@ export class GoogleUnifiedMapObjectsFactory implements UnifiedMapObjectsFactory 
             case WktPrimitives.Polygon:
                 const paths = coordsSet as Coordinates[][];
 
-                return new GooglePolygon(mapObject.id, {
+                return new GooglePolygon(mapObject.id, this.mapInstance, {
                     map: this.mapInstance,
                     paths: paths.map(path => path
                         .map(coords => new google.maps.LatLng(coords.lat, coords.lng))

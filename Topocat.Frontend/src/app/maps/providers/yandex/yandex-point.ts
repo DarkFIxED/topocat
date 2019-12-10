@@ -8,11 +8,17 @@ import {WktPrimitives} from '../../models/wkt-primitives';
 
 export class YandexPoint extends YandexUnifiedMapObject implements UnifiedMapObject {
 
-    private readonly disabledColor = '#AAA';
-    private readonly enabledColor = '#FFF';
+    private readonly disabledColor = '#AAAAAA22';
+    private readonly enabledColor = '#1E98FFFF';
 
-    constructor(id: ID, opts?: any) {
-        super(id, opts);
+    constructor(id: ID, mapInstance: any, opts?: any) {
+        super(id, mapInstance, opts);
+
+        this.underlyingObject.events.add('dragend', () => {
+            const position = this.underlyingObject.geometry.getCoordinates();
+            const coordinates = new Coordinates(position[0], position[1]);
+            this.drag.next(coordinates);
+        });
     }
 
     protected createInstance(opts?: any): any {
@@ -25,19 +31,23 @@ export class YandexPoint extends YandexUnifiedMapObject implements UnifiedMapObj
     }
 
     enable() {
-        this.underlyingObject.properties.iconColor = this.enabledColor;
+        this.isEnabled = true;
+        this.underlyingObject.options.set('cursor', 'pointer');
+        this.underlyingObject.options.set('iconColor', this.enabledColor);
     }
 
     disable() {
-        this.underlyingObject.properties.iconColor = this.disabledColor;
+        this.isEnabled = false;
+        this.underlyingObject.options.set('cursor', 'default');
+        this.underlyingObject.options.set('iconColor', this.disabledColor);
     }
 
     allowChange() {
-        this.underlyingObject.options.draggable = true;
+        this.underlyingObject.options.set('draggable', true);
     }
 
     disallowChange() {
-        this.underlyingObject.options.draggable = false;
+        this.underlyingObject.options.set('draggable', false);
     }
 
     dispose() {

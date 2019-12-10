@@ -10,7 +10,7 @@ import {GoogleLine} from '../google/google-line';
 import {GooglePolygon} from '../google/google-polygon';
 import {map} from 'rxjs/operators';
 
-export class YandexUnifiedMapObjectsFactory implements UnifiedMapObjectsFactory{
+export class YandexUnifiedMapObjectsFactory implements UnifiedMapObjectsFactory {
 
     constructor(private mapInstance: any, private wktService: WktService) {
     }
@@ -24,7 +24,7 @@ export class YandexUnifiedMapObjectsFactory implements UnifiedMapObjectsFactory{
             case WktPrimitives.Point:
                 const point = coordsSet as Coordinates;
 
-                const yaPoint = new YandexPoint(mapObject.id, {
+                const yaPoint = new YandexPoint(mapObject.id, this.mapInstance, {
                     lat: point.lat,
                     lng: point.lng,
                     title: mapObject.title
@@ -35,7 +35,7 @@ export class YandexUnifiedMapObjectsFactory implements UnifiedMapObjectsFactory{
 
             case WktPrimitives.LineString:
             case WktPrimitives.Polygon:
-                return new YandexPoint(mapObject.id, {
+                return new YandexPoint(mapObject.id, this.mapInstance, {
                     lat: 0,
                     lng: 0,
                     title: mapObject.title

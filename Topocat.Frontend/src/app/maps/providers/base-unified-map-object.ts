@@ -16,9 +16,12 @@ export abstract class BaseUnifiedMapObject<T extends any> implements UnifiedMapO
 
     protected underlyingObject: T;
 
-    protected constructor(id: ID, opts?: any) {
+    protected mapInstance: any;
+
+    protected constructor(id: ID, mapInstance: any, opts?: any) {
         this.id = id;
         this.underlyingObject = this.createInstance(opts);
+        this.mapInstance = mapInstance;
     }
 
     abstract dispose();

@@ -7,8 +7,8 @@ import {GoogleUnifiedMapObject} from './google-unified-map-object';
 
 export class GooglePoint extends GoogleUnifiedMapObject<google.maps.Marker> implements UnifiedMapObject {
 
-    constructor(id: ID, opts?: any) {
-        super(id, opts);
+    constructor(id: ID, mapInstance: any, opts?: any) {
+        super(id, mapInstance, opts);
 
         this.underlyingObject.addListener('dragend', () => {
             const position = this.underlyingObject.getPosition();
@@ -17,7 +17,6 @@ export class GooglePoint extends GoogleUnifiedMapObject<google.maps.Marker> impl
         });
     }
 
-    // TODO: to provider.
     dispose() {
         this.underlyingObject.unbindAll();
     }

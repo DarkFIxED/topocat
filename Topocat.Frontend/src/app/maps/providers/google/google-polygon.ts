@@ -8,8 +8,8 @@ import {GoogleUnifiedMapObject} from './google-unified-map-object';
 
 export class GooglePolygon extends GoogleUnifiedMapObject<google.maps.Polygon> implements UnifiedMapObject {
 
-    constructor(id: ID, opts?: any) {
-        super(id, opts);
+    constructor(id: ID, mapInstance: any, opts?: any) {
+        super(id, mapInstance, opts);
 
         this.underlyingObject.getPaths().addListener('insert_at', () => this.handlePathsChanged());
         this.underlyingObject.getPaths().addListener('remove_at', () => this.handlePathsChanged());

@@ -8,8 +8,8 @@ import {GoogleUnifiedMapObject} from './google-unified-map-object';
 
 export class GoogleLine extends GoogleUnifiedMapObject<google.maps.Polyline> implements UnifiedMapObject {
 
-    constructor(id: ID, opts?: any) {
-        super(id, opts);
+    constructor(id: ID, mapInstance: any, opts?: any) {
+        super(id, mapInstance, opts);
 
         this.underlyingObject.getPath().addListener('insert_at', () => this.handlePathChanged());
         this.underlyingObject.getPath().addListener('remove_at', () => this.handlePathChanged());
