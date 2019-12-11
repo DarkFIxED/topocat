@@ -6,6 +6,7 @@ import {WktService} from '../../services/wkt.service';
 import {WktPrimitives} from '../../models/wkt-primitives';
 import {Coordinates} from '../../../core/models/coordinates';
 import {YandexLine} from './yandex-line';
+import {YandexPolygon} from './yandex-polygon';
 
 export class YandexUnifiedMapObjectsFactory implements UnifiedMapObjectsFactory {
 
@@ -42,11 +43,16 @@ export class YandexUnifiedMapObjectsFactory implements UnifiedMapObjectsFactory 
                 return yaLine;
 
             case WktPrimitives.Polygon:
-                return new YandexPoint(mapObject.id, this.mapInstance, {
-                    lat: 0,
-                    lng: 0,
-                    title: mapObject.title
+                const paths = coordsSet as Coordinates[][];
+
+                const convertedPaths = paths.map(p => p.map(c => [c.lat, c.lng]));
+
+                const yaPolygon = new YandexPolygon(mapObject.id, this.mapInstance, {
+                    paths: convertedPaths
                 });
+                this.mapInstance.geoObjects.add(yaPolygon.getUnderlyingObject());
+
+                return yaPolygon;
         }
     }
 

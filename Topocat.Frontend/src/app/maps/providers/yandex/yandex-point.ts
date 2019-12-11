@@ -8,17 +8,17 @@ import {WktPrimitives} from '../../models/wkt-primitives';
 
 export class YandexPoint extends YandexUnifiedMapObject implements UnifiedMapObject {
 
-    private readonly disabledColor = '#AAAAAA22';
-    private readonly enabledColor = '#1E98FFFF';
+    private static readonly disabledColor = '#AAAAAA22';
+    private static readonly enabledColor = '#1E98FFFF';
 
     constructor(id: ID, mapInstance: any, opts?: any) {
         super(id, mapInstance, opts);
 
-        this.underlyingObject.events.add('dragend', () => {
-            const position = this.underlyingObject.geometry.getCoordinates();
-            const coordinates = new Coordinates(position[0], position[1]);
-            this.drag.next(coordinates);
-        });
+        // this.underlyingObject.events.add('dragend', () => {
+        //     const position = this.underlyingObject.geometry.getCoordinates();
+        //     const coordinates = new Coordinates(position[0], position[1]);
+        //     this.drag.next(coordinates);
+        // });
     }
 
     protected createInstance(opts?: any): any {
@@ -26,20 +26,20 @@ export class YandexPoint extends YandexUnifiedMapObject implements UnifiedMapObj
             iconCaption: opts.title,
         }, {
             draggable: false,
-            iconColor: this.enabledColor
+            iconColor: YandexPoint.enabledColor
         });
     }
 
     enable() {
         this.isEnabled = true;
         this.underlyingObject.options.set('cursor', 'pointer');
-        this.underlyingObject.options.set('iconColor', this.enabledColor);
+        this.underlyingObject.options.set('iconColor', YandexPoint.enabledColor);
     }
 
     disable() {
         this.isEnabled = false;
         this.underlyingObject.options.set('cursor', 'default');
-        this.underlyingObject.options.set('iconColor', this.disabledColor);
+        this.underlyingObject.options.set('iconColor', YandexPoint.disabledColor);
     }
 
     allowChange() {
@@ -50,11 +50,9 @@ export class YandexPoint extends YandexUnifiedMapObject implements UnifiedMapObj
         this.underlyingObject.options.set('draggable', false);
     }
 
-    dispose() {
-    }
-
     getInfoWindowPosition(): { lat: number; lng: number } {
         const coords = this.underlyingObject.geometry.getCoordinates();
+
         return {
             lat: coords[0],
             lng: coords[1]
@@ -71,7 +69,8 @@ export class YandexPoint extends YandexUnifiedMapObject implements UnifiedMapObj
         this.underlyingObject.properties.set('iconCaption', object.title);
     }
 
-    getUnderlyingObject(): any {
-        return this.underlyingObject;
+    protected handlePathChanged(event: any) {
+        const newCoordinates = event.get('newCoordinates') as number[];
+        this.drag.next(new Coordinates(newCoordinates[0], newCoordinates[1]));
     }
 }

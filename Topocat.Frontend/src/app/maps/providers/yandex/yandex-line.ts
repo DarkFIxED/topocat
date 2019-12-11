@@ -8,33 +8,32 @@ import {ID} from '@datorama/akita';
 
 export class YandexLine extends YandexUnifiedMapObject implements UnifiedMapObject {
 
-    private readonly enabledOpacity = 1;
-    private readonly disabledOpacity = 0.2;
+    private static readonly enabledOpacity = 1;
+    private static readonly disabledOpacity = 0.2;
+    private static readonly strokeColor = '#000';
 
     constructor(id: ID, mapInstance: any, opts?: any) {
         super(id, mapInstance, opts);
-
-        this.underlyingObject.geometry.events.add('change', event => this.handlePathChanged(event));
     }
 
     protected createInstance(opts?: any): any {
         return new window['ymaps'].Polyline(opts.path, {}, {
-            strokeColor: '#000000',
+            strokeColor: YandexLine.strokeColor,
             strokeWidth: 2,
-            strokeOpacity: this.enabledOpacity
+            strokeOpacity: YandexLine.enabledOpacity
         });
     }
 
     enable() {
         this.isEnabled = true;
         this.underlyingObject.options.set('cursor', 'pointer');
-        this.underlyingObject.options.set('strokeOpacity', this.enabledOpacity);
+        this.underlyingObject.options.set('strokeOpacity', YandexLine.enabledOpacity);
     }
 
     disable() {
         this.isEnabled = false;
         this.underlyingObject.options.set('cursor', 'default');
-        this.underlyingObject.options.set('strokeOpacity', this.disabledOpacity);
+        this.underlyingObject.options.set('strokeOpacity', YandexLine.disabledOpacity);
     }
 
     allowChange() {
@@ -51,7 +50,8 @@ export class YandexLine extends YandexUnifiedMapObject implements UnifiedMapObje
         geometry.setCoordinates(path);
     }
 
-    dispose() {
+    getType(): string {
+        return WktPrimitives.LineString;
     }
 
     getInfoWindowPosition(): { lat: number; lng: number } {
@@ -64,15 +64,7 @@ export class YandexLine extends YandexUnifiedMapObject implements UnifiedMapObje
         };
     }
 
-    getType(): string {
-        return WktPrimitives.LineString;
-    }
-
-    getUnderlyingObject(): any {
-        return this.underlyingObject;
-    }
-
-    private handlePathChanged(event: any) {
+    protected handlePathChanged(event: any) {
         const newCoordinates = event.get('newCoordinates') as number[][];
         const path = newCoordinates.map(coords => new Coordinates(coords[0], coords[1]));
         this.drag.next(path);
