@@ -7,6 +7,7 @@ import {YandexUnifiedMapObjectsFactory} from './yandex-unified-map-objects-facto
 import {WktService} from '../../services/wkt.service';
 import {BehaviorSubject, Subject} from 'rxjs';
 import {NgZone} from '@angular/core';
+import {distinctUntilChanged} from 'rxjs/operators';
 
 export class YandexMapProvider extends MapProvider {
 
@@ -29,6 +30,7 @@ export class YandexMapProvider extends MapProvider {
         this.infoWindowClosed$ = this.infoWindowClosed.asObservable();
 
         this.setUpInfoWindow();
+        this.setUpMapObservables();
     }
 
     closeInfoWindow() {
@@ -79,7 +81,7 @@ export class YandexMapProvider extends MapProvider {
             });
         };
 
-        const r = this.mapInstance.events.add('close', () => {
+        this.mapInstance.events.add('close', () => {
             this.infoWindowClosed.next();
         });
 
@@ -132,5 +134,27 @@ export class YandexMapProvider extends MapProvider {
 
     private setUpInfoWindow() {
 
+    }
+
+    private setUpMapObservables() {
+        const initialMapCenter = this.mapInstance.getCenter();
+        const initialZoom = this.mapInstance.getZoom();
+        this.position = new BehaviorSubject<Coordinates>({lat: initialMapCenter[0], lng: initialMapCenter[1]});
+        this.zoom = new BehaviorSubject<number>(initialZoom);
+
+        this.position$ = this.position.asObservable().pipe(
+            distinctUntilChanged()
+        );
+        this.zoom$ = this.zoom.asObservable().pipe(
+            distinctUntilChanged()
+        );
+
+        this.mapInstance.events.add('boundschange', event => {
+            const center = event.get('newCenter');
+            const zoom = event.get('newZoom');
+
+            this.position.next({lat: center[0], lng: center[1]});
+            this.zoom.next(zoom);
+        });
     }
 }
