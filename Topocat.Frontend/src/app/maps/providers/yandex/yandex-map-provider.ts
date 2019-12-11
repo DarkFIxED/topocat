@@ -29,7 +29,6 @@ export class YandexMapProvider extends MapProvider {
         this.tagSearchRequired$ = this.tagSearchRequired.asObservable();
         this.infoWindowClosed$ = this.infoWindowClosed.asObservable();
 
-        this.setUpInfoWindow();
         this.setUpMapObservables();
     }
 
@@ -130,10 +129,6 @@ export class YandexMapProvider extends MapProvider {
 
     removeObjectFromMap(unifiedMapObject: UnifiedMapObject) {
         this.mapInstance.geoObjects.remove(unifiedMapObject.getUnderlyingObject());
-    }
-
-    private setUpInfoWindow() {
-
     }
 
     private setUpMapObservables() {
