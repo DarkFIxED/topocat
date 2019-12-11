@@ -5,10 +5,7 @@ import {YandexPoint} from './yandex-point';
 import {WktService} from '../../services/wkt.service';
 import {WktPrimitives} from '../../models/wkt-primitives';
 import {Coordinates} from '../../../core/models/coordinates';
-import {GooglePoint} from '../google/google-point';
-import {GoogleLine} from '../google/google-line';
-import {GooglePolygon} from '../google/google-polygon';
-import {map} from 'rxjs/operators';
+import {YandexLine} from './yandex-line';
 
 export class YandexUnifiedMapObjectsFactory implements UnifiedMapObjectsFactory {
 
@@ -34,6 +31,16 @@ export class YandexUnifiedMapObjectsFactory implements UnifiedMapObjectsFactory 
                 return yaPoint;
 
             case WktPrimitives.LineString:
+                const path = coordsSet as Coordinates[];
+
+                const yandexPath = path.map(pathPoint => [pathPoint.lat, pathPoint.lng]);
+                const yaLine = new YandexLine(mapObject.id, this.mapInstance, {
+                    path: yandexPath
+                });
+
+                this.mapInstance.geoObjects.add(yaLine.getUnderlyingObject());
+                return yaLine;
+
             case WktPrimitives.Polygon:
                 return new YandexPoint(mapObject.id, this.mapInstance, {
                     lat: 0,

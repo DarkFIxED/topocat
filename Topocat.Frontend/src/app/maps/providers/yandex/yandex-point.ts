@@ -66,9 +66,9 @@ export class YandexPoint extends YandexUnifiedMapObject implements UnifiedMapObj
     }
 
     update(object: MapObjectModel, newCoords: Coordinates) {
-        this.underlyingObject.options.lat = newCoords.lat;
-        this.underlyingObject.options.lng = newCoords.lng;
-        this.underlyingObject.properties.iconCaption = object.title;
+        this.underlyingObject.options.set('lat', newCoords.lat);
+        this.underlyingObject.options.set('lng', newCoords.lng);
+        this.underlyingObject.properties.set('iconCaption', object.title);
     }
 
     getUnderlyingObject(): any {

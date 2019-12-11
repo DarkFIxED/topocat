@@ -64,8 +64,6 @@ export class YandexMapProvider extends MapProvider {
             throw new Error();
         }
 
-        const underlyingObject = unifiedMapObject.getUnderlyingObject();
-
         const self = this;
         // @ts-ignore
         window.onDetailsClick = function() {
@@ -111,7 +109,8 @@ export class YandexMapProvider extends MapProvider {
             `</div>` +
             `</div>`;
 
-        this.mapInstance.balloon.open(underlyingObject.geometry.getCoordinates(),
+        const position = unifiedMapObject.getInfoWindowPosition();
+        this.mapInstance.balloon.open([position.lat, position.lng],
             content,
             {
                 // Опция: не показываем кнопку закрытия.
