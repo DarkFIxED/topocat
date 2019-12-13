@@ -1,8 +1,8 @@
 import {Component, NgZone, OnInit} from '@angular/core';
 import {ILoadEvent} from 'angular8-yandex-maps/lib/types/types';
-import {MapProviderService} from '../../services/map-provider.service';
+import {MapProviderService} from '../../../maps/services/map-provider.service';
 import {YandexMapProvider} from '../../providers/yandex/yandex-map-provider';
-import {WktService} from '../../services/wkt.service';
+import {WktService} from '../../../maps/services/wkt.service';
 
 @Component({
     selector: 'app-yandex-map-container',

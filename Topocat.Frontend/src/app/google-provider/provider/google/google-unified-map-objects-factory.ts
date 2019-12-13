@@ -1,12 +1,12 @@
-import {MapObjectModel} from '../../models/map-object.model';
-import {UnifiedMapObject} from '../unified-map-object';
+import {MapObjectModel} from '../../../maps/models/map-object.model';
+import {UnifiedMapObject} from '../../../maps/providers/unified-map-object';
 import {GooglePoint} from './google-point';
 import {GoogleLine} from './google-line';
 import {GooglePolygon} from './google-polygon';
-import {WktPrimitives} from '../../models/wkt-primitives';
-import {WktService} from '../../services/wkt.service';
+import {WktPrimitives} from '../../../maps/models/wkt-primitives';
+import {WktService} from '../../../maps/services/wkt.service';
 import {Coordinates} from '../../../core/models/coordinates';
-import {UnifiedMapObjectsFactory} from '../unified-map-objects.factory';
+import {UnifiedMapObjectsFactory} from '../../../maps/providers/unified-map-objects.factory';
 
 export class GoogleUnifiedMapObjectsFactory implements UnifiedMapObjectsFactory {
 

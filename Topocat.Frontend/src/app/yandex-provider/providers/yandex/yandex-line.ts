@@ -1,8 +1,8 @@
 /* tslint:disable:no-string-literal */
 import {YandexUnifiedMapObject} from './yandex-unified-map-object';
-import {UnifiedMapObject} from '../unified-map-object';
-import {WktPrimitives} from '../../models/wkt-primitives';
-import {MapObjectModel} from '../../models/map-object.model';
+import {UnifiedMapObject} from '../../../maps/providers/unified-map-object';
+import {WktPrimitives} from '../../../maps/models/wkt-primitives';
+import {MapObjectModel} from '../../../maps/models/map-object.model';
 import {Coordinates} from '../../../core/models/coordinates';
 import {ID} from '@datorama/akita';
 

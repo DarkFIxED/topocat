@@ -1,7 +1,7 @@
 import {Component, NgZone, OnInit} from '@angular/core';
-import {MapProviderService} from '../../services/map-provider.service';
-import {GoogleMapProvider} from '../../providers/google/google-map-provider';
-import {WktService} from '../../services/wkt.service';
+import {MapProviderService} from '../../../maps/services/map-provider.service';
+import {GoogleMapProvider} from '../../provider/google/google-map-provider';
+import {WktService} from '../../../maps/services/wkt.service';
 
 @Component({
     selector: 'app-google-map-container',

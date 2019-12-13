@@ -1,8 +1,8 @@
 /* tslint:disable:no-string-literal */
-import {BaseUnifiedMapObject} from '../base-unified-map-object';
+import {BaseUnifiedMapObject} from '../../../maps/providers/base-unified-map-object';
 import {ID} from '@datorama/akita';
 import {Coordinates} from '../../../core/models/coordinates';
-import {WktPrimitives} from '../../models/wkt-primitives';
+import {WktPrimitives} from '../../../maps/models/wkt-primitives';
 
 export abstract class YandexUnifiedMapObject extends BaseUnifiedMapObject<any> {
 

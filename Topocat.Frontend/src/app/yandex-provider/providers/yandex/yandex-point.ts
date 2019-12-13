@@ -1,10 +1,10 @@
 /* tslint:disable:no-string-literal */
-import {UnifiedMapObject} from '../unified-map-object';
+import {UnifiedMapObject} from '../../../maps/providers/unified-map-object';
 import {YandexUnifiedMapObject} from './yandex-unified-map-object';
 import {ID} from '@datorama/akita';
-import {MapObjectModel} from '../../models/map-object.model';
+import {MapObjectModel} from '../../../maps/models/map-object.model';
 import {Coordinates} from '../../../core/models/coordinates';
-import {WktPrimitives} from '../../models/wkt-primitives';
+import {WktPrimitives} from '../../../maps/models/wkt-primitives';
 
 export class YandexPoint extends YandexUnifiedMapObject implements UnifiedMapObject {
 

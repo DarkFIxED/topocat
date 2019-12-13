@@ -1,14 +1,14 @@
-import {MapProvider} from '../map-provider';
-import {SupportedMapTypes} from '../supported-map-types';
-import {MapObjectModel} from '../../models/map-object.model';
-import {UnifiedMapObject} from '../unified-map-object';
+import {MapProvider} from '../../../maps/providers/map-provider';
+import {SupportedMapTypes} from '../../../maps/providers/supported-map-types';
+import {MapObjectModel} from '../../../maps/models/map-object.model';
+import {UnifiedMapObject} from '../../../maps/providers/unified-map-object';
 import {Coordinates} from '../../../core/models/coordinates';
 import {YandexUnifiedMapObjectsFactory} from './yandex-unified-map-objects-factory';
-import {WktService} from '../../services/wkt.service';
+import {WktService} from '../../../maps/services/wkt.service';
 import {BehaviorSubject, Subject} from 'rxjs';
 import {NgZone} from '@angular/core';
 import {distinctUntilChanged} from 'rxjs/operators';
-import {WktPrimitives} from '../../models/wkt-primitives';
+import {WktPrimitives} from '../../../maps/models/wkt-primitives';
 
 export class YandexMapProvider extends MapProvider {
 

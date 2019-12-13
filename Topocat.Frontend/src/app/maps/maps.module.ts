@@ -9,12 +9,9 @@ import {MapObjectsStore} from './stores/map-objects.store';
 import {MapStore} from './stores/map.store';
 import {MapObjectsService} from './services/map-objects.service';
 import {MapsHttpService} from '../auth-core/services/maps.http.service';
-import {AgmCoreModule} from '@agm/core';
-import {secrets} from '../../environments/secrets';
 import {MapObjectsQuery} from './queries/map-objects.query';
 import {ObjectsListComponent} from './components/objects-list/objects-list.component';
 import {
-    MAT_DIALOG_DEFAULT_OPTIONS,
     MatAutocompleteModule,
     MatButtonModule,
     MatCardModule,
@@ -43,9 +40,6 @@ import {MapObjectAttachmentsHttpService} from './services/map-object-attachments
 import {GeneralMapObjectPropertiesComponent} from './components/general-map-object-properties/general-map-object-properties.component';
 import {AttachmentsMapObjectPropertiesComponent} from './components/attachments-map-object-properties/attachments-map-object-properties.component';
 import {MapService} from './services/map.service';
-import {GoogleMapContainerComponent} from './components/google-map-container/google-map-container.component';
-import {AngularYandexMapsModule} from 'angular8-yandex-maps';
-import {YandexMapContainerComponent} from './components/yandex-map-container/yandex-map-container.component';
 
 const routes: Routes = [
     {
@@ -58,11 +52,11 @@ const routes: Routes = [
                 children: [
                     {
                         path: 'google',
-                        component: GoogleMapContainerComponent
+                        loadChildren: './../google-provider/google-provider.module#GoogleProviderModule',
                     },
                     {
                         path: 'yandex',
-                        component: YandexMapContainerComponent
+                        loadChildren: './../yandex-provider/yandex-provider.module#YandexProviderModule',
                     }
                 ]
             }
@@ -83,21 +77,12 @@ const routes: Routes = [
         MapObjectPropertiesComponent,
         GeneralMapObjectPropertiesComponent,
         AttachmentsMapObjectPropertiesComponent,
-        GoogleMapContainerComponent,
-        YandexMapContainerComponent
     ],
     imports: [
         CommonModule,
         AuthCoreModule,
         CoreModule,
         RouterModule.forChild(routes),
-        AgmCoreModule.forRoot({
-            apiKey: secrets.googleMapsApi,
-            libraries: [
-                'drawing'
-            ]
-        }),
-        AngularYandexMapsModule.forRoot(secrets.yandexMapsApi),
         MatCardModule,
         MatListModule,
         MatButtonModule,
@@ -129,10 +114,7 @@ const routes: Routes = [
         MapObjectsQuery,
         WktService,
         MapsSignalRService,
-        MapQuery,
-        {
-            provide: 'API_KEY', useValue: secrets.yandexMapsApi
-        },
+        MapQuery
     ]
 })
 export class MapsModule {
