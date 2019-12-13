@@ -19,6 +19,7 @@ namespace Topocat.API.Controllers
             _queriesFactory = queriesFactory;
         }
 
+        [ResponseCache(VaryByHeader = "authorization", Duration = 3600)]
         [Route("/map-providers/{providerName}")]
         [HttpGet]
         public async Task<ApiResponse> CanUseProvider(string providerName)

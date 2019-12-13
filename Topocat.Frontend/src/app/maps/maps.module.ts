@@ -40,6 +40,8 @@ import {MapObjectAttachmentsHttpService} from './services/map-object-attachments
 import {GeneralMapObjectPropertiesComponent} from './components/general-map-object-properties/general-map-object-properties.component';
 import {AttachmentsMapObjectPropertiesComponent} from './components/attachments-map-object-properties/attachments-map-object-properties.component';
 import {MapService} from './services/map.service';
+import {MapProvidersHttpService} from './services/map-providers.http.service';
+import {CanUseMapProviderGuard} from './guards/can-use-map-provider.guard';
 
 const routes: Routes = [
     {
@@ -53,10 +55,18 @@ const routes: Routes = [
                     {
                         path: 'google',
                         loadChildren: './../google-provider/google-provider.module#GoogleProviderModule',
+                        canLoad: [CanUseMapProviderGuard],
+                        data: {
+                            providerName: 'google'
+                        }
                     },
                     {
                         path: 'yandex',
                         loadChildren: './../yandex-provider/yandex-provider.module#YandexProviderModule',
+                        canLoad: [CanUseMapProviderGuard],
+                        data: {
+                            providerName: 'yandex'
+                        }
                     }
                 ]
             }
@@ -114,7 +124,9 @@ const routes: Routes = [
         MapObjectsQuery,
         WktService,
         MapsSignalRService,
-        MapQuery
+        MapQuery,
+        MapProvidersHttpService,
+        CanUseMapProviderGuard
     ]
 })
 export class MapsModule {
