@@ -8,6 +8,7 @@ import {WktService} from '../../services/wkt.service';
 import {BehaviorSubject, Subject} from 'rxjs';
 import {NgZone} from '@angular/core';
 import {distinctUntilChanged} from 'rxjs/operators';
+import {WktPrimitives} from '../../models/wkt-primitives';
 
 export class YandexMapProvider extends MapProvider {
 
@@ -37,7 +38,24 @@ export class YandexMapProvider extends MapProvider {
     }
 
     drawFigure(type: string): Promise<Coordinates | Coordinates[] | Coordinates[][]> {
-        return undefined;
+        return new Promise<Coordinates | Coordinates[] | Coordinates[][]>((resolve => {
+            switch (type) {
+                case WktPrimitives.Point:
+                    this.drawPoint(resolve);
+                    break;
+
+                case WktPrimitives.LineString:
+                    this.drawLineString(resolve);
+                    break;
+
+                case WktPrimitives.Polygon:
+                    this.drawPolygon(resolve);
+                    break;
+
+                default:
+                    throw new Error();
+            }
+        }));
     }
 
     getAvailableMapModes(): { title: string; value: string }[] {
@@ -150,6 +168,92 @@ export class YandexMapProvider extends MapProvider {
 
             this.position.next({lat: center[0], lng: center[1]});
             this.zoom.next(zoom);
+        });
+    }
+
+    private drawPoint(resolveFunc: (result?: any) => void) {
+        const cursor = this.mapInstance.cursors.push('crosshair');
+        this.mapInstance.events.add('click', e => {
+            cursor.remove();
+
+            const coords = e.get('coords');
+            resolveFunc(new Coordinates(coords[0], coords[1]));
+        });
+    }
+
+    private drawLineString(resolveFunc: (result?: any) => void) {
+        const cursor = this.mapInstance.cursors.push('crosshair');
+        this.mapInstance.events.add('click', e => {
+            cursor.remove();
+
+            const firstPointCoords = e.get('coords') as number[];
+
+            // tslint:disable-next-line:no-string-literal
+            const polyline = new window['ymaps'].Polyline([firstPointCoords], {}, {
+                strokeWidth: 2,
+            });
+            this.mapInstance.geoObjects.add(polyline);
+
+            polyline.editor.startEditing();
+            polyline.editor.startDrawing();
+
+            const self = this;
+            polyline.editor.options.set({
+                menuManager(editorItems, model) {
+                    editorItems.push({
+                        id: 'StopEditing',
+                        title: 'Завершить редактирование',
+                        onClick() {
+                            polyline.editor.stopEditing();
+                            polyline.editor.stopDrawing();
+                            const polylineCoords = polyline.geometry.getCoordinates() as number[][];
+                            self.mapInstance.geoObjects.remove(polyline);
+
+                            const path = polylineCoords.map(point => new Coordinates(point[0], point[1]));
+                            resolveFunc(path);
+                        }
+                    });
+                    return editorItems;
+                }
+            });
+        });
+    }
+
+    private drawPolygon(resolveFunc: (result?: any) => void) {
+        const cursor = this.mapInstance.cursors.push('crosshair');
+        this.mapInstance.events.add('click', e => {
+            cursor.remove();
+
+            const firstPointCoords = e.get('coords') as number[];
+
+            // tslint:disable-next-line:no-string-literal
+            const polygon = new window['ymaps'].Polygon([[firstPointCoords]], {}, {
+                strokeWidth: 2,
+            });
+            this.mapInstance.geoObjects.add(polygon);
+
+            polygon.editor.startEditing();
+            polygon.editor.startDrawing();
+
+            const self = this;
+            polygon.editor.options.set({
+                menuManager(editorItems, model) {
+                    editorItems.push({
+                        id: 'StopEditing',
+                        title: 'Завершить редактирование',
+                        onClick() {
+                            polygon.editor.stopEditing();
+                            polygon.editor.stopDrawing();
+                            const polygonPaths = polygon.geometry.getCoordinates() as number[][][];
+                            self.mapInstance.geoObjects.remove(polygon);
+
+                            const paths = polygonPaths.map(path => path.map(point => new Coordinates(point[0], point[1])));
+                            resolveFunc(paths);
+                        }
+                    });
+                    return editorItems;
+                }
+            });
         });
     }
 }
