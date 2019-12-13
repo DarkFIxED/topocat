@@ -5,6 +5,7 @@ using Topocat.API.Extensions;
 using Topocat.API.Models;
 using Topocat.Services;
 using Topocat.Services.Queries.Map.CanUseProvider;
+using Topocat.Services.Queries.Map.GetAvailableMapProviders;
 
 namespace Topocat.API.Controllers
 {
@@ -18,6 +19,24 @@ namespace Topocat.API.Controllers
         {
             _queriesFactory = queriesFactory;
         }
+
+        [ResponseCache(VaryByHeader = "authorization", Duration = 3600)]
+        [Route("/map-providers")]
+        [HttpGet]
+        public async Task<ApiResponse> GetAvailableProvider()
+        {
+            var query = _queriesFactory.Get<GetAvailableMapProvidersQuery>();
+
+            var args = new GetAvailableMapProvidersQueryArgs
+            {
+                ActionExecutorId = HttpContext.User.GetUserId()
+            };
+
+            var result = await query.Ask(args);
+
+            return ApiResponse.Success(result);
+        }
+
 
         [ResponseCache(VaryByHeader = "authorization", Duration = 3600)]
         [Route("/map-providers/{providerName}")]
@@ -34,8 +53,8 @@ namespace Topocat.API.Controllers
 
             var result = await query.Ask(args);
 
-            return result.UsageApproved 
-                ? ApiResponse.Success() 
+            return result.UsageApproved
+                ? ApiResponse.Success()
                 : ApiResponse.Fail(null);
         }
     }

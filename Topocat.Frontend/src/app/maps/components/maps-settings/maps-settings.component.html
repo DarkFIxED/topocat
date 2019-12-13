@@ -1,8 +1,23 @@
-<div class="d-grid p-3">
+<div class="d-flex flex-column p-3 settings-container">
+    <label id="provider-label">Provider:</label>
+    <mat-radio-group aria-labelledby="provider-label"
+                     class="p-2"
+                     tabindex="1"
+                     [value]="(currentProvider$ | async)"
+                     (change)="onProviderChange($event)">
+        <mat-radio-button *ngFor="let provider of providers$ | async"
+                          [value]="provider.name"
+                          [disabled]="!provider.isAvailable"
+                          color="primary"
+                          class="mr-3">
+            {{provider.name}}
+        </mat-radio-button>
+    </mat-radio-group>
+
     <label id="type-label">Map mode:</label>
     <mat-radio-group aria-labelledby="type-label"
-                     class="example-radio-group d-grid p-2"
-                     tabindex="1"
+                     class="d-grid p-2"
+                     tabindex="2"
                      [value]="(mapMode$ | async)"
                      (change)="onMapTypeIdChange($event)">
         <mat-radio-button *ngFor="let mode of availableModes$ | async"

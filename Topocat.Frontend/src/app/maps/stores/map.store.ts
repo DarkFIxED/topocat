@@ -10,6 +10,7 @@ export interface MapState extends EntityState<MapModel> {
         setManually: boolean
     };
     mapMode: string;
+    providers: any;
 }
 
 function initialState(): Partial<MapState> {
@@ -22,6 +23,7 @@ function initialState(): Partial<MapState> {
             setManually: false
         },
         mapMode: undefined,
+        providers: undefined
     };
 }
 

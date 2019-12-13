@@ -18,6 +18,7 @@ import {MapRemovedFlow} from '../../flows/map-removed.flow';
 import {MapModeFlow} from '../../flows/map-mode.flow';
 import {MapService} from '../../services/map.service';
 import {MapProviderService} from '../../services/map-provider.service';
+import {MapQuery} from '../../queries/map.query';
 
 @Component({
     selector: 'app-map',
@@ -51,22 +52,23 @@ export class MapComponent extends BaseDestroyable implements OnInit {
                 private mapService: MapService,
                 private mapFlowsService: MapFlowsService,
                 private mapProviderService: MapProviderService,
-                private router: Router) {
+                private router: Router,
+                private mapQuery: MapQuery) {
         super();
         this.mapFlowsService.setUp();
     }
 
     ngOnInit() {
+        this.setFirstAvailableMapProviderIfNothingSpecified();
+        this.initialize();
+    }
+
+    private initialize() {
         this.route.params.subscribe(params => {
             this.mapId = params.id;
 
             if (!this.mapId) {
                 throw new Error();
-            }
-
-            // TODO: select first available map provider
-            if (!this.route.children.length) {
-                this.router.navigate(['google'], {relativeTo: this.route});
             }
 
             this.mapObjectsService.load(this.mapId);
@@ -84,7 +86,7 @@ export class MapComponent extends BaseDestroyable implements OnInit {
         });
 
         this.mapProviderService.provider$.pipe(
-            tap(provider => this.trySetCurrentPosition()),
+            tap(() => this.trySetCurrentPosition()),
             takeUntil(this.componentAlive$)
         ).subscribe();
     }
@@ -96,5 +98,26 @@ export class MapComponent extends BaseDestroyable implements OnInit {
                 this.mapService.setMapPosition(position.coords.latitude, position.coords.longitude, zoomLevel);
             });
         }
+    }
+
+    private setFirstAvailableMapProviderIfNothingSpecified() {
+        this.mapQuery.select(state => state.providers)
+            .pipe(
+                filter(providers => !!providers),
+                tap(providers => {
+                    if (!this.route.children.length) {
+                        const providersList = Object.getOwnPropertyNames(providers).map(property => {
+                            return {
+                                provider: property,
+                                isAvailable: providers[property]
+                            };
+                        });
+
+                        const firstAvailableProvider = providersList.find(item => !!item.isAvailable);
+                        this.router.navigate([firstAvailableProvider.provider.toLowerCase()], {relativeTo: this.route});
+                    }
+                }),
+                takeUntil(this.componentAlive$)
+            ).subscribe();
     }
 }

@@ -8,6 +8,10 @@ export class MapProvidersHttpService {
     constructor(private authHttp: AuthHttpService) {
     }
 
+    getAvailableProviders(): Observable<ApiResponse<{providers: any}>> {
+        return this.authHttp.get<ApiResponse<{providers: any}>>(`map-providers`);
+    }
+
     canUseProvider(providerName: string): Observable<ApiResponse<any>> {
         return this.authHttp.get<ApiResponse<any>>(`map-providers/${providerName}`);
     }
