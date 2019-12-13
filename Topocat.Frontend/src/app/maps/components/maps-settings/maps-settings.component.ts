@@ -9,6 +9,7 @@ import {Observable} from 'rxjs';
 import {MapProvidersHttpService} from '../../services/map-providers.http.service';
 import {SupportedMapTypes} from '../../providers/supported-map-types';
 import {ActivatedRoute, Router} from '@angular/router';
+import {MapObjectsQuery} from '../../queries/map-objects.query';
 
 @Component({
     selector: 'app-maps-settings',
@@ -36,7 +37,12 @@ export class MapsSettingsComponent extends BaseDestroyable implements OnInit {
         map(provider => SupportedMapTypes[provider.getType()])
     );
 
+    isEditing$ = this.mapObjectsQuery.select(state => state).pipe(
+        map(state => state.drawing.isEnabled || !!state.editing.mapObjectId)
+    );
+
     constructor(private mapQuery: MapQuery,
+                private mapObjectsQuery: MapObjectsQuery,
                 private mapService: MapService,
                 private mapProviderService: MapProviderService,
                 private router: Router,

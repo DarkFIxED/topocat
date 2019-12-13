@@ -3,7 +3,8 @@
     <mat-radio-group aria-labelledby="provider-label"
                      class="p-2"
                      tabindex="1"
-                     [value]="(currentProvider$ | async)"
+                     [disabled]="isEditing$ | async"
+                     [value]="currentProvider$ | async"
                      (change)="onProviderChange($event)">
         <mat-radio-button *ngFor="let provider of providers$ | async"
                           [value]="provider.name"
