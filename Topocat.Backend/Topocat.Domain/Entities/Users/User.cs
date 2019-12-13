@@ -19,9 +19,13 @@ namespace Topocat.Domain.Entities.Users
 
             Email = email;
             EmailConfirmed = false;
+
             NotificationSettings = new UserNotificationSettings(this);
+            AvailableMapProviders = new AvailableMapProviders(this);
         }
 
         public UserNotificationSettings NotificationSettings { get; protected set; }
+
+        public AvailableMapProviders AvailableMapProviders { get; protected set; }
     }
 }
