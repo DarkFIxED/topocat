@@ -2,11 +2,13 @@ import {Injectable} from '@angular/core';
 import {MapStore} from '../stores/map.store';
 import {MapsHttpService} from '../../auth-core/services/maps.http.service';
 import {tap} from 'rxjs/operators';
+import {MapProvidersHttpService} from './map-providers.http.service';
 
 @Injectable()
 export class MapService {
     constructor(private mapStore: MapStore,
-                private mapsHttpService: MapsHttpService) {
+                private mapsHttpService: MapsHttpService,
+                private mapProvidersHttpService: MapProvidersHttpService) {
     }
 
     load(mapId: string) {
@@ -24,6 +26,19 @@ export class MapService {
             .subscribe(result => {
                 this.mapStore.set([result.data.map]);
             });
+
+        this.mapProvidersHttpService.getAvailableProviders()
+            .pipe(
+                tap(result => {
+                    if (!result.isSuccessful)
+                        throw new Error();
+                }),
+                tap(result => {
+                    this.mapStore.update({
+                        providers: result.data.providers
+                    });
+                })
+            ).subscribe();
     }
 
     reset() {
@@ -43,12 +58,6 @@ export class MapService {
             }
         };
         this.mapStore.update(newPosition);
-    }
-
-    setInstanceLoadedFlag() {
-        this.mapStore.update({
-            instanceLoaded: true
-        });
     }
 
     setMapMode(mode: string) {

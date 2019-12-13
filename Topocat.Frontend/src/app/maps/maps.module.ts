@@ -9,8 +9,6 @@ import {MapObjectsStore} from './stores/map-objects.store';
 import {MapStore} from './stores/map.store';
 import {MapObjectsService} from './services/map-objects.service';
 import {MapsHttpService} from '../auth-core/services/maps.http.service';
-import {AgmCoreModule} from '@agm/core';
-import {secrets} from '../../environments/secrets';
 import {MapObjectsQuery} from './queries/map-objects.query';
 import {ObjectsListComponent} from './components/objects-list/objects-list.component';
 import {
@@ -42,6 +40,8 @@ import {MapObjectAttachmentsHttpService} from './services/map-object-attachments
 import {GeneralMapObjectPropertiesComponent} from './components/general-map-object-properties/general-map-object-properties.component';
 import {AttachmentsMapObjectPropertiesComponent} from './components/attachments-map-object-properties/attachments-map-object-properties.component';
 import {MapService} from './services/map.service';
+import {MapProvidersHttpService} from './services/map-providers.http.service';
+import {CanUseMapProviderGuard} from './guards/can-use-map-provider.guard';
 
 const routes: Routes = [
     {
@@ -50,7 +50,25 @@ const routes: Routes = [
         children: [
             {
                 path: ':id',
-                component: MapComponent
+                component: MapComponent,
+                children: [
+                    {
+                        path: 'google',
+                        loadChildren: './../google-provider/google-provider.module#GoogleProviderModule',
+                        canLoad: [CanUseMapProviderGuard],
+                        data: {
+                            providerName: 'google'
+                        }
+                    },
+                    {
+                        path: 'yandex',
+                        loadChildren: './../yandex-provider/yandex-provider.module#YandexProviderModule',
+                        canLoad: [CanUseMapProviderGuard],
+                        data: {
+                            providerName: 'yandex'
+                        }
+                    }
+                ]
             }
         ]
     }
@@ -68,19 +86,13 @@ const routes: Routes = [
         MapsSettingsComponent,
         MapObjectPropertiesComponent,
         GeneralMapObjectPropertiesComponent,
-        AttachmentsMapObjectPropertiesComponent
+        AttachmentsMapObjectPropertiesComponent,
     ],
     imports: [
         CommonModule,
         AuthCoreModule,
         CoreModule,
         RouterModule.forChild(routes),
-        AgmCoreModule.forRoot({
-            apiKey: secrets.googleMapsApi,
-            libraries: [
-                'drawing'
-            ]
-        }),
         MatCardModule,
         MatListModule,
         MatButtonModule,
@@ -113,6 +125,8 @@ const routes: Routes = [
         WktService,
         MapsSignalRService,
         MapQuery,
+        MapProvidersHttpService,
+        CanUseMapProviderGuard
     ]
 })
 export class MapsModule {

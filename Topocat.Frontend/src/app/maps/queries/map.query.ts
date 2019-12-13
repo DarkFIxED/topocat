@@ -9,11 +9,6 @@ export class MapQuery extends QueryEntity<MapState, MapModel> {
 
     position$ = this.select(state => state.position);
 
-    instanceLoaded$ = this.select(state => state.instanceLoaded)
-        .pipe(
-            filter(value => !!value)
-        );
-
     mapMode$ = this.select(state => state.mapMode);
 
     constructor(protected store: MapStore) {

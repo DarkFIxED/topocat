@@ -1,14 +1,14 @@
-import {UnifiedMapObject} from './unified-map-object';
+import {UnifiedMapObject} from '../../../maps/providers/unified-map-object';
 import {ID} from '@datorama/akita';
-import {MapObjectModel} from './map-object.model';
-import {BaseUnifiedMapObject} from './base-unified-map-object';
-import {Coordinates} from '../../core/models/coordinates';
-import {WktPrimitives} from './wkt-primitives';
+import {MapObjectModel} from '../../../maps/models/map-object.model';
+import {Coordinates} from '../../../core/models/coordinates';
+import {WktPrimitives} from '../../../maps/models/wkt-primitives';
+import {GoogleUnifiedMapObject} from './google-unified-map-object';
 
-export class Point extends BaseUnifiedMapObject<google.maps.Marker> implements UnifiedMapObject {
+export class GooglePoint extends GoogleUnifiedMapObject<google.maps.Marker> implements UnifiedMapObject {
 
-    constructor(id: ID, opts?: any) {
-        super(id, opts);
+    constructor(id: ID, mapInstance: any, opts?: any) {
+        super(id, mapInstance, opts);
 
         this.underlyingObject.addListener('dragend', () => {
             const position = this.underlyingObject.getPosition();
@@ -19,7 +19,6 @@ export class Point extends BaseUnifiedMapObject<google.maps.Marker> implements U
 
     dispose() {
         this.underlyingObject.unbindAll();
-        this.underlyingObject.setMap(null);
     }
 
     getType(): string {
@@ -66,5 +65,9 @@ export class Point extends BaseUnifiedMapObject<google.maps.Marker> implements U
         this.underlyingObject.setOptions({
             draggable: true
         });
+    }
+
+    getUnderlyingObject(): any {
+        return this.underlyingObject;
     }
 }

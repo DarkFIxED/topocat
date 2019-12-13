@@ -1,4 +1,4 @@
-import {UnifiedMapObject} from '../models/unified-map-object';
+import {UnifiedMapObject} from '../providers/unified-map-object';
 import {ID} from '@datorama/akita';
 import {Subject, Subscription} from 'rxjs';
 import {Injectable} from '@angular/core';
@@ -40,7 +40,7 @@ export class DrawnObjectsStore {
         this.drawnObjectsSubscriptions.splice(index, 1);
 
         index = this.drawnObjects.findIndex(x => x.id === id);
-        this.drawnObjects[index].dispose();
+        // this.drawnObjects[index].dispose();
         this.drawnObjects.splice(index, 1);
     }
 
