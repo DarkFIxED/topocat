@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  topocat.api:
+    image: ${DOCKER_REGISTRY-}topocatapi
+    build:
+      context: .
+      dockerfile: Topocat.API/Dockerfile
