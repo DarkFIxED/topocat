@@ -25,7 +25,11 @@ export class MapRenderingService extends BaseDestroyable {
         this.drawnObjectsStore.objectAdded$
             .pipe(
                 tap(object => {
-                    const subs = object.click$.subscribe(id => this.mapObjectsService.setActiveObject(id));
+                    const subs = object.click$.subscribe(id => {
+                        this.mapObjectsService.setActiveObject(id);
+                        const mapObject = this.mapObjectsQuery.getEntity(object.id);
+                        this.mapProviderService.getProvider().openInfoWindow(mapObject, object);
+                    });
                     this.drawnObjectsStore.addSubscription(object.id, subs);
                 }),
                 takeUntil(this.componentAlive$)

@@ -5,7 +5,6 @@ import {BaseDestroyable} from '../../core/services/base-destroyable';
 import {MapObjectModel} from '../models/map-object.model';
 import {SupportedMapTypes} from './supported-map-types';
 import {UnifiedMapObjectsFactory} from './unified-map-objects.factory';
-import {ID} from '@datorama/akita';
 
 export abstract class MapProvider extends BaseDestroyable {
 
