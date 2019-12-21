@@ -1,0 +1,19 @@
+version: '3.4'
+
+services:
+  topocat.api:
+    env_file:
+      - environment.api.staging.env
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Staging
+      - ASPNETCORE_URLS=http://+:80
+    ports:
+      - "61014:80"
+    depends_on:
+      - db
+  db:
+    image: "mcr.microsoft.com/mssql/server"
+    env_file:
+      - environment.db.staging.env
+    ports:
+      - "1433:1433"

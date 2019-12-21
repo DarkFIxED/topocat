@@ -307,3 +307,5 @@ __pycache__/
 Topocat.Frontend/src/environments/
 Topocat.Frontend/deploy-package.zip
 Topocat.CI/deploy-package.zip
+
+*.env
