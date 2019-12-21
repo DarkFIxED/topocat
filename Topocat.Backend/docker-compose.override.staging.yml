@@ -2,6 +2,7 @@ version: '3.4'
 
 services:
   topocat.api:
+    image: "darkfixed/topocat:api-staging-latest"
     env_file:
       - environment.api.staging.env
     environment:
