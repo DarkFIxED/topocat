@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Topocat.API.Activators;
+using Topocat.API.Filters;
 using Topocat.API.Middlewares;
 using Topocat.API.StartupExtensions;
 using Topocat.DB;
@@ -105,7 +106,10 @@ namespace Topocat.API
 
             GlobalConfiguration.Configuration.UseActivator(new HangfireActivator(serviceProvider));
             app.UseHangfireServer();
-            app.UseHangfireDashboard();
+            app.UseHangfireDashboard("/hangfire", new DashboardOptions
+            {
+                Authorization = new[] { new HangfireAuthorizationFilter() }
+            });
 
             var frontendUrls = AppConfiguration.GetSection("FrontendUrls").Get<FrontendUrls>();
 
@@ -116,7 +120,7 @@ namespace Topocat.API
                 .AllowCredentials()
             );
 
-            app.UseHttpsRedirection();
+            // app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
