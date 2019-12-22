@@ -1,0 +1,3 @@
+docker build . -t topocat:api-staging-latest -t darkfixed/topocat:api-staging-latest -f .\Topocat.API\Dockerfile
+
+docker build -t topocat:frontend-staging-latest -t darkfixed/topocat:frontend-staging-latest .

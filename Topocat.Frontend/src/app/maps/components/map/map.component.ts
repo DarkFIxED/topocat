@@ -1,9 +1,9 @@
-import {Component, NgZone, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {MapObjectsService} from '../../services/map-objects.service';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {MapRenderingService} from '../../services/map-rendering.service';
 import {MapsSignalRService} from '../../services/maps.signal-r.service';
-import {filter, tap} from 'rxjs/operators';
+import {filter, takeUntil, tap} from 'rxjs/operators';
 import {BaseDestroyable} from '../../../core/services/base-destroyable';
 import {MapObjectsDrawingService} from '../../services/map-objects-drawing.service';
 import {EditMapObjectFlow} from '../../flows/edit-map-object.flow';
@@ -18,8 +18,7 @@ import {MapRemovedFlow} from '../../flows/map-removed.flow';
 import {MapModeFlow} from '../../flows/map-mode.flow';
 import {MapService} from '../../services/map.service';
 import {MapProviderService} from '../../services/map-provider.service';
-import {GoogleMapProvider} from '../../providers/google-map-provider';
-import {WktService} from '../../services/wkt.service';
+import {MapQuery} from '../../queries/map.query';
 
 @Component({
     selector: 'app-map',
@@ -41,10 +40,6 @@ import {WktService} from '../../services/wkt.service';
     ]
 })
 export class MapComponent extends BaseDestroyable implements OnInit {
-
-    // TODO: extract to constants.
-    private readonly defaultZoomLevelForUserPosition = 12;
-
     private mapId: string = undefined;
 
     drawing$ = this.mapObjectsQuery.select(state => state.drawing.isEnabled);
@@ -57,13 +52,18 @@ export class MapComponent extends BaseDestroyable implements OnInit {
                 private mapService: MapService,
                 private mapFlowsService: MapFlowsService,
                 private mapProviderService: MapProviderService,
-                private zone: NgZone,
-                private wktService: WktService) {
+                private router: Router,
+                private mapQuery: MapQuery) {
         super();
         this.mapFlowsService.setUp();
     }
 
     ngOnInit() {
+        this.setFirstAvailableMapProviderIfNothingSpecified();
+        this.initialize();
+    }
+
+    private initialize() {
         this.route.params.subscribe(params => {
             this.mapId = params.id;
 
@@ -84,19 +84,40 @@ export class MapComponent extends BaseDestroyable implements OnInit {
             this.mapObjectsService.reset();
             this.mapService.reset();
         });
-    }
 
-    onMapReady(mapInstance: google.maps.Map) {
-        this.mapProviderService.setProvider(new GoogleMapProvider(mapInstance, this.zone, this.wktService));
-        this.mapService.setInstanceLoadedFlag();
-        this.trySetCurrentPosition();
+        this.mapProviderService.provider$.pipe(
+            tap(() => this.trySetCurrentPosition()),
+            takeUntil(this.componentAlive$)
+        ).subscribe();
     }
 
     private trySetCurrentPosition() {
         if (!!navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(position => {
-               this.mapService.setMapPosition(position.coords.latitude, position.coords.longitude, this.defaultZoomLevelForUserPosition);
+                const zoomLevel = this.mapProviderService.getProvider().getDefaultZoomLevel();
+                this.mapService.setMapPosition(position.coords.latitude, position.coords.longitude, zoomLevel);
             });
         }
+    }
+
+    private setFirstAvailableMapProviderIfNothingSpecified() {
+        this.mapQuery.select(state => state.providers)
+            .pipe(
+                filter(providers => !!providers),
+                tap(providers => {
+                    if (!this.route.children.length) {
+                        const providersList = Object.getOwnPropertyNames(providers).map(property => {
+                            return {
+                                provider: property,
+                                isAvailable: providers[property]
+                            };
+                        });
+
+                        const firstAvailableProvider = providersList.find(item => !!item.isAvailable);
+                        this.router.navigate([firstAvailableProvider.provider.toLowerCase()], {relativeTo: this.route});
+                    }
+                }),
+                takeUntil(this.componentAlive$)
+            ).subscribe();
     }
 }

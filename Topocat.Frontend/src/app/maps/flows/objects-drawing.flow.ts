@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {filter, map, switchMap, takeUntil, tap} from 'rxjs/operators';
+import {map, takeUntil, tap} from 'rxjs/operators';
 import {EntityActions} from '@datorama/akita';
 import {combineLatest} from 'rxjs';
 import {BaseDestroyable} from '../../core/services/base-destroyable';
@@ -9,6 +9,7 @@ import {DataFlow} from '../../core/services/data.flow';
 import {MapProviderService} from '../services/map-provider.service';
 import {DrawnObjectsStore} from '../stores/drawn-objects.store';
 import {MapObjectsService} from '../services/map-objects.service';
+import {MapProvider} from '../providers/map-provider';
 
 @Injectable()
 export class ObjectsDrawingFlow extends BaseDestroyable implements DataFlow {
@@ -37,7 +38,8 @@ export class ObjectsDrawingFlow extends BaseDestroyable implements DataFlow {
 
         combineLatest(this.mapProviderService.provider$, addedEntities$)
             .pipe(
-                tap(results => this.drawingService.drawMany(results[1]))
+                tap(results => this.drawingService.drawMany(results[1])),
+                takeUntil(this.componentAlive$)
             )
             .subscribe();
     }
@@ -50,7 +52,8 @@ export class ObjectsDrawingFlow extends BaseDestroyable implements DataFlow {
 
         combineLatest(this.mapProviderService.provider$, updatedEntities$)
             .pipe(
-                tap(results => this.drawingService.updateMany(results[1]))
+                tap(results => this.drawingService.updateMany(results[1])),
+                takeUntil(this.componentAlive$)
             )
             .subscribe();
     }
@@ -60,14 +63,15 @@ export class ObjectsDrawingFlow extends BaseDestroyable implements DataFlow {
 
         combineLatest(this.mapProviderService.provider$, removedEntities$)
             .pipe(
-                tap(results => this.drawingService.removeMany(results[1]))
+                tap(results => this.drawingService.removeMany(results[1])),
+                takeUntil(this.componentAlive$)
             )
             .subscribe();
     }
 
     private drawInfoWindow() {
         this.mapProviderService.provider$.pipe(
-            tap(provider => {
+            tap((provider: MapProvider) => {
                 provider.openDetailsRequired$
                     .pipe(
                         tap(id => this.mapObjectsService.openPropertiesWindow(id)),
@@ -76,28 +80,11 @@ export class ObjectsDrawingFlow extends BaseDestroyable implements DataFlow {
             }),
             takeUntil(this.componentAlive$)
         ).subscribe();
-
-        const active$ = this.mapObjectsQuery.selectActiveId().pipe(
-            switchMap(id => this.mapObjectsQuery.selectEntity(id))
-        );
-
-        combineLatest(this.mapProviderService.provider$, active$)
-            .pipe(
-                filter(results => !!results[1]),
-                tap(results => {
-                    const provider = results[0];
-                    const mapObject = results[1];
-
-                    const unifiedMapObject = this.drawnObjectsStore.drawnObjects.find(x => x.id === mapObject.id);
-                    provider.openInfoWindow(mapObject, unifiedMapObject);
-                })
-            )
-            .subscribe();
     }
 
     private searchByTags() {
         this.mapProviderService.provider$.pipe(
-            tap(provider => {
+            tap((provider: MapProvider) => {
                 provider.tagSearchRequired$
                     .pipe(
                         tap(tag => this.mapObjectsService.setSearchString(`#${tag}`)),

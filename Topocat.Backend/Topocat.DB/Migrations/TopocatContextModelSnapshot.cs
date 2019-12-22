@@ -278,6 +278,22 @@ namespace Topocat.DB.Migrations
                     b.ToTable("MapObjectTags");
                 });
 
+            modelBuilder.Entity("Topocat.Domain.Entities.Users.AvailableMapProviders", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("Google")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("Yandex")
+                        .HasColumnType("bit");
+
+                    b.HasKey("UserId");
+
+                    b.ToTable("AvailableMapProviders");
+                });
+
             modelBuilder.Entity("Topocat.Domain.Entities.Users.Role", b =>
                 {
                     b.Property<string>("Id")
@@ -479,6 +495,15 @@ namespace Topocat.DB.Migrations
                     b.HasOne("Topocat.Domain.Entities.Map.MapObject", "Object")
                         .WithMany("Tags")
                         .HasForeignKey("ObjectId");
+                });
+
+            modelBuilder.Entity("Topocat.Domain.Entities.Users.AvailableMapProviders", b =>
+                {
+                    b.HasOne("Topocat.Domain.Entities.Users.User", "User")
+                        .WithOne("AvailableMapProviders")
+                        .HasForeignKey("Topocat.Domain.Entities.Users.AvailableMapProviders", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Topocat.Domain.Entities.Users.UserNotificationSettings", b =>

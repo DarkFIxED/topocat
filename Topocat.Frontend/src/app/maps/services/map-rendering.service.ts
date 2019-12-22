@@ -25,7 +25,11 @@ export class MapRenderingService extends BaseDestroyable {
         this.drawnObjectsStore.objectAdded$
             .pipe(
                 tap(object => {
-                    const subs = object.click$.subscribe(id => this.mapObjectsService.setActiveObject(id));
+                    const subs = object.click$.subscribe(id => {
+                        this.mapObjectsService.setActiveObject(id);
+                        const mapObject = this.mapObjectsQuery.getEntity(object.id);
+                        this.mapProviderService.getProvider().openInfoWindow(mapObject, object);
+                    });
                     this.drawnObjectsStore.addSubscription(object.id, subs);
                 }),
                 takeUntil(this.componentAlive$)
@@ -46,8 +50,13 @@ export class MapRenderingService extends BaseDestroyable {
             return;
         }
 
-        const ids = this.drawnObjectsStore.drawnObjects.map(x => x.id);
-        ids.forEach(id => this.drawnObjectsStore.remove(id));
+        const objects = [...this.drawnObjectsStore.drawnObjects];
+        const provider = this.mapProviderService.getProvider();
+
+        objects.forEach(object => {
+            this.drawnObjectsStore.remove(object.id);
+            provider.removeObjectFromMap(object);
+        });
     }
 
     draw(object: MapObjectModel) {
@@ -66,6 +75,12 @@ export class MapRenderingService extends BaseDestroyable {
     }
 
     removeMany(ids: ID[]) {
-        ids.forEach(id => this.drawnObjectsStore.remove(id));
+        const foundObjects = [...this.drawnObjectsStore.drawnObjects.filter(x => ids.includes(x.id))];
+        const provider = this.mapProviderService.getProvider();
+
+        foundObjects.forEach(object => {
+            this.drawnObjectsStore.remove(object.id);
+            provider.removeObjectFromMap(object);
+        });
     }
 }

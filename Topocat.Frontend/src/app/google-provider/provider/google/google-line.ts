@@ -1,15 +1,15 @@
-import {UnifiedMapObject} from './unified-map-object';
+import {UnifiedMapObject} from '../../../maps/providers/unified-map-object';
 import {ID} from '@datorama/akita';
-import {MapObjectModel} from './map-object.model';
+import {MapObjectModel} from '../../../maps/models/map-object.model';
 import {google} from 'google-maps';
-import {BaseUnifiedMapObject} from './base-unified-map-object';
-import {Coordinates} from '../../core/models/coordinates';
-import {WktPrimitives} from './wkt-primitives';
+import {Coordinates} from '../../../core/models/coordinates';
+import {WktPrimitives} from '../../../maps/models/wkt-primitives';
+import {GoogleUnifiedMapObject} from './google-unified-map-object';
 
-export class Line extends BaseUnifiedMapObject<google.maps.Polyline> implements UnifiedMapObject {
+export class GoogleLine extends GoogleUnifiedMapObject<google.maps.Polyline> implements UnifiedMapObject {
 
-    constructor(id: ID, opts?: any) {
-        super(id, opts);
+    constructor(id: ID, mapInstance: any, opts?: any) {
+        super(id, mapInstance, opts);
 
         this.underlyingObject.getPath().addListener('insert_at', () => this.handlePathChanged());
         this.underlyingObject.getPath().addListener('remove_at', () => this.handlePathChanged());
@@ -78,4 +78,7 @@ export class Line extends BaseUnifiedMapObject<google.maps.Polyline> implements 
         this.drag.next(path);
     }
 
+    getUnderlyingObject(): any {
+        return this.underlyingObject;
+    }
 }

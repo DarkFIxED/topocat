@@ -1,11 +1,10 @@
 import {UnifiedMapObject} from './unified-map-object';
 import {Subject} from 'rxjs';
 import {ID} from '@datorama/akita';
-import {MapObjectModel} from './map-object.model';
+import {MapObjectModel} from '../models/map-object.model';
 import {Coordinates} from '../../core/models/coordinates';
-import {WktPrimitives} from './wkt-primitives';
 
-export abstract class BaseUnifiedMapObject<T extends google.maps.MVCObject> implements UnifiedMapObject {
+export abstract class BaseUnifiedMapObject<T extends any> implements UnifiedMapObject {
 
     protected click = new Subject<ID>();
     click$ = this.click.asObservable();
@@ -17,10 +16,12 @@ export abstract class BaseUnifiedMapObject<T extends google.maps.MVCObject> impl
 
     protected underlyingObject: T;
 
-    protected constructor(id: ID, opts?: any) {
+    protected mapInstance: any;
+
+    protected constructor(id: ID, mapInstance: any, opts?: any) {
         this.id = id;
         this.underlyingObject = this.createInstance(opts);
-        this.underlyingObject.addListener('click', () => this.click.next(this.id));
+        this.mapInstance = mapInstance;
     }
 
     abstract dispose();
@@ -41,4 +42,5 @@ export abstract class BaseUnifiedMapObject<T extends google.maps.MVCObject> impl
 
     abstract disallowChange();
 
+    abstract getUnderlyingObject(): any;
 }

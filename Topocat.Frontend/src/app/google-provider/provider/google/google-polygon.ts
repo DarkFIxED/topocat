@@ -1,15 +1,20 @@
-import {UnifiedMapObject} from './unified-map-object';
+import {UnifiedMapObject} from '../../../maps/providers/unified-map-object';
 import {ID} from '@datorama/akita';
-import {MapObjectModel} from './map-object.model';
-import {BaseUnifiedMapObject} from './base-unified-map-object';
+import {MapObjectModel} from '../../../maps/models/map-object.model';
 import {google} from 'google-maps';
-import {Coordinates} from '../../core/models/coordinates';
-import {WktPrimitives} from './wkt-primitives';
+import {Coordinates} from '../../../core/models/coordinates';
+import {WktPrimitives} from '../../../maps/models/wkt-primitives';
+import {GoogleUnifiedMapObject} from './google-unified-map-object';
 
-export class Polygon extends BaseUnifiedMapObject<google.maps.Polygon> implements UnifiedMapObject {
+export class GooglePolygon extends GoogleUnifiedMapObject<google.maps.Polygon> implements UnifiedMapObject {
 
-    constructor(id: ID, opts?: any) {
-        super(id, opts);
+    private readonly disabledFillOpacity = 0.2;
+    private readonly disabledStrokeOpacity = 0.2;
+    private readonly enabledFillOpacity = 0.35;
+    private readonly enabledStrokeOpacity = 0.8;
+
+    constructor(id: ID, mapInstance: any, opts?: any) {
+        super(id, mapInstance, opts);
 
         this.underlyingObject.getPaths().addListener('insert_at', () => this.handlePathsChanged());
         this.underlyingObject.getPaths().addListener('remove_at', () => this.handlePathsChanged());
@@ -54,16 +59,16 @@ export class Polygon extends BaseUnifiedMapObject<google.maps.Polygon> implement
 
     disable() {
         this.underlyingObject.setOptions({
-            strokeOpacity: 0.2,
-            fillOpacity: 0.2,
+            strokeOpacity: this.disabledStrokeOpacity,
+            fillOpacity: this.disabledFillOpacity,
             clickable: false
         });
     }
 
     enable() {
         this.underlyingObject.setOptions({
-            strokeOpacity: 0.8,
-            fillOpacity: 0.35,
+            strokeOpacity: this.enabledStrokeOpacity,
+            fillOpacity: this.enabledFillOpacity,
             clickable: true
         });
     }
@@ -85,5 +90,9 @@ export class Polygon extends BaseUnifiedMapObject<google.maps.Polygon> implement
     private handlePathsChanged() {
         const paths = this.underlyingObject.getPaths().getArray().map(path => path.getArray().map(latLng => new Coordinates(latLng.lat(), latLng.lng())));
         this.drag.next(paths);
+    }
+
+    getUnderlyingObject(): any {
+        return this.underlyingObject;
     }
 }

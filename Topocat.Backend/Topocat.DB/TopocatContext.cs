@@ -31,6 +31,9 @@ namespace Topocat.DB
         [UsedImplicitly]
         public DbSet<FileReference> FileReferences { get; set; }
 
+        [UsedImplicitly]
+        public DbSet<AvailableMapProviders> AvailableMapProviders { get; set; }
+
         public IEnumerable<IDomainEvent> GetDomainEvents()
         {
             return ChangeTracker.Entries()

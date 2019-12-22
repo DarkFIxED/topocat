@@ -30,7 +30,9 @@ export class MapModeFlow extends BaseDestroyable implements DataFlow {
                 tap(results => this.localPreferencesService.setValue(this.key, results[1])),
                 tap(results => {
                     const currentMapMode = results[0].getMapMode();
-                    if (!!currentMapMode && currentMapMode !== results[1])
+                    const supportedModes = results[0].getAvailableMapModes();
+
+                    if (!!currentMapMode && currentMapMode !== results[1] && supportedModes.some(mode => mode.value === results[1]))
                         results[0].setMapMode(results[1]);
                 }),
                 takeUntil(this.componentAlive$)

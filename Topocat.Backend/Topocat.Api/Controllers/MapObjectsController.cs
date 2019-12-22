@@ -190,7 +190,7 @@ namespace Topocat.API.Controllers
 
         [Route("/maps/{mapId}/objects/tags")]
         [HttpGet]
-        public async Task<ApiResponse> GetAttachment([FromRoute] string mapId, [FromQuery] string search)
+        public async Task<ApiResponse> SearchByTags([FromRoute] string mapId, [FromQuery] string search)
         {
             var updateLineCommand = _queriesFactory.Get<TagsSearchQuery>();
 
