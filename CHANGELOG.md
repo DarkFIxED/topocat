@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## v0.3.6
+- Added support for yandex map.
+- Fixed some bugs.
+- Changed info window behaviour.
+
 ## v0.3.5
 - Added objects tags.
 - Changed appearance in info window.
